@@ -18,7 +18,7 @@
 
 **[🌐 دموی آنلاین](https://m38d1.github.io/Hesab/)** · **[🐛 گزارش باگ](../../issues)** · **[💡 پیشنهاد قابلیت](../../issues)**
 
-<img src="./screenshots/preview.png" width="100%" alt="پیش‌نمایش حساب‌وکتاب">
+<img src="/screenshots/preview.png" width="100%" alt="پیش‌نمایش حساب‌وکتاب">
 
 </div>
 
