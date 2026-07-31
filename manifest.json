@@ -1,0 +1,13 @@
+{
+  "name": "حساب‌وکتاب · مهدی عسکری",
+  "short_name": "حساب‌وکتاب",
+  "start_url": "/",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "fa",
+  "background_color": "#072429",
+  "theme_color": "#082a30",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
