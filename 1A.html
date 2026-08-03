@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>حسابدار شخصی</title>
+    <!-- Font -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            min-height: 100vh;
+            padding: 16px 12px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            max-width: 480px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #6C63FF, #5A52D5);
+            border-radius: 24px;
+            padding: 24px 20px;
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(108, 99, 255, 0.35);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-top h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-top i {
+            font-size: 22px;
+            opacity: 0.9;
+        }
+
+        .balance-box {
+            margin-top: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-label {
+            font-size: 13px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .balance-amount span {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-right: 4px;
+        }
+
+        /* Quick Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #8e8ea0;
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .stat-card .value.income {
+            color: #2ecc71;
+        }
+        .stat-card .value.expense {
+            color: #e74c3c;
+        }
+
+        /* Form */
+        .form-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d3f;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #fafbfc;
+            transition: all 0.25s;
+            outline: none;
+            color: #1a1a2e;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #6C63FF;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn {
+            padding: 13px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: #6C63FF;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: #5A52D5;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        .btn-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .btn-success:hover {
+            background: #a7f3d0;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #edf2f7;
+            color: #4a4a5e;
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fc;
+        }
+
+        /* Filter */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar input {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 14px;
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            font-size: 13px;
+            background: #fff;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .filter-bar input:focus {
+            border-color: #6C63FF;
+        }
+
+        /* Transaction List */
+        .list-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .list-title h3 {
+            font-size: 17px;
+            color: #1a1a2e;
+        }
+
+        .list-title .count {
+            font-size: 13px;
+            color: #8e8ea0;
+            background: #edf2f7;
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .transaction-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+            border-right: 4px solid #6C63FF;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .transaction-item.expense {
+            border-right-color: #e74c3c;
+        }
+
+        .transaction-item.income {
+            border-right-color: #2ecc71;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tx-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .tx-info .tx-desc {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .tx-info .tx-meta {
+            font-size: 12px;
+            color: #8e8ea0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .tx-info .tx-meta .category-badge {
+            background: #f0f0f5;
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #4a4a5e;
+        }
+
+        .tx-amount {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tx-amount .delete-btn {
+            background: none;
+            border: none;
+            color: #d1d5db;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .tx-amount .delete-btn:hover {
+            color: #e74c3c;
+            background: #fee2e2;
+        }
+
+        .tx-amount.income {
+            color: #2ecc71;
+        }
+        .tx-amount.expense {
+            color: #e74c3c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b0b0c0;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* Actions */
+        .actions-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .actions-row .btn {
+            flex: 1;
+            min-width: 80px;
+            font-size: 13px;
+            padding: 10px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transition: all 0.4s;
+            pointer-events: none;
+            z-index: 999;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            .balance-amount {
+                font-size: 26px;
+            }
+            .header {
+                padding: 18px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <h1><i class="fas fa-wallet" style="margin-left: 8px;"></i>حسابدار</h1>
+                <i class="fas fa-regular fa-moon"></i>
+            </div>
+            <div class="balance-box">
+                <div class="balance-label">موجودی کل</div>
+                <div class="balance-amount" id="totalBalance">0 <span>تومان</span></div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="label">کل واریز‌ها</div>
+                <div class="value income" id="totalIncome">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">کل برداشت‌ها</div>
+                <div class="value expense" id="totalExpense">0</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-card">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt" style="margin-left: 6px;"></i>تاریخ</label>
+                    <input type="date" id="txDate" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag" style="margin-left: 6px;"></i>دسته‌بندی</label>
+                    <select id="txCategory">
+                        <option value="خوراک">🍔 خوراک</option>
+                        <option value="حمل و نقل">🚗 حمل و نقل</option>
+                        <option value="قبض‌ها">💡 قبض‌ها</option>
+                        <option value="تفریح">🎮 تفریح</option>
+                        <option value="خرید">🛍️ خرید</option>
+                        <option value="درآمد">💰 درآمد</option>
+                        <option value="سایر">📌 سایر</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group full">
+                <label><i class="fas fa-pen" style="margin-left: 6px;"></i>توضیحات</label>
+                <input type="text" id="txDesc" placeholder="مثلاً: خرید ماهانه" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill" style="margin-left: 6px;"></i>مبلغ (تومان)</label>
+                    <input type="number" id="txAmount" placeholder="۰" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-arrow-right" style="margin-left: 6px;"></i>نوع</label>
+                    <select id="txType">
+                        <option value="expense">برداشت</option>
+                        <option value="income">واریز</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addTransaction()">
+                    <i class="fas fa-plus"></i> ثبت تراکنش
+                </button>
+                <button class="btn btn-outline" onclick="resetForm()">
+                    <i class="fas fa-undo"></i> پاک کردن
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-bar">
+            <input type="text" id="searchInput" placeholder="🔍 جستجو در توضیحات..." oninput="renderList()" />
+            <input type="month" id="monthFilter" onchange="renderList()" style="max-width:150px;" />
+        </div>
+
+        <!-- Transaction List -->
+        <div class="list-title">
+            <h3>📋 تراکنش‌ها</h3>
+            <span class="count" id="txCount">۰</span>
+        </div>
+        <div class="transaction-list" id="transactionList">
+            <!-- dynamic -->
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-row">
+            <button class="btn btn-success" onclick="exportCSV()"><i class="fas fa-download"></i> خروجی</button>
+            <button class="btn btn-outline" onclick="importCSV()"><i class="fas fa-upload"></i> بازیابی</button>
+            <button class="btn btn-danger" onclick="clearAll()"><i class="fas fa-trash"></i> حذف همه</button>
+        </div>
+
+        <input type="file" id="fileInput" accept=".csv,.json" style="display:none" onchange="handleImport(event)" />
+
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============ DATA LAYER ============
+        let transactions = [];
+        const STORAGE_KEY = 'myFinanceData';
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) transactions = JSON.parse(raw);
+                else transactions = [];
+            } catch (e) { transactions = []; }
+            // if empty, add sample
+            if (transactions.length === 0) {
+                transactions = [{
+                    id: Date.now() - 86400000,
+                    date: getTodayString(),
+                    category: 'خوراک',
+                    desc: 'نمونه خرید',
+                    amount: 250000,
+                    type: 'expense'
+                }, {
+                    id: Date.now() - 172800000,
+                    date: getTodayString(),
+                    category: 'درآمد',
+                    desc: 'نمونه حقوق',
+                    amount: 5000000,
+                    type: 'income'
+                }];
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+        }
+
+        function getTodayString() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // ============ HELPERS ============
+        function formatNumber(n) {
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function formatDate(d) {
+            if (!d) return '';
+            const parts = d.split('-');
+            return parts[0] + '/' + parts[1] + '/' + parts[2];
+        }
+
+        function getMonthFilter() {
+            const el = document.getElementById('monthFilter');
+            return el.value;
+        }
+
+        function getSearchQuery() {
+            return document.getElementById('searchInput').value.trim().toLowerCase();
+        }
+
+        function showToast(msg, duration = 2000) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), duration);
+        }
+
+        // ============ RENDER ============
+        function renderList() {
+            const list = document.getElementById('transactionList');
+            const countEl = document.getElementById('txCount');
+
+            const search = getSearchQuery();
+            const month = getMonthFilter();
+
+            let filtered = transactions.filter(tx => {
+                // search
+                if (search && !tx.desc.toLowerCase().includes(search)) return false;
+                // month filter
+                if (month) {
+                    const txMonth = tx.date.substring(0, 7);
+                    if (txMonth !== month) return false;
+                }
+                return true;
+            });
+
+            // sort by date desc
+            filtered.sort((a, b) => b.id - a.id);
+
+            countEl.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>هیچ تراکنشی یافت نشد</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(tx => {
+                const isIncome = tx.type === 'income';
+                const sign = isIncome ? '+' : '-';
+                const cls = isIncome ? 'income' : 'expense';
+                const amountFormatted = formatNumber(tx.amount);
+                html += `
+                    <div class="transaction-item ${cls}">
+                        <div class="tx-info">
+                            <div class="tx-desc">${escapeHtml(tx.desc)}</div>
+                            <div class="tx-meta">
+                                <span>${formatDate(tx.date)}</span>
+                                <span class="category-badge">${tx.category}</span>
+                            </div>
+                        </div>
+                        <div class="tx-amount ${cls}">
+                            <span>${sign} ${amountFormatted}</span>
+                            <button class="delete-btn" onclick="deleteTx(${tx.id})"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+            updateStats();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============ STATS ============
+        function updateStats() {
+            let totalIncome = 0,
+                totalExpense = 0;
+            transactions.forEach(tx => {
+                if (tx.type === 'income') totalIncome += tx.amount;
+                else totalExpense += tx.amount;
+            });
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('totalBalance').innerHTML = formatNumber(balance) + ' <span>تومان</span>';
+            document.getElementById('totalIncome').textContent = formatNumber(totalIncome);
+            document.getElementById('totalExpense').textContent = formatNumber(totalExpense);
+        }
+
+        // ============ CRUD ============
+        function addTransaction() {
+            const date = document.getElementById('txDate').value;
+            const category = document.getElementById('txCategory').value;
+            const desc = document.getElementById('txDesc').value.trim();
+            const amount = parseInt(document.getElementById('txAmount').value);
+            const type = document.getElementById('txType').value;
+
+            if (!date) {
+                showToast('⚠️ لطفاً تاریخ را انتخاب کنید');
+                return;
+            }
+            if (!desc) {
+                showToast('⚠️ لطفاً توضیحات را وارد کنید');
+                return;
+            }
+            if (!amount || amount <= 0) {
+                showToast('⚠️ مبلغ معتبر وارد کنید');
+                return;
+            }
+
+            const tx = {
+                id: Date.now(),
+                date,
+                category,
+                desc,
+                amount,
+                type
+            };
+
+            transactions.push(tx);
+            saveData();
+            renderList();
+            resetForm();
+            showToast('✅ تراکنش با موفقیت ثبت شد');
+        }
+
+        function deleteTx(id) {
+            if (!confirm('آیا این تراکنش حذف شود؟')) return;
+            transactions = transactions.filter(tx => tx.id !== id);
+            saveData();
+            renderList();
+            showToast('🗑️ تراکنش حذف شد');
+        }
+
+        function clearAll() {
+            if (transactions.length === 0) {
+                showToast('هیچ تراکنشی برای حذف نیست');
+                return;
+            }
+            if (!confirm('همه تراکنش‌ها حذف شوند؟ این عمل غیرقابل بازگشت است!')) return;
+            transactions = [];
+            saveData();
+            renderList();
+            showToast('🗑️ همه تراکنش‌ها حذف شدند');
+        }
+
+        function resetForm() {
+            document.getElementById('txDate').value = getTodayString();
+            document.getElementById('txDesc').value = '';
+            document.getElementById('txAmount').value = '';
+            document.getElementById('txType').value = 'expense';
+            document.getElementById('txCategory').value = 'خوراک';
+        }
+
+        // ============ EXPORT / IMPORT ============
+        function exportCSV() {
+            if (transactions.length === 0) {
+                showToast('هیچ داده‌ای برای خروجی نیست');
+                return;
+            }
+            const headers = ['id', 'date', 'category', 'desc', 'amount', 'type'];
+            const rows = transactions.map(tx =>
+                headers.map(h => `"${String(tx[h] || '').replace(/"/g, '""')}"`).join(',')
+            );
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `حسابداری_${getTodayString()}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('📥 خروجی گرفته شد');
+        }
+
+        function importCSV() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const text = e.target.result;
+                    const lines = text.split('\n').filter(l => l.trim());
+                    if (lines.length < 2) {
+                        showToast('⚠️ فایل معتبر نیست');
+                        return;
+                    }
+                    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+                    const newTxs = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const vals = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+                        const obj = {};
+                        headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
+                        if (obj.id && obj.amount && obj.type) {
+                            obj.amount = parseInt(obj.amount) || 0;
+                            obj.id = parseInt(obj.id) || Date.now() + i;
+                            newTxs.push(obj);
+                        }
+                    }
+                    if (newTxs.length === 0) {
+                        showToast('⚠️ داده‌ای برای وارد کردن یافت نشد');
+                        return;
+                    }
+                    transactions = transactions.concat(newTxs);
+                    saveData();
+                    renderList();
+                    showToast(`✅ ${newTxs.length} تراکنش وارد شد`);
+                } catch (err) {
+                    showToast('❌ خطا در خواندن فایل');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+            event.target.value = '';
+        }
+
+        // ============ INIT ============
+        function init() {
+            loadData();
+            // set today date
+            document.getElementById('txDate').value = getTodayString();
+            // set current month filter
+            const now = new Date();
+            const monthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('monthFilter').value = monthStr;
+            renderList();
+        }
+
+        init();
+    </script>
+
+</body>
+</html>
