@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ═══════════════════════════════════════════════
      حساب‌وکتاب · مهدی عسکری
-     نسخه: v1.0.0 (چک‌پوینت پایه)
+     نسخه: v1.1.0 — پین عددی اختیاری
      ═══════════════════════════════════════════════ -->
 <html lang="fa" dir="rtl">
 <head>
@@ -532,33 +532,31 @@ html.theming,html.theming *,html.theming *::before,html.theming *::after{transit
   <div class="login-box">
     <div class="login-logo"><svg width="36" height="36" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></div>
     <h1>حساب‌و<em>کتاب</em></h1>
-    <p>برای شروع، حساب کاربری خودت رو بساز</p>
+    <p>برای شروع، می‌تونی یه پین تعیین کنی (اختیاری)</p>
     <form id="setupForm" autocomplete="off">
-      <label>نام کاربری<input id="suUser" placeholder="حداقل ۳ حرف" autocomplete="username"></label>
-      <label>رمز عبور<input id="suPass" type="password" placeholder="حداقل ۴ کاراکتر" autocomplete="new-password"></label>
-      <label>سوال امنیتی<input id="suQ" placeholder="مثلاً: نام اولین مدرسه‌تان؟" maxlength="60"></label>
-      <label>پاسخ سوال امنیتی<input id="suA" placeholder="پاسخ را وارد کنید" maxlength="40"></label>
+      <label>پین (۴ رقم به بالا) — اختیاری<input id="suPin" type="password" inputmode="numeric" placeholder="مثلاً ۱۲۳۴" autocomplete="off"></label>
+      <label>تکرار پین<input id="suPin2" type="password" inputmode="numeric" placeholder="دوباره پین" autocomplete="off"></label>
+      <label>سوال امنیتی (برای بازیابی پین)<input id="suQ" placeholder="مثلاً: نام اولین مدرسه‌تان؟" maxlength="60"></label>
+      <label>پاسخ سوال امنیتی<input id="suA" placeholder="پاسخ" maxlength="40"></label>
       <div class="login-err" id="suErr"></div>
-      <button class="btn-primary" type="submit">ساخت حساب و شروع ✨</button>
+      <button class="btn-primary" type="submit">شروع ✨</button>
     </form>
   </div>
 </div>
 
-<div id="loginScreen">
+<div id="loginScreen" style="display:none">
   <div class="login-box">
     <div class="login-logo"><svg width="36" height="36" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></div>
     <h1>حساب‌و<em>کتاب</em></h1>
-    <p>برای دسترسی به اطلاعات مالی، وارد شوید</p>
+    <p>پین خود را وارد کنید</p>
     <form id="loginForm" autocomplete="off">
-      <label>نام کاربری<input id="loginUser" placeholder="نام کاربری" autofocus autocomplete="username"></label>
-      <label>رمز عبور<input id="loginPass" type="password" placeholder="••••••" autocomplete="current-password"></label>
+      <label>پین<input id="loginPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label>
       <div class="login-err" id="loginErr"></div>
-      <div class="login-footer"><button type="button" class="login-reset" id="loginResetBtn">🔑 فراموشی رمز عبور؟</button></div>
-      <button class="btn-primary" type="submit">ورود به برنامه</button>
+      <div class="login-footer"><button type="button" class="login-reset" id="loginResetBtn">🔑 پین را فراموش کرده‌ام</button></div>
+      <button class="btn-primary" type="submit">ورود 🔓</button>
     </form>
   </div>
 </div>
-<script>try{if(!localStorage.getItem('hk-auth-v1')){document.getElementById('loginScreen').style.display='none';document.getElementById('setupScreen').style.display='flex';}}catch(e){}</script>
 
 <div id="appWrap">
 <header class="topbar"><div class="wrap topbar-in"><div class="brand"><span class="logo"><svg width="30" height="30" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></span><div class="brand-t"><h1>حساب‌و<em>کتاب</em></h1><span id="brandName" title="برای ویرایش نام کلیک کن">مهدی عسکری</span><svg class="signature" viewBox="0 0 118 13" preserveAspectRatio="none"><path d="M2 9 C 12 2, 20 12, 30 7 S 46 1, 54 8 C 62 13, 70 3, 80 7 S 100 11, 116 4"/></svg></div></div><div class="top-chips"><div class="chip chip-save" id="chipSave"><span class="save-dot"></span><span class="save-txt">ذخیرهٔ خودکار</span></div><div class="chip chip-clock" id="liveClock">🕐 …</div><div class="chip chip-date" id="chipDate"></div><button class="chip chip-bell" id="bellChip" data-goto="loans" title="یادآور اقساط" style="display:none"><span class="bell-ic">🔔</span><span class="bell-badge" id="bellBadge" style="display:none">۰</span></button><button class="theme-toggle" id="themeToggle" title="تغییر قالب" aria-label="تغییر قالب"><span class="tt-ic" id="ttIcon">🌙</span></button><div class="unit-toggle" id="unitToggle" title="تغییر واحد نمایش"><span class="ut-glider" id="utGlider"></span><span class="ut-opt" data-u="T">تومان</span><span class="ut-opt" data-u="R">ریال</span></div></div></div></header>
@@ -573,11 +571,11 @@ html.theming,html.theming *,html.theming *::before,html.theming *::after{transit
   <section class="pane" id="pane-reports"><div class="card rep-head"><div class="pills" id="repPills"><button data-p="week">هفته</button><button data-p="month" class="active">ماه</button><button data-p="lastmonth">ماه قبل</button><button data-p="3m">۳ ماه</button><button data-p="year">امسال</button><button data-p="all">کل</button></div><div class="rep-tools"><span id="repLabel"></span><select id="repAcc"></select><select id="repPerson"></select><button class="btn-ghost" id="csvBtn">⬇ CSV</button></div></div><div class="rep-grid"><div class="card"><h2>ترکیب هزینه‌ها</h2><div class="donut-wrap"><div id="repDonut"></div><ul class="legend" id="repLegend"></ul></div></div><div class="card"><h2>خلاصه</h2><div class="sum-strip" id="repSum"></div><h2 class="mt">بینش</h2><ul class="insights" id="repInsights"></ul></div></div><div class="card"><h2>۶ ماه اخیر</h2><div class="bchart" id="repBars"></div><div class="bchart-leg"><span><i class="sw in"></i>درآمد</span><span><i class="sw ex"></i>هزینه</span></div></div><div class="card" id="repPersonsCard"><h2>تفکیک بر اساس شخص</h2><div id="repPersons" style="margin-top:12px"></div></div></section>
   <section class="pane" id="pane-cal"><div class="cal-layout"><div class="card"><div class="cal-head"><button class="nav-btn" id="calPrev">›</button><div class="cal-title" id="calTitle"></div><button class="nav-btn" id="calNext">‹</button><button class="btn-ghost sm" id="calToday">امروز</button></div><div class="cal-sum" id="calSum"></div><div class="cal-wd" id="calWd"></div><div class="cal-grid" id="calGrid"></div></div><div class="card day-panel"><h2 id="dayTitle">یک روز انتخاب کنید</h2><div id="dayList" class="txlist"></div><div class="day-total" id="dayTotal"></div></div></div></section>
 </main>
-<footer><div class="wrap"><div class="backup-bar"><div class="ab-shield">🛡️</div><div class="ab-info"><b>پشتیبان‌گیری خودکار</b><span class="ab-status" id="abStatus">…</span></div><div class="ab-ctrl"><label class="switch"><input type="checkbox" id="abToggle" checked><i></i></label><select id="abInterval"><option value="1">روزانه</option><option value="3">۳ روز</option><option value="7" selected>هفتگی</option><option value="30">ماهانه</option></select><button class="btn-ghost sm" id="backupBtn">💾 پشتیبان دستی</button><label class="restore-btn">⬆ بازیابی<input type="file" id="restoreFile" accept=".json" hidden></label></div></div><div class="foot-row"><span id="footInfo">حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند</span><div class="foot-actions"><button id="changeCredBtn">⚙️ تغییر رمز</button><button id="logoutBtn">🚪 خروج</button></div></div><div class="credit" id="creditLine"></div></div></footer>
+<footer><div class="wrap"><div class="backup-bar"><div class="ab-shield">🛡️</div><div class="ab-info"><b>پشتیبان‌گیری خودکار</b><span class="ab-status" id="abStatus">…</span></div><div class="ab-ctrl"><label class="switch"><input type="checkbox" id="abToggle" checked><i></i></label><select id="abInterval"><option value="1">روزانه</option><option value="3">۳ روز</option><option value="7" selected>هفتگی</option><option value="30">ماهانه</option></select><button class="btn-ghost sm" id="backupBtn">💾 پشتیبان دستی</button><label class="restore-btn">⬆ بازیابی<input type="file" id="restoreFile" accept=".json" hidden></label></div></div><div class="foot-row"><span id="footInfo">حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند</span><div class="foot-actions"><button id="changeCredBtn">⚙️ پین و امنیت</button><button id="logoutBtn">🚪 خروج</button></div></div><div class="credit" id="creditLine"></div></div></footer>
 </div>
 
-<div class="modal" id="securityModal"><div class="modal-box"><button class="modal-x" id="secClose">✕</button><h2>🔐 بازیابی رمز عبور</h2><p class="sec-hint" id="secHint">برای بازیابی رمز، پاسخ سوال امنیتی خود را وارد کنید.</p><div id="secQuestionBox"><div class="sec-q" id="secQuestionText"></div><form id="secForm"><label>پاسخ سوال امنیتی<input id="secAnswer" autocomplete="off" placeholder="پاسخ خود را بنویسید"></label><div class="login-err" id="secErr"></div><button class="btn-primary" type="submit">تأیید پاسخ</button></form></div><div id="secResetBox" style="display:none"><p class="sec-hint">پاسخ درست است! حالا یک رمز عبور جدید تعیین کنید.</p><form id="secResetForm"><label>رمز عبور جدید<input id="secNewPass" type="password" placeholder="حداقل ۴ کاراکتر" autocomplete="new-password"></label><div class="login-err" id="secResetErr"></div><button class="btn-primary" type="submit">ذخیره رمز جدید</button></form></div></div></div>
-<div class="modal" id="credModal"><div class="modal-box"><button class="modal-x" id="credClose">✕</button><h2>⚙️ تغییر رمز و سوال امنیتی</h2><form id="credForm"><label>نام کاربری فعلی<input id="crOldUser" autocomplete="username"></label><label>رمز فعلی<input id="crOldPass" type="password" autocomplete="current-password"></label><label>نام کاربری جدید <span style="color:var(--dim);font-size:.65rem">(اختیاری)</span><input id="crNewUser" placeholder="حداقل ۳ حرف" autocomplete="username"></label><label>رمز جدید <span style="color:var(--dim);font-size:.65rem">(اختیاری)</span><input id="crNewPass" type="password" placeholder="حداقل ۴ کاراکتر" autocomplete="new-password"></label><div class="cred-sec"><div class="cred-sec-title">تغییر سوال امنیتی (اختیاری)</div><label>سوال جدید<input id="crNewQ" placeholder="خالی بگذارید اگر تغییر نمی‌دهید" maxlength="60"></label><label>پاسخ جدید<input id="crNewA" placeholder="خالی بگذارید اگر تغییر نمی‌دهید" maxlength="40"></label></div><div class="login-err" id="credErr"></div><button class="btn-primary" type="submit">ذخیره تغییرات</button></form></div></div>
+<div class="modal" id="securityModal"><div class="modal-box"><button class="modal-x" id="secClose">✕</button><h2>🔐 بازیابی پین</h2><p class="sec-hint" id="secHint">برای بازیابی پین، پاسخ سوال امنیتی خود را وارد کنید.</p><div id="secQuestionBox"><div class="sec-q" id="secQuestionText"></div><form id="secForm"><label>پاسخ سوال امنیتی<input id="secAnswer" autocomplete="off" placeholder="پاسخ خود را بنویسید"></label><div class="login-err" id="secErr"></div><button class="btn-primary" type="submit">تأیید پاسخ</button></form></div><div id="secResetBox" style="display:none"><p class="sec-hint">پاسخ درست است! حالا یک پین جدید تعیین کنید.</p><form id="secResetForm"><label>پین جدید (۴ رقم به بالا)<input id="secNewPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label><label>تکرار پین جدید<input id="secNewPin2" type="password" inputmode="numeric" placeholder="دوباره" autocomplete="off"></label><div class="login-err" id="secResetErr"></div><button class="btn-primary" type="submit">ذخیره پین جدید</button></form></div></div></div>
+<div class="modal" id="credModal"><div class="modal-box"><button class="modal-x" id="credClose">✕</button><h2>⚙️ تنظیمات پین و امنیت</h2><form id="credForm"><label>پین فعلی (اگر پین دارید)<input id="crOldPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label><label>پین جدید (خالی = بدون تغییر)<input id="crNewPin" type="password" inputmode="numeric" placeholder="حداقل ۴ رقم" autocomplete="off"></label><label>تکرار پین جدید<input id="crNewPin2" type="password" inputmode="numeric" placeholder="دوباره" autocomplete="off"></label><div class="cred-sec"><div class="cred-sec-title">تغییر سوال امنیتی (اختیاری)</div><label>سوال جدید<input id="crNewQ" placeholder="خالی = بدون تغییر" maxlength="60"></label><label>پاسخ جدید<input id="crNewA" placeholder="خالی = بدون تغییر" maxlength="40"></label></div><div class="login-err" id="credErr"></div><button class="btn-primary" type="submit">ذخیره تغییرات</button></form><button type="button" id="removePinBtn" style="display:none;width:100%;margin-top:10px;background:none;border:1px solid rgba(244,117,106,.5);color:var(--coral);border-radius:14px;padding:12px;font-family:inherit;font-weight:700;cursor:pointer">🗑️ حذف پین (غیرفعال کردن قفل)</button></div></div>
 <div class="modal" id="accModal"><div class="modal-box"><button class="modal-x" id="accClose">✕</button><h2 id="accModalTitle">حساب</h2><form id="accForm"><label>نام<input id="aName" maxlength="30"></label><div class="flabel">نوع<div class="seg4" id="aType"><button type="button" data-t="cash"><span>💵</span>نقدی</button><button type="button" data-t="card" class="active"><span>💳</span>کارت</button><button type="button" data-t="ewallet"><span>👛</span>کیف</button><button type="button" data-t="save"><span>🏦</span>پس‌انداز</button></div></div><label id="aCardNoWrap">شماره کارت<input id="aCardNo" dir="ltr" inputmode="numeric"></label><label>موجودی اولیه (<span class="cur-label">تومان</span>)<input id="aInit" inputmode="numeric" placeholder="۰"></label><div class="flabel">رنگ<div class="swatches" id="aColors"></div></div><div class="flabel">آیکون<div class="swatches" id="aIcons"></div></div><button class="btn-primary" type="submit">ذخیره</button></form></div></div>
 <div class="modal" id="catModal"><div class="modal-box"><button class="modal-x" id="catClose">✕</button><h2 id="catModalTitle">دسته</h2><form id="catForm"><label>نام<input id="cName" maxlength="30"></label><div class="flabel">نوع<div class="seg" id="cType" style="margin-bottom:0"><button type="button" data-t="ex" class="active">− هزینه</button><button type="button" data-t="in">+ درآمد</button></div></div><div class="flabel">رنگ<div class="swatches" id="cColors"></div></div><div class="flabel">آیکون<div class="swatches" id="cIcons"></div></div><button class="btn-primary" type="submit">ذخیره</button></form></div></div>
 <div class="modal" id="loanModal"><div class="modal-box"><button class="modal-x" id="loanClose">✕</button><h2 id="loanModalTitle">وام / قسط جدید</h2><form id="loanForm"><label>نام وام<input id="lName" placeholder="مثلاً: وام مسکن بانک ملت" maxlength="40"></label><label>بابت / توضیح<input id="lPurpose" placeholder="مثلاً: خرید خانه" maxlength="50"></label><div class="two-col"><label>مبلغ کل وام (<span class="cur-label">تومان</span>)<input id="lTotal" inputmode="numeric" placeholder="۰"></label><label>مبلغ هر قسط (<span class="cur-label">تومان</span>)<input id="lInst" inputmode="numeric" placeholder="۰"></label></div><div class="two-col"><label>تعداد کل اقساط<input id="lCount" inputmode="numeric" placeholder="مثلاً ۶۰"></label><label>اقساط پرداخت‌شده<input id="lPaid" inputmode="numeric" placeholder="۰"></label></div><div class="two-col"><label>روز سررسید ماهانه (۱-۳۱)<input id="lDue" inputmode="numeric" placeholder="مثلاً ۵"></label><label>حساب پرداخت<div class="inline-sel"><select id="lAcc"></select></div></label></div><label>شخص پرداخت‌کننده<div class="inline-sel"><select id="lPerson"></select></div></label><label>تاریخ اولین قسط: <b id="lStartLabel" style="color:var(--turq);font-family:'Lalezar';font-weight:400;font-size:.95rem">—</b> <span style="color:var(--dim);font-size:.62rem">(از تقویم زیر انتخاب کنید)</span></label><div class="loan-cal" id="loanCal"></div><div class="flabel">رنگ کارت<div class="swatches" id="lColors"></div></div><div class="flabel">آیکون<div class="swatches" id="lIcons"></div></div><button class="btn-primary" type="submit">ذخیره وام</button></form></div></div>
@@ -588,7 +586,7 @@ html.theming,html.theming *,html.theming *::before,html.theming *::after{transit
 
 <script>
 'use strict';
-const APP_VERSION='v1.0.0';
+const APP_VERSION='v1.1.0';
 let appUnit='T';
 try{const _u=localStorage.getItem('hk-unit');if(_u==='R'||_u==='T')appUnit=_u;}catch(e){}
 function setUnit(u){appUnit=u;try{localStorage.setItem('hk-unit',u);}catch(e){}}
@@ -596,42 +594,133 @@ function getUnitLabel(){return appUnit==='R'?'ریال':'تومان';}
 function displayVal(v){return appUnit==='R'?Math.round((v||0)*10):(v||0);}
 function inputToBase(v){return appUnit==='R'?Math.round(v/10):v;}
 
-const AUTH_KEY='hk-auth-v1';
-function hasAuth(){try{return !!localStorage.getItem(AUTH_KEY)}catch(e){return false}}
-function getAuth(){try{const r=localStorage.getItem(AUTH_KEY);if(r){const o=JSON.parse(r);if(o.user&&o.pass)return{user:o.user,pass:o.pass};}}catch(e){}return null;}
-function setAuth(u,p){localStorage.setItem(AUTH_KEY,JSON.stringify({user:u,pass:p}));}
 const SEC_KEY='hk-security';
 function getSec(){try{const r=localStorage.getItem(SEC_KEY);if(r)return JSON.parse(r);}catch(e){}return{q:'',a:''};}
-function setSec(q,a){localStorage.setItem(SEC_KEY,JSON.stringify({q:q,a:a}));}
+function setSec(q,a){try{localStorage.setItem(SEC_KEY,JSON.stringify({q:q,a:a}));}catch(e){}}
+function hashPin(pin){let h=0x811c9dc5;const s='hk$'+pin+'$v1';for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(36);}
+function hasSetupDone(){try{return !!localStorage.getItem('hk-setup-done')}catch(e){return false}}
+function setSetupDone(){try{localStorage.setItem('hk-setup-done','1')}catch(e){}}
+function hasPin(){try{return !!localStorage.getItem('hk-pin')}catch(e){return false}}
+function setPin(pin){try{localStorage.setItem('hk-pin',hashPin(pin))}catch(e){}}
+function clearPin(){try{localStorage.removeItem('hk-pin')}catch(e){}}
+function verifyPin(pin){try{return localStorage.getItem('hk-pin')===hashPin(pin)}catch(e){return false}}
+function updateRemovePinBtn(){const b=document.getElementById('removePinBtn');if(b)b.style.display=hasPin()?'block':'none';}
 
 document.getElementById('setupForm').addEventListener('submit',function(e){
   e.preventDefault();
-  const u=document.getElementById('suUser').value.trim();
-  const p=document.getElementById('suPass').value.trim();
+  const pin=document.getElementById('suPin').value.trim();
+  const pin2=document.getElementById('suPin2').value.trim();
   const q=document.getElementById('suQ').value.trim();
   const a=document.getElementById('suA').value.trim();
   const err=document.getElementById('suErr');
-  if(u.length<3){err.textContent='نام کاربری حداقل ۳ حرف است';return;}
-  if(p.length<4){err.textContent='رمز عبور حداقل ۴ کاراکتر است';return;}
-  if(!q||!a){err.textContent='سوال و پاسخ امنیتی را وارد کنید';return;}
-  setAuth(u,p);setSec(q,a);
+  if(pin){
+    if(!/^\d{4,}$/.test(pin)){err.textContent='پین باید حداقل ۴ رقم باشد';return;}
+    if(pin!==pin2){err.textContent='تکرار پین مطابقت ندارد';return;}
+    if(!q||!a){err.textContent='برای بازیابی پین، سوال و پاسخ امنیتی لازم است';return;}
+    setPin(pin);setSec(q,a);
+  }
+  setSetupDone();
   document.getElementById('setupScreen').style.display='none';
   document.getElementById('appWrap').classList.add('unlocked');
   if(!window.__appInited){window.__appInited=true;initApp();}
   setTimeout(()=>openNameModal(),500);
 });
 
-document.getElementById('loginForm').addEventListener('submit',function(e){e.preventDefault();e.stopPropagation();const c=getAuth(),u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim(),err=document.getElementById('loginErr');if(c&&u===c.user&&p===c.pass){err.textContent='';document.getElementById('loginScreen').style.display='none';document.getElementById('appWrap').classList.add('unlocked');if(!window.__appInited){window.__appInited=true;initApp();}setTimeout(()=>{if(!getStoredName())openNameModal();},600);}else{err.textContent='❌ نام کاربری یا رمز عبور اشتباه است';document.getElementById('loginPass').value='';document.getElementById('loginPass').focus();}});
-document.getElementById('loginResetBtn').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const sec=getSec();const box=document.getElementById('secQuestionBox');const hint=document.getElementById('secHint');document.getElementById('secResetBox').style.display='none';if(!sec.a){box.style.display='none';hint.textContent='سوال امنیتی تنظیم نشده است.';}else{box.style.display='block';hint.textContent='برای بازیابی رمز، پاسخ سوال امنیتی خود را وارد کنید.';document.getElementById('secQuestionText').textContent=sec.q;document.getElementById('secAnswer').value='';document.getElementById('secErr').textContent='';}document.getElementById('securityModal').classList.add('open');if(sec.a)setTimeout(()=>document.getElementById('secAnswer').focus(),150);});
+document.getElementById('loginForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const pin=document.getElementById('loginPin').value.trim();
+  const err=document.getElementById('loginErr');
+  err.style.color='var(--coral)';
+  if(verifyPin(pin)){
+    err.textContent='';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appWrap').classList.add('unlocked');
+    if(!window.__appInited){window.__appInited=true;initApp();}
+  } else {
+    err.textContent='❌ پین اشتباه است';
+    document.getElementById('loginPin').value='';
+    document.getElementById('loginPin').focus();
+  }
+});
+document.getElementById('loginResetBtn').addEventListener('click',function(e){
+  e.preventDefault();
+  const sec=getSec();
+  const box=document.getElementById('secQuestionBox');
+  const hint=document.getElementById('secHint');
+  document.getElementById('secResetBox').style.display='none';
+  box.style.display='block';
+  if(!sec.a){
+    hint.textContent='سوال امنیتی تنظیم نشده است؛ امکان بازیابی وجود ندارد.';
+    document.getElementById('secQuestionText').textContent='';
+  } else {
+    hint.textContent='برای بازیابی پین، پاسخ سوال امنیتی خود را وارد کنید.';
+    document.getElementById('secQuestionText').textContent=sec.q;
+  }
+  document.getElementById('secAnswer').value='';
+  document.getElementById('secErr').textContent='';
+  document.getElementById('securityModal').classList.add('open');
+  if(sec.a)setTimeout(()=>document.getElementById('secAnswer').focus(),150);
+});
 document.getElementById('secClose').addEventListener('click',()=>document.getElementById('securityModal').classList.remove('open'));
 document.getElementById('securityModal').addEventListener('click',e=>{if(e.target.id==='securityModal')document.getElementById('securityModal').classList.remove('open');});
-document.getElementById('secForm').addEventListener('submit',function(e){e.preventDefault();const sec=getSec(),ans=document.getElementById('secAnswer').value.trim(),err=document.getElementById('secErr');if(!ans){err.textContent='لطفاً پاسخ را وارد کنید';return;}if(ans.toLowerCase()===sec.a.toLowerCase()){document.getElementById('secQuestionBox').style.display='none';document.getElementById('secResetBox').style.display='block';document.getElementById('secNewPass').value='';document.getElementById('secResetErr').textContent='';setTimeout(()=>document.getElementById('secNewPass').focus(),150);}else{err.textContent='❌ پاسخ سوال امنیتی اشتباه است';document.getElementById('secAnswer').value='';document.getElementById('secAnswer').focus();}});
-document.getElementById('secResetForm').addEventListener('submit',function(e){e.preventDefault();const np=document.getElementById('secNewPass').value.trim(),err=document.getElementById('secResetErr');if(np.length<4){err.textContent='رمز جدید حداقل ۴ کاراکتر است';return;}const cur=getAuth();if(cur)setAuth(cur.user,np);document.getElementById('securityModal').classList.remove('open');document.getElementById('loginPass').value='';document.getElementById('loginErr').textContent='✅ رمز جدید ذخیره شد. اکنون وارد شوید.';document.getElementById('loginErr').style.color='var(--green)';});
-document.getElementById('logoutBtn').addEventListener('click',()=>{document.getElementById('appWrap').classList.remove('unlocked');document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginErr').textContent='';document.getElementById('loginErr').style.color='var(--coral)';document.getElementById('loginUser').focus();});
-document.getElementById('changeCredBtn').addEventListener('click',()=>{document.getElementById('credModal').classList.add('open');document.getElementById('credForm').reset();document.getElementById('credErr').textContent='';document.getElementById('crOldUser').focus();});
+document.getElementById('secForm').addEventListener('submit',function(e){e.preventDefault();const sec=getSec(),ans=document.getElementById('secAnswer').value.trim(),err=document.getElementById('secErr');if(!ans){err.textContent='لطفاً پاسخ را وارد کنید';return;}if(ans.toLowerCase()===sec.a.toLowerCase()){document.getElementById('secQuestionBox').style.display='none';document.getElementById('secResetBox').style.display='block';document.getElementById('secNewPin').value='';document.getElementById('secNewPin2').value='';document.getElementById('secResetErr').textContent='';setTimeout(()=>document.getElementById('secNewPin').focus(),150);}else{err.textContent='❌ پاسخ سوال امنیتی اشتباه است';document.getElementById('secAnswer').value='';document.getElementById('secAnswer').focus();}});
+document.getElementById('secResetForm').addEventListener('submit',function(e){e.preventDefault();const np=document.getElementById('secNewPin').value.trim(),np2=document.getElementById('secNewPin2').value.trim(),err=document.getElementById('secResetErr');if(!/^\d{4,}$/.test(np)){err.textContent='پین باید حداقل ۴ رقم باشد';return;}if(np!==np2){err.textContent='تکرار پین مطابقت ندارد';return;}setPin(np);document.getElementById('securityModal').classList.remove('open');const lp=document.getElementById('loginPin');if(lp)lp.value='';const le=document.getElementById('loginErr');if(le){le.textContent='✅ پین جدید ذخیره شد. اکنون وارد شوید.';le.style.color='var(--green)';}});
+document.getElementById('logoutBtn').addEventListener('click',()=>{
+  if(hasPin()){
+    document.getElementById('appWrap').classList.remove('unlocked');
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginPin').value='';
+    const le=document.getElementById('loginErr');le.textContent='';le.style.color='var(--coral)';
+  } else {
+    showToast('پینی تنظیم نشده است','err');
+  }
+});
+document.getElementById('changeCredBtn').addEventListener('click',()=>{document.getElementById('credModal').classList.add('open');document.getElementById('credForm').reset();document.getElementById('credErr').textContent='';updateRemovePinBtn();document.getElementById('crOldPin').focus();});
 document.getElementById('credClose').addEventListener('click',()=>{document.getElementById('credModal').classList.remove('open');});
 document.getElementById('credModal').addEventListener('click',e=>{if(e.target.id==='credModal')document.getElementById('credModal').classList.remove('open');});
-document.getElementById('credForm').addEventListener('submit',function(e){e.preventDefault();const c=getAuth(),oU=document.getElementById('crOldUser').value.trim(),oP=document.getElementById('crOldPass').value.trim(),nU=document.getElementById('crNewUser').value.trim(),nP=document.getElementById('crNewPass').value.trim(),nQ=document.getElementById('crNewQ').value.trim(),nA=document.getElementById('crNewA').value.trim(),err=document.getElementById('credErr');const wantCred=nU||nP,wantSec=nQ||nA;if(!wantCred&&!wantSec){err.textContent='حداقل یک مورد را برای تغییر وارد کنید';return;}if(!c||oU!==c.user||oP!==c.pass){err.textContent='❌ نام کاربری یا رمز فعلی اشتباه است';return;}if(wantCred){if(!nU||!nP){err.textContent='برای تغییر اعتبار، هم نام کاربری و هم رمز جدید لازم است';return;}if(nU.length<3){err.textContent='نام کاربری جدید حداقل ۳ حرف';return;}if(nP.length<4){err.textContent='رمز جدید حداقل ۴ کاراکتر';return;}setAuth(nU,nP);}if(wantSec){if(!nQ||!nA){err.textContent='برای تغییر سوال امنیتی، هم سوال و هم پاسخ لازم است';return;}setSec(nQ,nA);}document.getElementById('credModal').classList.remove('open');this.reset();err.textContent='';showToast('تغییرات ذخیره شد ✅');});
+document.getElementById('credForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const oldPin=document.getElementById('crOldPin').value.trim();
+  const newPin=document.getElementById('crNewPin').value.trim();
+  const newPin2=document.getElementById('crNewPin2').value.trim();
+  const newQ=document.getElementById('crNewQ').value.trim();
+  const newA=document.getElementById('crNewA').value.trim();
+  const err=document.getElementById('credErr');
+  const hasP=hasPin();
+  if(hasP){
+    if(!oldPin){err.textContent='پین فعلی را وارد کنید';return;}
+    if(!verifyPin(oldPin)){err.textContent='❌ پین فعلی اشتباه است';return;}
+  }
+  if(newPin){
+    if(!/^\d{4,}$/.test(newPin)){err.textContent='پین جدید باید حداقل ۴ رقم باشد';return;}
+    if(newPin!==newPin2){err.textContent='تکرار پین مطابقت ندارد';return;}
+    if(!hasP){const sec=getSec();const fq=newQ||sec.q,fA=newA||sec.a;if(!fq||!fA){err.textContent='برای فعال‌سازی پین، سوال و پاسخ امنیتی لازم است';return;}}
+    setPin(newPin);
+  }
+  if(newQ||newA){
+    if(!newQ||!newA){err.textContent='برای تغییر سوال امنیتی، هم سوال و هم پاسخ لازم است';return;}
+    setSec(newQ,newA);
+  }
+  if(!newPin&&!newQ&&!newA){err.textContent='هیچ تغییری داده نشد';return;}
+  document.getElementById('credModal').classList.remove('open');
+  this.reset();
+  err.textContent='';
+  updateRemovePinBtn();
+  showToast('تغییرات ذخیره شد ✅');
+});
+document.getElementById('removePinBtn').addEventListener('click',function(){
+  const oldPin=document.getElementById('crOldPin').value.trim();
+  const err=document.getElementById('credErr');
+  if(!hasPin()){showToast('پینی تنظیم نشده است','err');return;}
+  if(!oldPin){err.textContent='برای حذف پین، پین فعلی را وارد کنید';return;}
+  if(!verifyPin(oldPin)){err.textContent='❌ پین فعلی اشتباه است';return;}
+  clearPin();
+  document.getElementById('credModal').classList.remove('open');
+  document.getElementById('credForm').reset();
+  err.textContent='';
+  updateRemovePinBtn();
+  showToast('پین حذف شد و قفل غیرفعال شد 🔓');
+});
 
 const J=(()=>{const div=(a,b)=>~~(a/b),mod=(a,b)=>a-~~(a/b)*b;const breaks=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];function jalCal(jy){let gy=jy+621,leapJ=-14,jp=breaks[0],jump=0,n,i;for(i=1;i<breaks.length;i++){const jm=breaks[i];jump=jm-jp;if(jy<jm)break;leapJ+=div(jump,33)*8+div(mod(jump,33),4);jp=jm;}n=jy-jp;leapJ+=div(n,33)*8+div(mod(n,33)+3,4);if(mod(jump,33)===4&&jump-n===4)leapJ+=1;const leapG=div(gy,4)-div((div(gy,100)+1)*3,4)-150;const march=20+leapJ-leapG;if(jump-n<6)n=n-jump+div(jump+4,33)*33;let leap=mod(mod(n+1,33)-1,4);if(leap===-1)leap=4;return{leap,gy,march};}function g2d(gy,gm,gd){let d=div((gy+div(gm-8,6)+100100)*1461,4)+div(153*mod(gm+9,12)+2,5)+gd-34840408;d=d-div(div(gy+100100+div(gm-8,6),100)*3,4)+752;return d;}function d2g(jdn){let j=4*jdn+139361631;j=j+div(div(4*jdn+183187720,146097)*3,4)*4-3908;const i=div(mod(j,1461),4)*5+308;const gd=div(mod(i,153),5)+1;const gm=mod(div(i,153),12)+1;const gy=div(j,1461)-100100+div(8-gm,6);return[gy,gm,gd];}function toJalali(gy,gm,gd){const jdn=g2d(gy,gm,gd);const gy2=d2g(jdn)[0];let jy=gy2-621;const r=jalCal(jy);const jdn1f=g2d(gy2,3,r.march);let k=jdn-jdn1f;if(k>=0){if(k<=185)return{jy,jm:1+div(k,31),jd:mod(k,31)+1};k-=186;}else{jy-=1;k+=179;if(r.leap===1)k+=1;}return{jy,jm:7+div(k,30),jd:mod(k,30)+1};}function toGregorian(jy,jm,jd){const r=jalCal(jy);const jdn=g2d(r.gy,3,r.march)+(jm-1)*31-div(jm,7)*(jm-7)+jd-1;const[gy,gm,gd]=d2g(jdn);return{gy,gm,gd};}const monthLength=(jy,jm)=>jm<=6?31:jm<=11?30:(jalCal(jy).leap===0?30:29);return{toJalali,toGregorian,monthLength};})();
 
@@ -924,6 +1013,20 @@ function initApp(){
   if(restored)setTimeout(()=>showToast('داده‌های قبلی بارگذاری شد ✅'),600);
   const _od=state.loans.filter(l=>loanOverdue(l)).length;if(_od>0)setTimeout(()=>showToast(`⚠️ ${fa(_od)} قسط عقب‌افتاده دارید!`,'err'),1400);
 }
+
+/* ===== تصمیم ورود: نصب / قفل / ورود مستقیم ===== */
+(function(){
+  if(!hasSetupDone()){
+    document.getElementById('setupScreen').style.display='flex';
+    setTimeout(()=>{const e=document.getElementById('suPin');if(e)e.focus();},150);
+  } else if(hasPin()){
+    document.getElementById('loginScreen').style.display='flex';
+    setTimeout(()=>{const e=document.getElementById('loginPin');if(e)e.focus();},150);
+  } else {
+    document.getElementById('appWrap').classList.add('unlocked');
+    if(!window.__appInited){window.__appInited=true;initApp();}
+  }
+})();
 </script>
 <script>
 if('serviceWorker' in navigator){
