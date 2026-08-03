@@ -3,28 +3,18 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>حسابدار هوشمند</title>
+    <title>حساب‌یار هوشمند</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
-    <!-- Persian Date -->
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Vazirmatn', 'Segoe UI', sans-serif;
-            background: #0f0e1a;
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0c0b16;
             color: #e4e4f0;
             min-height: 100vh;
             padding: 16px 12px 120px;
@@ -32,27 +22,11 @@
             flex-direction: column;
             align-items: center;
         }
-
-        .app-container {
-            max-width: 480px;
-            width: 100%;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1932;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #6C63FF;
-            border-radius: 10px;
-        }
+        .app { max-width: 480px; width: 100%; }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #1a1a3e, #2d2b6b);
+            background: linear-gradient(145deg, #1a1a3e, #2d2b6b);
             border-radius: 28px;
             padding: 24px 22px;
             margin-bottom: 20px;
@@ -61,29 +35,16 @@
             position: relative;
             overflow: hidden;
         }
-
         .header::before {
             content: '';
             position: absolute;
             top: -50%;
-            right: -30%;
-            width: 300px;
-            height: 300px;
+            right: -20%;
+            width: 250px;
+            height: 250px;
             background: radial-gradient(circle, rgba(108, 99, 255, 0.15), transparent 70%);
             border-radius: 50%;
         }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -40%;
-            left: -20%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.08), transparent 70%);
-            border-radius: 50%;
-        }
-
         .header-top {
             display: flex;
             justify-content: space-between;
@@ -91,96 +52,50 @@
             position: relative;
             z-index: 1;
         }
-
         .header-top h1 {
             font-size: 20px;
             font-weight: 900;
             background: linear-gradient(90deg, #a78bfa, #6C63FF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.5px;
         }
-
         .header-top .badge {
-            background: rgba(108, 99, 255, 0.25);
+            background: rgba(108, 99, 255, 0.2);
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 11px;
             color: #a78bfa;
             border: 1px solid rgba(108, 99, 255, 0.2);
         }
-
-        .balance-box {
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .balance-label {
-            font-size: 13px;
-            opacity: 0.6;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
+        .balance-box { margin-top: 18px; position: relative; z-index: 1; }
+        .balance-label { font-size: 13px; opacity: 0.5; font-weight: 300; }
         .balance-amount {
-            font-size: 36px;
+            font-size: 34px;
             font-weight: 900;
-            margin-top: 2px;
             background: linear-gradient(90deg, #fff, #c4b5fd);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .balance-amount small { font-size: 16px; font-weight: 400; opacity: 0.5; -webkit-text-fill-color: rgba(255,255,255,0.4); }
 
-        .balance-amount small {
-            font-size: 16px;
-            font-weight: 400;
-            opacity: 0.5;
-            -webkit-text-fill-color: rgba(255,255,255,0.5);
-        }
-
-        /* Stats Grid */
+        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .stat-card {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             backdrop-filter: blur(12px);
             border-radius: 16px;
-            padding: 14px 10px;
+            padding: 14px 8px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-
-        .stat-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            transform: translateY(-2px);
-        }
-
-        .stat-card .icon {
-            font-size: 18px;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .stat-card .label {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card .value {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
+        .stat-card .icon { font-size: 18px; display: block; margin-bottom: 4px; }
+        .stat-card .label { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 18px; font-weight: 700; margin-top: 2px; }
         .stat-card .value.green { color: #34d399; }
         .stat-card .value.red { color: #f87171; }
         .stat-card .value.purple { color: #a78bfa; }
@@ -190,18 +105,17 @@
             display: flex;
             gap: 6px;
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             border-radius: 16px;
             padding: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
         }
-
         .tab-btn {
             flex: 1;
             padding: 10px;
             border: none;
             background: transparent;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255,255,255,0.4);
             border-radius: 12px;
             font-family: 'Vazirmatn', sans-serif;
             font-size: 13px;
@@ -209,104 +123,49 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .tab-btn.active {
             background: #6C63FF;
             color: #fff;
             box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
         }
-
-        .tab-btn:hover:not(.active) {
-            color: #fff;
-            background: rgba(255,255,255,0.05);
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeUp 0.4s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .tab-content { display: none; animation: fade 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Form */
         .form-card {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             backdrop-filter: blur(12px);
             border-radius: 20px;
             padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
             margin-bottom: 20px;
         }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
+        .form-group { margin-bottom: 14px; }
         .form-group label {
             display: block;
             font-size: 12px;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255,255,255,0.4);
             margin-bottom: 5px;
-            letter-spacing: 0.5px;
         }
-
-        .form-group input,
-        .form-group select {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
             font-size: 14px;
             font-family: 'Vazirmatn', sans-serif;
             color: #e4e4f0;
-            transition: all 0.3s;
             outline: none;
+            transition: 0.3s;
         }
-
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: #6C63FF;
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+            background: rgba(255,255,255,0.08);
         }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
-        }
-
-        .form-group input[type="number"] {
-            -moz-appearance: textfield;
-        }
-        .form-group input[type="number"]::-webkit-outer-spin-button,
-        .form-group input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 10px;
-            margin-top: 4px;
-        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .btn {
             padding: 13px;
@@ -322,254 +181,116 @@
             justify-content: center;
             gap: 8px;
         }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-
+        .btn:active { transform: scale(0.96); }
         .btn-primary {
             background: linear-gradient(135deg, #6C63FF, #5A52D5);
             color: #fff;
             box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(108, 99, 255, 0.45);
-        }
-
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255,255,255,0.06);
             color: #a0a0c0;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.08);
         }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
         .btn-danger {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(239,68,68,0.15);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239,68,68,0.15);
         }
-
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.25);
-        }
-
         .btn-success {
-            background: rgba(52, 211, 153, 0.15);
+            background: rgba(52,211,153,0.15);
             color: #34d399;
-            border: 1px solid rgba(52, 211, 153, 0.15);
+            border: 1px solid rgba(52,211,153,0.15);
         }
 
-        .btn-success:hover {
-            background: rgba(52, 211, 153, 0.25);
-        }
-
-        /* Filter */
+        /* Filters */
         .filter-bar {
             display: flex;
             gap: 8px;
             margin-bottom: 16px;
             flex-wrap: wrap;
         }
-
-        .filter-bar input,
-        .filter-bar select {
+        .filter-bar input, .filter-bar select {
             flex: 1;
             min-width: 80px;
             padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             font-size: 13px;
             font-family: 'Vazirmatn', sans-serif;
             color: #e4e4f0;
             outline: none;
-            transition: 0.3s;
         }
-
-        .filter-bar input:focus,
-        .filter-bar select:focus {
+        .filter-bar input:focus, .filter-bar select:focus {
             border-color: #6C63FF;
         }
 
-        .filter-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
-        }
-
-        /* Transaction List */
-        .list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .list-header h3 {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .list-header .count {
-            font-size: 12px;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 2px 14px;
-            border-radius: 20px;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
+        /* List */
         .transaction-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
             max-height: 400px;
             overflow-y: auto;
-            padding-right: 4px;
         }
-
         .transaction-item {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             border-radius: 14px;
             padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-right: 3px solid #6C63FF;
-            transition: all 0.3s;
-            animation: fadeIn 0.3s ease;
+            transition: 0.3s;
+            animation: slideIn 0.3s ease;
         }
-
-        .transaction-item:hover {
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .transaction-item.expense {
-            border-right-color: #f87171;
-        }
-
-        .transaction-item.income {
-            border-right-color: #34d399;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-8px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .tx-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .tx-info .tx-desc {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e4e4f0;
-        }
-
-        .tx-info .tx-meta {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.3);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .tx-info .tx-meta .category-badge {
-            background: rgba(255, 255, 255, 0.06);
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .transaction-item.expense { border-right-color: #f87171; }
+        .transaction-item.income { border-right-color: #34d399; }
+        .tx-info { flex: 1; }
+        .tx-info .tx-desc { font-size: 14px; font-weight: 600; }
+        .tx-info .tx-meta { font-size: 11px; color: rgba(255,255,255,0.3); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .tx-info .tx-meta .cat-badge {
+            background: rgba(255,255,255,0.06);
             padding: 1px 10px;
             border-radius: 20px;
-            color: rgba(255, 255, 255, 0.5);
             font-size: 10px;
         }
-
-        .tx-amount {
-            font-size: 16px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
+        .tx-amount { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .tx-amount.income { color: #34d399; }
+        .tx-amount.expense { color: #f87171; }
         .tx-amount .delete-btn {
             background: none;
             border: none;
-            color: rgba(255, 255, 255, 0.15);
+            color: rgba(255,255,255,0.15);
             font-size: 14px;
             cursor: pointer;
             padding: 4px 6px;
             border-radius: 8px;
             transition: 0.3s;
         }
+        .tx-amount .delete-btn:hover { color: #f87171; background: rgba(239,68,68,0.1); }
+        .empty-state { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.2); }
+        .empty-state i { font-size: 48px; opacity: 0.3; margin-bottom: 12px; }
 
-        .tx-amount .delete-btn:hover {
-            color: #f87171;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .tx-amount.income { color: #34d399; }
-        .tx-amount.expense { color: #f87171; }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.3;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        /* Chart containers */
+        /* Charts */
         .chart-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 16px;
         }
-
         .chart-box {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             border-radius: 16px;
             padding: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
         }
-
-        .chart-box h4 {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            text-align: center;
-            margin-bottom: 8px;
-            font-weight: 400;
-        }
-
-        .chart-box canvas {
-            width: 100% !important;
-            height: 140px !important;
-        }
-
-        .chart-full {
-            grid-column: 1 / -1;
-        }
-
-        .chart-full canvas {
-            height: 180px !important;
-        }
+        .chart-box h4 { font-size: 12px; color: rgba(255,255,255,0.3); text-align: center; margin-bottom: 8px; font-weight: 400; }
+        .chart-box canvas { width: 100% !important; height: 140px !important; }
+        .chart-full { grid-column: 1 / -1; }
+        .chart-full canvas { height: 180px !important; }
 
         /* Actions */
         .actions-row {
@@ -578,13 +299,7 @@
             margin-top: 16px;
             flex-wrap: wrap;
         }
-
-        .actions-row .btn {
-            flex: 1;
-            min-width: 70px;
-            font-size: 12px;
-            padding: 10px;
-        }
+        .actions-row .btn { flex: 1; min-width: 70px; font-size: 12px; padding: 10px; }
 
         /* Toast */
         .toast {
@@ -592,737 +307,515 @@
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(26, 25, 50, 0.95);
+            background: rgba(26,25,50,0.95);
             backdrop-filter: blur(16px);
             color: #fff;
             padding: 14px 28px;
             border-radius: 16px;
             font-size: 14px;
             font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
             opacity: 0;
             transition: all 0.4s;
             pointer-events: none;
             z-index: 999;
             max-width: 90%;
         }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        #fileInput { display: none; }
 
-        /* Responsive */
         @media (max-width: 420px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .btn-group {
-                grid-template-columns: 1fr;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 6px;
-            }
-            .stat-card .value {
-                font-size: 15px;
-            }
-            .balance-amount {
-                font-size: 28px;
-            }
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* File input hidden */
-        #fileInput {
-            display: none;
+            .form-row { grid-template-columns: 1fr; }
+            .stats-grid { gap: 6px; }
+            .stat-card .value { font-size: 15px; }
+            .balance-amount { font-size: 28px; }
+            .chart-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+<div class="app">
 
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-top">
-                <h1><i class="fas fa-crown" style="margin-left: 8px;"></i>حسابدار هوشمند</h1>
-                <span class="badge"><i class="fas fa-circle" style="color:#34d399;font-size:8px;margin-left:6px;"></i>آفلاین</span>
-            </div>
-            <div class="balance-box">
-                <div class="balance-label">موجودی کل</div>
-                <div class="balance-amount" id="totalBalance">0 <small>تومان</small></div>
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-top">
+            <h1><i class="fas fa-crown" style="margin-left:8px;"></i>حساب‌یار</h1>
+            <span class="badge"><i class="fas fa-circle" style="color:#34d399;font-size:8px;margin-left:6px;"></i>آفلاین</span>
         </div>
-
-        <!-- STATS -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="icon">📥</span>
-                <div class="label">واریز</div>
-                <div class="value green" id="totalIncome">0</div>
-            </div>
-            <div class="stat-card">
-                <span class="icon">📤</span>
-                <div class="label">برداشت</div>
-                <div class="value red" id="totalExpense">0</div>
-            </div>
-            <div class="stat-card">
-                <span class="icon">📊</span>
-                <div class="label">تراکنش</div>
-                <div class="value purple" id="totalCount">0</div>
-            </div>
+        <div class="balance-box">
+            <div class="balance-label">مجموع دارایی</div>
+            <div class="balance-amount" id="totalBalance">0 <small>تومان</small></div>
         </div>
-
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="tab-add" onclick="switchTab('tab-add')">
-                <i class="fas fa-plus"></i> ثبت
-            </button>
-            <button class="tab-btn" data-tab="tab-list" onclick="switchTab('tab-list')">
-                <i class="fas fa-list"></i> لیست
-            </button>
-            <button class="tab-btn" data-tab="tab-report" onclick="switchTab('tab-report')">
-                <i class="fas fa-chart-pie"></i> گزارش
-            </button>
-        </div>
-
-        <!-- TAB: ADD -->
-        <div class="tab-content active" id="tab-add">
-            <div class="form-card">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="far fa-calendar-alt" style="margin-left:6px;"></i>تاریخ شمسی</label>
-                        <input type="text" id="txDate" placeholder="۱۴۰۴/۰۵/۱۲" />
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-tag" style="margin-left:6px;"></i>دسته‌بندی</label>
-                        <select id="txCategory">
-                            <option value="خوراک">🍔 خوراک</option>
-                            <option value="حمل و نقل">🚗 حمل و نقل</option>
-                            <option value="قبض‌ها">💡 قبض‌ها</option>
-                            <option value="تفریح">🎮 تفریح</option>
-                            <option value="خرید">🛍️ خرید</option>
-                            <option value="درآمد">💰 درآمد</option>
-                            <option value="سایر">📌 سایر</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group full">
-                    <label><i class="fas fa-pen" style="margin-left:6px;"></i>توضیحات</label>
-                    <input type="text" id="txDesc" placeholder="مثلاً: خرید ماهانه" />
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-money-bill-wave" style="margin-left:6px;"></i>مبلغ (تومان)</label>
-                        <input type="number" id="txAmount" placeholder="۰" />
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-arrow-right" style="margin-left:6px;"></i>نوع</label>
-                        <select id="txType">
-                            <option value="expense">برداشت</option>
-                            <option value="income">واریز</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="addTransaction()">
-                        <i class="fas fa-save"></i> ثبت تراکنش
-                    </button>
-                    <button class="btn btn-secondary" onclick="resetForm()">
-                        <i class="fas fa-undo"></i> پاک
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: LIST -->
-        <div class="tab-content" id="tab-list">
-            <div class="filter-bar">
-                <input type="text" id="searchInput" placeholder="🔍 جستجو..." oninput="renderList()" />
-                <select id="monthFilter" onchange="renderList()">
-                    <option value="all">همه ماه‌ها</option>
-                </select>
-                <select id="categoryFilter" onchange="renderList()">
-                    <option value="all">همه دسته‌ها</option>
-                    <option value="خوراک">🍔 خوراک</option>
-                    <option value="حمل و نقل">🚗 حمل و نقل</option>
-                    <option value="قبض‌ها">💡 قبض‌ها</option>
-                    <option value="تفریح">🎮 تفریح</option>
-                    <option value="خرید">🛍️ خرید</option>
-                    <option value="درآمد">💰 درآمد</option>
-                    <option value="سایر">📌 سایر</option>
-                </select>
-            </div>
-
-            <div class="list-header">
-                <h3>📋 تراکنش‌ها</h3>
-                <span class="count" id="txCount">۰</span>
-            </div>
-            <div class="transaction-list" id="transactionList"></div>
-
-            <div class="actions-row">
-                <button class="btn btn-success" onclick="exportCSV()"><i class="fas fa-download"></i> خروجی</button>
-                <button class="btn btn-secondary" onclick="importCSV()"><i class="fas fa-upload"></i> بازیابی</button>
-                <button class="btn btn-danger" onclick="clearAll()"><i class="fas fa-trash"></i> حذف همه</button>
-            </div>
-        </div>
-
-        <!-- TAB: REPORT -->
-        <div class="tab-content" id="tab-report">
-            <div class="chart-grid">
-                <div class="chart-box">
-                    <h4>📊 دسته‌بندی هزینه</h4>
-                    <canvas id="categoryChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h4>📈 روند ماهانه</h4>
-                    <canvas id="trendChart"></canvas>
-                </div>
-                <div class="chart-box chart-full">
-                    <h4>💰 درآمد vs هزینه</h4>
-                    <canvas id="incomeExpenseChart"></canvas>
-                </div>
-            </div>
-            <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:16px;font-size:12px;color:rgba(255,255,255,0.3);">
-                <i class="fas fa-sync-alt" style="margin-left:6px;"></i> گزارش‌ها بر اساس تمام تراکنش‌ها محاسبه می‌شوند
-            </div>
-        </div>
-
-        <input type="file" id="fileInput" accept=".csv,.json" onchange="handleImport(event)" />
-
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><span class="icon">📥</span><div class="label">درآمد</div><div class="value green" id="totalIncome">0</div></div>
+        <div class="stat-card"><span class="icon">📤</span><div class="label">هزینه</div><div class="value red" id="totalExpense">0</div></div>
+        <div class="stat-card"><span class="icon">📊</span><div class="label">تراکنش</div><div class="value purple" id="totalCount">0</div></div>
+    </div>
 
-    <script>
-        // ============================================================
-        // DATA LAYER
-        // ============================================================
-        let transactions = [];
-        const STORAGE_KEY = 'smartFinanceData';
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-add" onclick="switchTab('tab-add')"><i class="fas fa-plus"></i> ثبت</button>
+        <button class="tab-btn" data-tab="tab-list" onclick="switchTab('tab-list')"><i class="fas fa-list"></i> لیست</button>
+        <button class="tab-btn" data-tab="tab-report" onclick="switchTab('tab-report')"><i class="fas fa-chart-pie"></i> گزارش</button>
+    </div>
 
-        // Chart instances
-        let categoryChartInstance = null;
-        let trendChartInstance = null;
-        let incomeExpenseChartInstance = null;
+    <!-- Tab: Add -->
+    <div class="tab-content active" id="tab-add">
+        <div class="form-card">
+            <div class="form-group">
+                <label><i class="fas fa-pen" style="margin-left:6px;"></i>توضیحات</label>
+                <input type="text" id="txDesc" placeholder="مثلاً: خرید ماهانه" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill-wave" style="margin-left:6px;"></i>مبلغ</label>
+                    <input type="number" id="txAmount" placeholder="۰" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag" style="margin-left:6px;"></i>دسته</label>
+                    <select id="txCategory">
+                        <option value="خوراک">🍔 خوراک</option>
+                        <option value="حمل و نقل">🚗 حمل و نقل</option>
+                        <option value="قبض‌ها">💡 قبض‌ها</option>
+                        <option value="تفریح">🎮 تفریح</option>
+                        <option value="خرید">🛍️ خرید</option>
+                        <option value="درآمد">💰 درآمد</option>
+                        <option value="سایر">📌 سایر</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt" style="margin-left:6px;"></i>تاریخ</label>
+                    <input type="text" id="txDate" placeholder="۱۴۰۴/۰۵/۱۲" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-arrow-right" style="margin-left:6px;"></i>نوع</label>
+                    <select id="txType">
+                        <option value="expense">برداشت</option>
+                        <option value="income">واریز</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;">
+                <button class="btn btn-primary" onclick="addTransaction()"><i class="fas fa-save"></i> ثبت</button>
+                <button class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-undo"></i> پاک</button>
+            </div>
+        </div>
+    </div>
 
-        function loadData() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) transactions = JSON.parse(raw);
-                else transactions = [];
-            } catch (e) { transactions = []; }
+    <!-- Tab: List -->
+    <div class="tab-content" id="tab-list">
+        <div class="filter-bar">
+            <input type="text" id="searchInput" placeholder="🔍 جستجو..." oninput="renderList()" />
+            <select id="monthFilter" onchange="renderList()"><option value="all">همه ماه‌ها</option></select>
+            <select id="categoryFilter" onchange="renderList()">
+                <option value="all">همه دسته‌ها</option>
+                <option value="خوراک">🍔 خوراک</option>
+                <option value="حمل و نقل">🚗 حمل و نقل</option>
+                <option value="قبض‌ها">💡 قبض‌ها</option>
+                <option value="تفریح">🎮 تفریح</option>
+                <option value="خرید">🛍️ خرید</option>
+                <option value="درآمد">💰 درآمد</option>
+                <option value="سایر">📌 سایر</option>
+            </select>
+        </div>
+        <div class="transaction-list" id="transactionList"></div>
+        <div class="actions-row">
+            <button class="btn btn-success" onclick="exportCSV()"><i class="fas fa-download"></i> خروجی</button>
+            <button class="btn btn-secondary" onclick="importCSV()"><i class="fas fa-upload"></i> بازیابی</button>
+            <button class="btn btn-danger" onclick="clearAll()"><i class="fas fa-trash"></i> حذف</button>
+        </div>
+    </div>
 
-            if (transactions.length === 0) {
-                const today = getTodayPersian();
-                transactions = [{
-                    id: Date.now() - 86400000,
-                    date: today,
-                    category: 'خوراک',
-                    desc: 'نمونه خرید',
-                    amount: 250000,
-                    type: 'expense'
-                }, {
-                    id: Date.now() - 172800000,
-                    date: today,
-                    category: 'درآمد',
-                    desc: 'نمونه حقوق',
-                    amount: 5000000,
-                    type: 'income'
-                }, {
-                    id: Date.now() - 259200000,
-                    date: today,
-                    category: 'قبض‌ها',
-                    desc: 'نمونه قبض برق',
-                    amount: 350000,
-                    type: 'expense'
-                }];
-                saveData();
-            }
-        }
+    <!-- Tab: Report -->
+    <div class="tab-content" id="tab-report">
+        <div class="chart-grid">
+            <div class="chart-box"><h4>📊 ترکیب هزینه‌ها</h4><canvas id="categoryChart"></canvas></div>
+            <div class="chart-box"><h4>📈 روند ۳۰ روزه</h4><canvas id="trendChart"></canvas></div>
+            <div class="chart-box chart-full"><h4>💰 درآمد vs هزینه</h4><canvas id="incomeExpenseChart"></canvas></div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:16px;font-size:12px;color:rgba(255,255,255,0.2);">
+            <i class="fas fa-sync-alt" style="margin-left:6px;"></i> بروزرسانی خودکار
+        </div>
+    </div>
 
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-        }
+    <input type="file" id="fileInput" accept=".csv,.json" onchange="handleImport(event)" />
 
-        // ============================================================
-        // PERSIAN DATE HELPERS
-        // ============================================================
-        function getTodayPersian() {
-            const p = new persianDate();
-            return p.format('YYYY/MM/DD');
-        }
+</div>
 
-        function toPersianDate(dateStr) {
-            try {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) {
-                    const p = new persianDate([parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])]);
-                    return p;
-                }
-            } catch (e) {}
-            return new persianDate();
-        }
+<div class="toast" id="toast"></div>
 
-        function formatPersian(dateStr) {
-            try {
-                const p = toPersianDate(dateStr);
-                return p.format('YYYY/MM/DD');
-            } catch (e) { return dateStr; }
-        }
+<script>
+// ============================================================
+// DATA LAYER
+// ============================================================
+let transactions = [];
+const STORAGE_KEY = 'hesabYarData';
+let chartInstances = { category: null, trend: null, incomeExpense: null };
 
-        function getMonthFromPersian(dateStr) {
-            try {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) return parts[0] + '/' + parts[1];
-            } catch (e) {}
-            return '';
-        }
+function loadData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        transactions = raw ? JSON.parse(raw) : [];
+    } catch(e) { transactions = []; }
+    if (transactions.length === 0) {
+        const today = getTodayPersian();
+        transactions = [
+            { id: Date.now() - 86400000, date: today, category: 'خوراک', desc: 'نمونه خرید', amount: 250000, type: 'expense' },
+            { id: Date.now() - 172800000, date: today, category: 'درآمد', desc: 'نمونه حقوق', amount: 5000000, type: 'income' },
+            { id: Date.now() - 259200000, date: today, category: 'قبض‌ها', desc: 'نمونه قبض برق', amount: 350000, type: 'expense' }
+        ];
+        saveData();
+    }
+}
 
-        function getYearFromPersian(dateStr) {
-            try {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) return parts[0];
-            } catch (e) {}
-            return '';
-        }
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+}
 
-        function getCurrentPersianMonth() {
-            const p = new persianDate();
-            return p.format('YYYY/MM');
-        }
+// ============================================================
+// PERSIAN DATE HELPERS
+// ============================================================
+function getTodayPersian() {
+    const p = new persianDate();
+    return p.format('YYYY/MM/DD');
+}
 
-        // ============================================================
-        // UI HELPERS
-        // ============================================================
-        function formatNumber(n) {
-            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
+function formatPersian(dateStr) {
+    try {
+        const parts = dateStr.split('/');
+        const p = new persianDate([parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])]);
+        return p.format('YYYY/MM/DD');
+    } catch(e) { return dateStr; }
+}
 
-        function showToast(msg, duration = 2000) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => t.classList.remove('show'), duration);
-        }
+function getMonthFromPersian(dateStr) {
+    try {
+        const parts = dateStr.split('/');
+        return parts[0] + '/' + parts[1];
+    } catch(e) { return ''; }
+}
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+// ============================================================
+// UI HELPERS
+// ============================================================
+function formatNumber(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
-        // ============================================================
-        // TAB SWITCH
-        // ============================================================
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+function showToast(msg, duration = 2000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), duration);
+}
 
-            if (tabId === 'tab-report') {
-                setTimeout(renderCharts, 100);
-            }
-        }
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-        // ============================================================
-        // RENDER LIST
-        // ============================================================
-        function renderList() {
-            const list = document.getElementById('transactionList');
-            const countEl = document.getElementById('txCount');
+// ============================================================
+// TAB SWITCH
+// ============================================================
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+    if (tabId === 'tab-report') setTimeout(renderCharts, 100);
+}
 
-            const search = document.getElementById('searchInput').value.trim().toLowerCase();
-            const month = document.getElementById('monthFilter').value;
-            const category = document.getElementById('categoryFilter').value;
+// ============================================================
+// RENDER LIST & STATS
+// ============================================================
+function renderList() {
+    const list = document.getElementById('transactionList');
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    const month = document.getElementById('monthFilter').value;
+    const category = document.getElementById('categoryFilter').value;
 
-            let filtered = transactions.filter(tx => {
-                if (search && !tx.desc.toLowerCase().includes(search)) return false;
-                if (month !== 'all') {
-                    const txMonth = getMonthFromPersian(tx.date);
-                    if (txMonth !== month) return false;
-                }
-                if (category !== 'all' && tx.category !== category) return false;
-                return true;
-            });
+    let filtered = transactions.filter(tx => {
+        if (search && !tx.desc.toLowerCase().includes(search)) return false;
+        if (month !== 'all' && getMonthFromPersian(tx.date) !== month) return false;
+        if (category !== 'all' && tx.category !== category) return false;
+        return true;
+    });
+    filtered.sort((a, b) => b.id - a.id);
 
-            filtered.sort((a, b) => b.id - a.id);
-            countEl.textContent = filtered.length;
+    document.getElementById('txCount').textContent = filtered.length;
 
-            if (filtered.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>هیچ تراکنشی یافت نشد</p>
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>تراکنشی یافت نشد</p></div>`;
+        updateStats();
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(tx => {
+        const isIncome = tx.type === 'income';
+        const cls = isIncome ? 'income' : 'expense';
+        const sign = isIncome ? '+' : '-';
+        html += `
+            <div class="transaction-item ${cls}">
+                <div class="tx-info">
+                    <div class="tx-desc">${escapeHtml(tx.desc)}</div>
+                    <div class="tx-meta">
+                        <span>${formatPersian(tx.date)}</span>
+                        <span class="cat-badge">${tx.category}</span>
                     </div>
-                `;
-                updateStats();
-                return;
+                </div>
+                <div class="tx-amount ${cls}">
+                    <span>${sign} ${formatNumber(tx.amount)}</span>
+                    <button class="delete-btn" onclick="deleteTx(${tx.id})"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+        `;
+    });
+    list.innerHTML = html;
+    updateStats();
+}
+
+function updateStats() {
+    let income = 0, expense = 0;
+    transactions.forEach(tx => {
+        if (tx.type === 'income') income += tx.amount;
+        else expense += tx.amount;
+    });
+    document.getElementById('totalBalance').innerHTML = formatNumber(income - expense) + ' <small>تومان</small>';
+    document.getElementById('totalIncome').textContent = formatNumber(income);
+    document.getElementById('totalExpense').textContent = formatNumber(expense);
+    document.getElementById('totalCount').textContent = transactions.length;
+}
+
+function updateMonthFilter() {
+    const select = document.getElementById('monthFilter');
+    const currentVal = select.value;
+    const months = new Set();
+    transactions.forEach(tx => {
+        const m = getMonthFromPersian(tx.date);
+        if (m) months.add(m);
+    });
+    const sorted = Array.from(months).sort().reverse();
+    select.innerHTML = '<option value="all">همه ماه‌ها</option>';
+    sorted.forEach(m => {
+        select.innerHTML += `<option value="${m}" ${m === currentVal ? 'selected' : ''}>${m}</option>`;
+    });
+}
+
+// ============================================================
+// CRUD
+// ============================================================
+function addTransaction() {
+    const date = document.getElementById('txDate').value.trim();
+    const category = document.getElementById('txCategory').value;
+    const desc = document.getElementById('txDesc').value.trim();
+    const amount = parseInt(document.getElementById('txAmount').value);
+    const type = document.getElementById('txType').value;
+
+    if (!/^\d{4}\/\d{2}\/\d{2}$/.test(date)) { showToast('⚠️ تاریخ را به فرمت ۱۴۰۴/۰۵/۱۲ وارد کنید'); return; }
+    if (!desc) { showToast('⚠️ توضیحات را وارد کنید'); return; }
+    if (!amount || amount <= 0) { showToast('⚠️ مبلغ معتبر وارد کنید'); return; }
+
+    transactions.push({ id: Date.now(), date, category, desc, amount, type });
+    saveData();
+    renderList();
+    updateMonthFilter();
+    resetForm();
+    showToast('✅ تراکنش ثبت شد');
+}
+
+function deleteTx(id) {
+    if (!confirm('حذف شود؟')) return;
+    transactions = transactions.filter(tx => tx.id !== id);
+    saveData();
+    renderList();
+    updateMonthFilter();
+    showToast('🗑️ حذف شد');
+}
+
+function clearAll() {
+    if (transactions.length === 0) return showToast('هیچ داده‌ای نیست');
+    if (!confirm('همه تراکنش‌ها حذف شوند؟')) return;
+    transactions = [];
+    saveData();
+    renderList();
+    updateMonthFilter();
+    showToast('🗑️ همه حذف شدند');
+}
+
+function resetForm() {
+    document.getElementById('txDate').value = getTodayPersian();
+    document.getElementById('txDesc').value = '';
+    document.getElementById('txAmount').value = '';
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+function exportCSV() {
+    if (transactions.length === 0) return showToast('داده‌ای نیست');
+    const headers = ['id', 'date', 'category', 'desc', 'amount', 'type'];
+    const rows = transactions.map(tx => headers.map(h => `"${String(tx[h]||'').replace(/"/g,'""')}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `حساب_${getTodayPersian().replace(/\//g,'-')}.csv`;
+    link.click();
+    showToast('📥 خروجی گرفته شد');
+}
+
+function importCSV() {
+    document.getElementById('fileInput').click();
+}
+
+function handleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const lines = e.target.result.split('\n').filter(l => l.trim());
+            if (lines.length < 2) return showToast('⚠️ فایل نامعتبر');
+            const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim());
+            const newTxs = [];
+            for (let i = 1; i < lines.length; i++) {
+                const vals = lines[i].split(',').map(v => v.replace(/"/g,'').trim());
+                const obj = {};
+                headers.forEach((h, idx) => obj[h] = vals[idx] || '');
+                if (obj.id && obj.amount && obj.type) {
+                    obj.amount = parseInt(obj.amount) || 0;
+                    obj.id = parseInt(obj.id) || Date.now() + i;
+                    newTxs.push(obj);
+                }
             }
-
-            let html = '';
-            filtered.forEach(tx => {
-                const isIncome = tx.type === 'income';
-                const sign = isIncome ? '+' : '-';
-                const cls = isIncome ? 'income' : 'expense';
-                const amountFormatted = formatNumber(tx.amount);
-                html += `
-                    <div class="transaction-item ${cls}">
-                        <div class="tx-info">
-                            <div class="tx-desc">${escapeHtml(tx.desc)}</div>
-                            <div class="tx-meta">
-                                <span>${formatPersian(tx.date)}</span>
-                                <span class="category-badge">${tx.category}</span>
-                            </div>
-                        </div>
-                        <div class="tx-amount ${cls}">
-                            <span>${sign} ${amountFormatted}</span>
-                            <button class="delete-btn" onclick="deleteTx(${tx.id})"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            list.innerHTML = html;
-            updateStats();
-        }
-
-        // ============================================================
-        // UPDATE STATS
-        // ============================================================
-        function updateStats() {
-            let totalIncome = 0,
-                totalExpense = 0;
-            transactions.forEach(tx => {
-                if (tx.type === 'income') totalIncome += tx.amount;
-                else totalExpense += tx.amount;
-            });
-            const balance = totalIncome - totalExpense;
-
-            document.getElementById('totalBalance').innerHTML = formatNumber(balance) + ' <small>تومان</small>';
-            document.getElementById('totalIncome').textContent = formatNumber(totalIncome);
-            document.getElementById('totalExpense').textContent = formatNumber(totalExpense);
-            document.getElementById('totalCount').textContent = transactions.length;
-        }
-
-        // ============================================================
-        // CRUD
-        // ============================================================
-        function addTransaction() {
-            const date = document.getElementById('txDate').value.trim();
-            const category = document.getElementById('txCategory').value;
-            const desc = document.getElementById('txDesc').value.trim();
-            const amount = parseInt(document.getElementById('txAmount').value);
-            const type = document.getElementById('txType').value;
-
-            // Validate Persian date
-            if (!date || !/^\d{4}\/\d{2}\/\d{2}$/.test(date)) {
-                showToast('⚠️ تاریخ شمسی را به فرمت ۱۴۰۴/۰۵/۱۲ وارد کنید');
-                return;
-            }
-            if (!desc) {
-                showToast('⚠️ لطفاً توضیحات را وارد کنید');
-                return;
-            }
-            if (!amount || amount <= 0) {
-                showToast('⚠️ مبلغ معتبر وارد کنید');
-                return;
-            }
-
-            const tx = {
-                id: Date.now(),
-                date: date,
-                category: category,
-                desc: desc,
-                amount: amount,
-                type: type
-            };
-
-            transactions.push(tx);
+            if (newTxs.length === 0) return showToast('⚠️ داده‌ای یافت نشد');
+            transactions = transactions.concat(newTxs);
             saveData();
             renderList();
-            resetForm();
             updateMonthFilter();
-            showToast('✅ تراکنش با موفقیت ثبت شد');
-        }
+            showToast(`✅ ${newTxs.length} تراکنش وارد شد`);
+        } catch(err) { showToast('❌ خطا در خواندن'); }
+    };
+    reader.readAsText(file, 'UTF-8');
+    event.target.value = '';
+}
 
-        function deleteTx(id) {
-            if (!confirm('آیا این تراکنش حذف شود؟')) return;
-            transactions = transactions.filter(tx => tx.id !== id);
-            saveData();
-            renderList();
-            updateMonthFilter();
-            showToast('🗑️ تراکنش حذف شد');
-        }
+// ============================================================
+// CHARTS
+// ============================================================
+function renderCharts() {
+    if (transactions.length === 0) return;
 
-        function clearAll() {
-            if (transactions.length === 0) {
-                showToast('هیچ تراکنشی برای حذف نیست');
-                return;
+    const colors = ['#6C63FF', '#34d399', '#f87171', '#fbbf24', '#60a5fa', '#a78bfa', '#f472b6'];
+
+    // Category Chart
+    const catData = {};
+    transactions.filter(t => t.type === 'expense').forEach(t => {
+        catData[t.category] = (catData[t.category] || 0) + t.amount;
+    });
+    const catLabels = Object.keys(catData);
+    const catValues = Object.values(catData);
+
+    if (chartInstances.category) chartInstances.category.destroy();
+    chartInstances.category = new Chart(document.getElementById('categoryChart'), {
+        type: 'doughnut',
+        data: {
+            labels: catLabels.length ? catLabels : ['بدون داده'],
+            datasets: [{
+                data: catLabels.length ? catValues : [1],
+                backgroundColor: colors.slice(0, catLabels.length || 1),
+                borderWidth: 0
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '65%' }
+    });
+
+    // Trend Chart
+    const monthMap = {};
+    transactions.forEach(tx => {
+        const m = getMonthFromPersian(tx.date);
+        if (!m) return;
+        if (!monthMap[m]) monthMap[m] = { income: 0, expense: 0 };
+        if (tx.type === 'income') monthMap[m].income += tx.amount;
+        else monthMap[m].expense += tx.amount;
+    });
+    const sortedMonths = Object.keys(monthMap).sort().slice(-6);
+    const incomeData = sortedMonths.map(m => monthMap[m].income);
+    const expenseData = sortedMonths.map(m => monthMap[m].expense);
+
+    if (chartInstances.trend) chartInstances.trend.destroy();
+    chartInstances.trend = new Chart(document.getElementById('trendChart'), {
+        type: 'bar',
+        data: {
+            labels: sortedMonths.length ? sortedMonths : ['ندارد'],
+            datasets: [
+                { label: 'هزینه', data: sortedMonths.length ? expenseData : [0], backgroundColor: 'rgba(248,113,113,0.7)', borderRadius: 4 },
+                { label: 'درآمد', data: sortedMonths.length ? incomeData : [0], backgroundColor: 'rgba(52,211,153,0.7)', borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } },
+                x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } }
             }
-            if (!confirm('همه تراکنش‌ها حذف شوند؟ این عمل غیرقابل بازگشت است!')) return;
-            transactions = [];
-            saveData();
-            renderList();
-            updateMonthFilter();
-            showToast('🗑️ همه تراکنش‌ها حذف شدند');
         }
+    });
 
-        function resetForm() {
-            document.getElementById('txDate').value = getTodayPersian();
-            document.getElementById('txDesc').value = '';
-            document.getElementById('txAmount').value = '';
-            document.getElementById('txType').value = 'expense';
-            document.getElementById('txCategory').value = 'خوراک';
-        }
+    // Income vs Expense
+    const totalInc = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+    const totalExp = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
-        // ============================================================
-        // MONTH FILTER
-        // ============================================================
-        function updateMonthFilter() {
-            const select = document.getElementById('monthFilter');
-            const currentVal = select.value;
-            const months = new Set();
-            transactions.forEach(tx => {
-                const m = getMonthFromPersian(tx.date);
-                if (m) months.add(m);
-            });
-            const sorted = Array.from(months).sort().reverse();
-            select.innerHTML = '<option value="all">همه ماه‌ها</option>';
-            sorted.forEach(m => {
-                const selected = (m === currentVal) ? 'selected' : '';
-                select.innerHTML += `<option value="${m}" ${selected}>${m}</option>`;
-            });
-        }
-
-        // ============================================================
-        // EXPORT / IMPORT
-        // ============================================================
-        function exportCSV() {
-            if (transactions.length === 0) {
-                showToast('هیچ داده‌ای برای خروجی نیست');
-                return;
+    if (chartInstances.incomeExpense) chartInstances.incomeExpense.destroy();
+    chartInstances.incomeExpense = new Chart(document.getElementById('incomeExpenseChart'), {
+        type: 'bar',
+        data: {
+            labels: ['درآمد', 'هزینه'],
+            datasets: [{
+                data: [totalInc, totalExp],
+                backgroundColor: ['rgba(52,211,153,0.7)', 'rgba(248,113,113,0.7)'],
+                borderRadius: 8,
+                barThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 } } },
+                x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 12 } } }
             }
-            const headers = ['id', 'date', 'category', 'desc', 'amount', 'type'];
-            const rows = transactions.map(tx =>
-                headers.map(h => `"${String(tx[h] || '').replace(/"/g, '""')}"`).join(',')
-            );
-            const csv = [headers.join(','), ...rows].join('\n');
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `حسابداری_${getTodayPersian().replace(/\//g, '-')}.csv`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-            showToast('📥 خروجی گرفته شد');
         }
+    });
+}
 
-        function importCSV() {
-            document.getElementById('fileInput').click();
-        }
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+    loadData();
+    document.getElementById('txDate').value = getTodayPersian();
+    updateMonthFilter();
+    renderList();
+    setTimeout(renderCharts, 300);
+}
 
-        function handleImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const text = e.target.result;
-                    const lines = text.split('\n').filter(l => l.trim());
-                    if (lines.length < 2) {
-                        showToast('⚠️ فایل معتبر نیست');
-                        return;
-                    }
-                    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-                    const newTxs = [];
-                    for (let i = 1; i < lines.length; i++) {
-                        const vals = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
-                        const obj = {};
-                        headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
-                        if (obj.id && obj.amount && obj.type) {
-                            obj.amount = parseInt(obj.amount) || 0;
-                            obj.id = parseInt(obj.id) || Date.now() + i;
-                            newTxs.push(obj);
-                        }
-                    }
-                    if (newTxs.length === 0) {
-                        showToast('⚠️ داده‌ای برای وارد کردن یافت نشد');
-                        return;
-                    }
-                    transactions = transactions.concat(newTxs);
-                    saveData();
-                    renderList();
-                    updateMonthFilter();
-                    showToast(`✅ ${newTxs.length} تراکنش وارد شد`);
-                } catch (err) {
-                    showToast('❌ خطا در خواندن فایل');
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file, 'UTF-8');
-            event.target.value = '';
-        }
-
-        // ============================================================
-        // CHARTS
-        // ============================================================
-        function renderCharts() {
-            if (transactions.length === 0) {
-                showToast('هیچ داده‌ای برای نمودار وجود ندارد');
-                return;
-            }
-
-            const colors = ['#6C63FF', '#34d399', '#f87171', '#fbbf24', '#60a5fa', '#a78bfa', '#f472b6'];
-            const ctx1 = document.getElementById('categoryChart').getContext('2d');
-            const ctx2 = document.getElementById('trendChart').getContext('2d');
-            const ctx3 = document.getElementById('incomeExpenseChart').getContext('2d');
-
-            // ---- Category Chart ----
-            const categoryData = {};
-            transactions.filter(tx => tx.type === 'expense').forEach(tx => {
-                categoryData[tx.category] = (categoryData[tx.category] || 0) + tx.amount;
-            });
-            const catLabels = Object.keys(categoryData);
-            const catValues = Object.values(categoryData);
-
-            if (categoryChartInstance) categoryChartInstance.destroy();
-            categoryChartInstance = new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: catLabels.length ? catLabels : ['بدون داده'],
-                    datasets: [{
-                        data: catLabels.length ? catValues : [1],
-                        backgroundColor: colors.slice(0, catLabels.length || 1),
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    cutout: '65%'
-                }
-            });
-
-            // ---- Trend Chart ----
-            const monthMap = {};
-            transactions.forEach(tx => {
-                const m = getMonthFromPersian(tx.date);
-                if (!m) return;
-                if (!monthMap[m]) monthMap[m] = { income: 0, expense: 0 };
-                if (tx.type === 'income') monthMap[m].income += tx.amount;
-                else monthMap[m].expense += tx.amount;
-            });
-            const sortedMonths = Object.keys(monthMap).sort();
-            const incomeData = sortedMonths.map(m => monthMap[m].income);
-            const expenseData = sortedMonths.map(m => monthMap[m].expense);
-
-            if (trendChartInstance) trendChartInstance.destroy();
-            trendChartInstance = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: sortedMonths.length ? sortedMonths : ['ندارد'],
-                    datasets: [{
-                        label: 'هزینه',
-                        data: sortedMonths.length ? expenseData : [0],
-                        backgroundColor: 'rgba(248, 113, 113, 0.7)',
-                        borderRadius: 4
-                    }, {
-                        label: 'درآمد',
-                        data: sortedMonths.length ? incomeData : [0],
-                        backgroundColor: 'rgba(52, 211, 153, 0.7)',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } }
-                        }
-                    }
-                }
-            });
-
-            // ---- Income vs Expense ----
-            const totalInc = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-            const totalExp = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-
-            if (incomeExpenseChartInstance) incomeExpenseChartInstance.destroy();
-            incomeExpenseChartInstance = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ['درآمد', 'هزینه'],
-                    datasets: [{
-                        data: [totalInc, totalExp],
-                        backgroundColor: ['rgba(52, 211, 153, 0.7)', 'rgba(248, 113, 113, 0.7)'],
-                        borderRadius: 8,
-                        barThickness: 40
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 12 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        function init() {
-            loadData();
-            document.getElementById('txDate').value = getTodayPersian();
-            updateMonthFilter();
-            renderList();
-
-            // Auto-switch to report after render for chart init
-            setTimeout(() => {
-                renderCharts();
-            }, 300);
-        }
-
-        init();
-    </script>
+init();
+</script>
 
 </body>
 </html>
