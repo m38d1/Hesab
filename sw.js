@@ -1,4 +1,4 @@
-const CACHE = 'hesabketab-v1';
+const CACHE = 'hesabketab-v2';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon.png',
   'https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap'];
 
@@ -10,13 +10,26 @@ self.addEventListener('activate', e => {
     Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
   ).then(() => self.clients.claim()));
 });
+function cachePut(req, res) {
+  if (res && res.ok) caches.open(CACHE).then(c => c.put(req, res.clone()));
+}
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(caches.match(e.request).then(cached => {
-    const network = fetch(e.request).then(res => {
-      if (res && res.ok) { const cl = res.clone(); caches.open(CACHE).then(c => c.put(e.request, cl)); }
-      return res;
-    }).catch(() => cached);
-    return cached || network;
-  }));
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  // ناوبری/HTML: شبکه اول، کش به‌عنوان فالبک — تا نسخهٔ کهنه سرو نشود
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    e.respondWith(
+      fetch(req).then(res => { cachePut(req, res); return res; })
+        .catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
+    );
+    return;
+  }
+  // منابع ثابت: کش اول + به‌روزرسانی در پس‌زمینه
+  e.respondWith(
+    caches.match(req).then(cached => {
+      const network = fetch(req).then(res => { cachePut(req, res); return res; })
+        .catch(() => cached);
+      return cached || network;
+    })
+  );
 });
