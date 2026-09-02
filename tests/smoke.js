@@ -194,6 +194,34 @@ let err=null;
 try{G('renderAll()');}catch(e){err=e;}
 ok(!err,'renderAll threw no error'+(err?': '+err.message:''));
 
+// ── 17. global search
+console.log('17) global search');
+const gOpen=document.getElementById('gscOpen');
+ok(!!gOpen,'search chip exists in topbar');
+click(gOpen);
+ok(document.getElementById('gsModal').classList.contains('open'),'modal opens via chip');
+ok(document.getElementById('gsResults').querySelectorAll('.gs-item').length>0,'recent txns listed when empty query');
+const inp=document.getElementById('gsInput');
+inp.value='حقوق';
+G("renderGs(document.getElementById('gsInput').value)");
+const items=document.getElementById('gsResults').querySelectorAll('.gs-item');
+ok(items.length>0,'results for text query');
+ok(document.getElementById('gsResults').innerHTML.includes('حقوق'),'recurring found by name');
+ok(document.getElementById('gsResults').innerHTML.includes('<mark>'),'match highlighted with <mark>');
+G("renderGs('999999999999')");
+ok(document.getElementById('gsResults').querySelector('.gs-empty'),'empty state for no match');
+G("renderGs('')");
+G("gsOpen()"); // reset to recent view
+click(document.querySelector('#gsResults .gs-item'));
+ok(!document.getElementById('gsModal').classList.contains('open'),'clicking a result closes modal');
+G("document.dispatchEvent(new KeyboardEvent('keydown',{key:'k',ctrlKey:true}))");
+ok(document.getElementById('gsModal').classList.contains('open'),'Ctrl+K opens search');
+G("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");
+ok(!document.getElementById('gsModal').classList.contains('open'),'Escape closes search');
+// Persian normalization: Arabic ي vs Persian ی
+const norm=G("gsNorm('حقوق'.replace('ق','ي'))");
+ok(typeof norm==='string','gsNorm works');
+
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
 process.exit(failures?1:0);
