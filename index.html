@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ═══════════════════════════════════════════════
      حساب‌وکتاب · مهدی عسکری
-     نسخه: v1.4.0 — جستجوی سراسری (Ctrl+K)
+     نسخه: v1.4.1 — مودال «چه چیزهایی جدید است؟»
      ═══════════════════════════════════════════════ -->
 <html lang="fa" dir="rtl">
 <head>
@@ -586,9 +586,27 @@ html.theming,html.theming *,html.theming *::before,html.theming *::after{transit
 .gs-flash{animation:gsFlash 1.8s ease}
 @keyframes gsFlash{0%,60%{box-shadow:0 0 0 3px var(--turq),0 0 26px rgba(56,213,189,.4);border-color:var(--turq)}100%{box-shadow:var(--shadow)}}
 mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding:0 1px}
+/* ── مودال «چه چیزهایی جدید است؟» ── */
+.wn-modal .modal-box{width:min(480px,94vw);padding:26px;border-top-color:var(--gold)}
+.wn-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.wn-spark{width:52px;height:52px;flex:none;display:grid;place-items:center;font-size:1.6rem;border-radius:16px;background:linear-gradient(145deg,rgba(233,180,76,.22),rgba(56,213,189,.14));border:1px solid rgba(233,180,76,.35);animation:wnFloat 3.2s ease-in-out infinite}
+@keyframes wnFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-5px) rotate(4deg)}}
+.wn-sub{font-size:.74rem;color:var(--muted)}
+.wn-sub b{color:var(--gold);font-family:'Lalezar';font-weight:400;font-size:.95rem;letter-spacing:.4px}
+.wn-list{max-height:min(46vh,380px);overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;margin-bottom:18px;padding-inline-end:4px}
+.wn-ver{border:1px solid var(--line);border-radius:14px;padding:14px 15px;background:rgba(4,26,31,.35)}
+.wn-ver.latest{border-color:rgba(56,213,189,.45);background:rgba(56,213,189,.07)}
+.wn-ver-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.wn-v{font-family:'Lalezar';font-size:1.05rem;color:var(--turq);letter-spacing:.4px}
+.wn-date{font-size:.68rem;color:var(--dim);white-space:nowrap}
+.wn-tag{font-size:.6rem;font-weight:800;background:var(--turq);color:#04262b;border-radius:999px;padding:2px 9px;letter-spacing:.3px}
+.wn-ver ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.wn-ver li{position:relative;padding-inline-start:16px;font-size:.79rem;color:var(--text);line-height:1.65}
+.wn-ver li::before{content:'';position:absolute;inset-inline-start:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.wn-ver.latest li::before{background:var(--turq)}
 @media print{
   body{background:#fff!important;color:#000!important}
-  body::before,.glow,.grain,#loginScreen,#setupScreen,#appWrap,.modal,.toast,.dp,#gsModal{display:none!important}
+  body::before,.glow,.grain,#loginScreen,#setupScreen,#appWrap,.modal,.toast,.dp,#gsModal,#wnModal{display:none!important}
   #printArea{display:block!important}
   @page{size:A4;margin:16mm}
 }
@@ -654,13 +672,21 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 <div class="modal" id="recModal"><div class="modal-box"><button class="modal-x" id="recClose">✕</button><h2 id="recModalTitle">تراکنش دوره‌ای</h2><form id="recForm"><label>نام<input id="rName" maxlength="30" placeholder="مثلاً: اجاره خانه" autocomplete="off"></label><div class="flabel">نوع<div class="seg" id="rType" style="margin-bottom:0"><button type="button" data-t="ex" class="active">− هزینه</button><button type="button" data-t="in">+ درآمد</button></div></div><label>مبلغ (<span class="cur-label">تومان</span>)<input id="rAmount" inputmode="numeric" placeholder="۵٬۰۰۰٬۰۰۰" autocomplete="off"></label><label>دسته<div class="inline-sel"><select id="rCat"></select></div></label><div class="flabel">حساب<div class="inline-sel"><select id="rAcc"></select></div></div><label id="rMethodWrap">روش پرداخت<select id="rMethod"></select></label><label>شخص (اختیاری)<select id="rPerson"></select></label><div class="flabel">تکرار<div class="seg seg3" id="rFreq" style="margin-bottom:0"><button type="button" data-f="m" class="active">ماهانه</button><button type="button" data-f="w">هفتگی</button><button type="button" data-f="d">هر N روز</button></div></div><div class="two-col"><label id="rDueWrap">روز ماه (۱–۳۱)<input id="rDue" inputmode="numeric" placeholder="۱" autocomplete="off"></label><label id="rWdWrap" style="display:none">روز هفته<select id="rWd"></select></label><label id="rEveryWrap" style="display:none">هر چند روز<input id="rEvery" inputmode="numeric" placeholder="۱۴" autocomplete="off"></label></div><label>تاریخ شروع<input id="rStart" readonly class="dp-input" autocomplete="off"></label><div class="rec-auto"><label class="switch"><input type="checkbox" id="rAuto" checked><i></i></label><span>ثبت خودکار هر بار که برنامه باز می‌شود</span></div><div class="flabel">رنگ<div class="swatches" id="rColors"></div></div><div class="flabel">آیکون<div class="swatches" id="rIcons"></div></div><button class="btn-primary" type="submit">ذخیره</button></form></div></div>
 <div class="modal" id="cardModal"><div class="modal-box card-box"><button class="modal-x" id="cardClose">✕</button><h2>🖼 کارت ماهانه</h2><div class="card-preview"><canvas id="monthCard" width="1080" height="1920"></canvas></div><div class="card-acts"><button class="btn-primary" id="cardSave">⬇ دانلود PNG</button><button class="btn-ghost" id="cardShare" style="display:none">📤 اشتراک‌گذاری</button></div></div></div>
 <div class="modal gs-modal" id="gsModal"><div class="modal-box"><button class="modal-x" id="gsClose">✕</button><h2>🔍 جستجوی سراسری</h2><input id="gsInput" class="gs-input" placeholder="تراکنش، حساب، شخص، وام یا دوره‌ای…" autocomplete="off"><div class="gs-hint">↑↓ حرکت · Enter انتخاب · Esc بستن</div><div class="gs-results" id="gsResults"></div></div></div>
+<div class="modal wn-modal" id="wnModal"><div class="modal-box"><div class="wn-head"><span class="wn-spark">✨</span><div><h2 style="text-align:right;margin-bottom:2px">چه چیزهایی جدید است؟</h2><div class="wn-sub" id="wnSub"></div></div></div><div class="wn-list" id="wnList"></div><button class="btn-primary" id="wnOk">عالی، شروع کنیم 🚀</button></div></div>
 <div id="printArea"></div>
 <div class="toast" id="toast"></div>
 <div class="dp" id="dp"></div>
 
 <script>
 'use strict';
-const APP_VERSION='v1.4.0';
+const APP_VERSION='v1.4.1';
+/* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
+const WHATS_NEW=[
+ {v:'v1.4.1',d:'۱۱ شهریور ۱۴۰۵',items:['مودال «چه چیزهایی جدید است؟» — بعد از هر به‌روزرسانی، امکانات تازه و تاریخ انتشار را نشان می‌دهد']},
+ {v:'v1.4.0',d:'۱۱ شهریور ۱۴۰۵',items:['جستجوی سراسری با Ctrl+K — تراکنش، حساب، شخص، وام، دوره‌ای، دسته و مبلغ','ناوبری کیبورد (↑↓ / Enter / Esc) و پرش هوشمند با هایلایت نتیجه']},
+ {v:'v1.3.0',d:'۱۱ شهریور ۱۴۰۵',items:['تراکنش‌های دوره‌ای با ثبت خودکار سررسیدهای جاافتاده','کارت ماهانهٔ اشتراکی (تصویر ۱۰۸۰×۱۹۲۰)','گزارش چاپی A4 / PDF با چاپگر مرورگر']},
+ {v:'v1.2.1',d:'۱۱ شهریور ۱۴۰۵',items:['بهبود امنیت پین (پاسخ سوال امنیتی هش می‌شود)','دقت ریال، جستجوی بی‌حساس به حروف، رفع خطاهای نمایش']},
+];
 let appUnit='T';
 try{const _u=localStorage.getItem('hk-unit');if(_u==='R'||_u==='T')appUnit=_u;}catch(e){}
 function setUnit(u){appUnit=u;try{localStorage.setItem('hk-unit',u);}catch(e){}}
@@ -1138,7 +1164,7 @@ $('#calGrid').addEventListener('click',e=>{const b=e.target.closest('[data-day]'
 $('#calPrev').onclick=()=>{let{jy,jm}=ui.calView;if(--jm<1){jm=12;jy--;}ui.calView={jy,jm};renderCalendar();};
 $('#calNext').onclick=()=>{let{jy,jm}=ui.calView;if(++jm>12){jm=1;jy++;}ui.calView={jy,jm};renderCalendar();};
 $('#calToday').onclick=()=>{const t=todayJ();ui.calView={jy:t.jy,jm:t.jm};ui.selDay=t;renderCalendar();};
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){const gsm=document.getElementById('gsModal');if(gsm&&gsm.classList.contains('open')){e.preventDefault();gsClose();}else if(document.getElementById('appWrap').classList.contains('unlocked')){e.preventDefault();gsOpen();}return;}if(e.key==='Escape'){closeDP();closeAccModal();closeCatModal();closeLoanModal();closeTplModal();closeRecModal();closeCardModal();gsClose();document.getElementById('credModal').classList.remove('open');document.getElementById('securityModal').classList.remove('open');$('#personPop').classList.remove('open');if(ui.editingId)cancelEdit();}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){const gsm=document.getElementById('gsModal');if(gsm&&gsm.classList.contains('open')){e.preventDefault();gsClose();}else if(document.getElementById('appWrap').classList.contains('unlocked')){e.preventDefault();gsOpen();}return;}if(e.key==='Escape'){closeDP();closeAccModal();closeCatModal();closeLoanModal();closeTplModal();closeRecModal();closeCardModal();gsClose();if(document.getElementById('wnModal').classList.contains('open'))closeWhatsNew();document.getElementById('credModal').classList.remove('open');document.getElementById('securityModal').classList.remove('open');$('#personPop').classList.remove('open');if(ui.editingId)cancelEdit();}});
 
 function tickClock(){const el=$('#liveClock');if(!el)return;const n=new Date();el.textContent='🕐 '+n.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});const ds=n.toDateString();if(tickClock._d&&ds!==tickClock._d){renderHeader();renderDueBanner();updateBell();runRecurring();}tickClock._d=ds;}
 tickClock();setInterval(tickClock,1000);
@@ -1228,6 +1254,21 @@ function gsFlash(el){if(!el)return;el.scrollIntoView({block:'center',behavior:'s
 function gsMove(d){const rows=[...document.querySelectorAll('#gsResults .gs-item')];if(!rows.length)return;gsSel=(gsSel+d+rows.length)%rows.length;rows.forEach((r,i)=>r.classList.toggle('gsel',i===gsSel));rows[gsSel].scrollIntoView({block:'nearest'});}
 function gsGo(){const el=document.querySelector(`#gsResults .gs-item[data-gsi="${gsSel}"]`);if(!el){const f=document.querySelector('#gsResults .gs-item');if(f)f.click();return;}el.click();}
 
+/* ===== «چه چیزهایی جدید است؟» (v1.4.1) ===== */
+const WN_KEY='hk-whatsnew-seen';
+function wnSeenVersion(){try{return localStorage.getItem(WN_KEY)||'';}catch(e){return '';}}
+function wnMarkSeen(v){try{localStorage.setItem(WN_KEY,v);}catch(e){}}
+function wnHasNew(){return WHATS_NEW.length>0&&wnSeenVersion()!==WHATS_NEW[0].v;}
+function renderWhatsNew(){
+  const list=$('#wnList');if(!list)return;
+  list.innerHTML=WHATS_NEW.map((w,i)=>`<div class="wn-ver${i===0?' latest':''}"><div class="wn-ver-top"><span class="wn-v">${esc(w.v)}</span><span style="display:flex;align-items:center;gap:8px">${i===0?'<span class="wn-tag">جدید</span>':''}<span class="wn-date">📅 ${esc(w.d)}</span></span></div><ul>${w.items.map(it=>`<li>${esc(it)}</li>`).join('')}</ul></div>`).join('');
+  const cur=WHATS_NEW[0];const sub=$('#wnSub');
+  if(sub)sub.innerHTML=`نسخهٔ <b>${esc(cur.v)}</b> · منتشر شده در ${esc(cur.d)}`;
+}
+function openWhatsNew(){renderWhatsNew();$('#wnModal').classList.add('open');}
+function closeWhatsNew(){const m=$('#wnModal');if(!m)return;m.classList.remove('open');wnMarkSeen(WHATS_NEW[0].v);}
+function maybeShowWhatsNew(){if(wnHasNew())setTimeout(openWhatsNew,700);}
+
 /* ===== کارت ماهانه (v1.3) ===== */
 function buildMonthCard(jy,jm){
   const tx=monthTx(jy,jm);const tt=totals(tx);
@@ -1308,6 +1349,8 @@ $('#cardModal').addEventListener('click',e=>{if(e.target.id==='cardModal')closeC
 $('#gscOpen').addEventListener('click',gsOpen);
 $('#gsClose').addEventListener('click',gsClose);
 $('#gsModal').addEventListener('click',e=>{if(e.target.id==='gsModal')gsClose();});
+$('#wnOk').addEventListener('click',closeWhatsNew);
+$('#wnModal').addEventListener('click',e=>{if(e.target.id==='wnModal')closeWhatsNew();});
 $('#gsInput').addEventListener('input',e=>renderGs(e.target.value));
 $('#gsInput').addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();gsMove(1);}else if(e.key==='ArrowUp'){e.preventDefault();gsMove(-1);}else if(e.key==='Enter'){e.preventDefault();gsGo();}});
 $('#cardSave').addEventListener('click',()=>{const cv=$('#monthCard');if(!cv.toBlob){showToast('مرورگر پشتیبانی نمی‌کند','err');return;}cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');const t=todayJ();a.href=URL.createObjectURL(b);a.download=`کارت-حساب‌وکتاب-${t.jy}-${String(t.jm).padStart(2,'0')}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);showToast('کارت ذخیره شد 🖼');},'image/png');});
@@ -1362,6 +1405,7 @@ function initApp(){
   if(ab.enabled&&Date.now()-(ab.lastDownload||0)>ab.intervalDays*864e5){document.addEventListener('click',function once(){document.removeEventListener('click',once);if(!silentHandle)downloadBackup(true);});}
   if(restored)setTimeout(()=>showToast('داده‌های قبلی بارگذاری شد ✅'),600);
   const _od=state.loans.filter(l=>loanOverdue(l)).length;if(_od>0)setTimeout(()=>showToast(`⚠️ ${fa(_od)} قسط عقب‌افتاده دارید!`,'err'),1400);
+  maybeShowWhatsNew();
 }
 
 /* ===== تصمیم ورود: نصب / قفل / ورود مستقیم ===== */

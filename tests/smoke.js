@@ -222,6 +222,28 @@ ok(!document.getElementById('gsModal').classList.contains('open'),'Escape closes
 const norm=G("gsNorm('حقوق'.replace('ق','ي'))");
 ok(typeof norm==='string','gsNorm works');
 
+// ── 18. what's new modal
+console.log("18) what's new");
+ok(!!document.getElementById('wnModal'),'whats-new modal exists');
+G("localStorage.removeItem('hk-whatsnew-seen')");
+ok(G('wnHasNew()'),'new version detected when never seen');
+G('maybeShowWhatsNew()');
+await sleep(800);
+ok(document.getElementById('wnModal').classList.contains('open'),'modal auto-opens after update');
+ok(document.getElementById('wnList').innerHTML.includes('v1.4.1'),'latest version shown');
+ok(document.getElementById('wnList').innerHTML.includes('جستجوی سراسری'),'feature bullet present');
+ok(document.getElementById('wnList').innerHTML.includes('۱۱ شهریور ۱۴۰۵'),'release date shown');
+ok(document.getElementById('wnSub').textContent.includes('v1.4.1'),'subtitle has version');
+G('closeWhatsNew()');
+ok(!document.getElementById('wnModal').classList.contains('open'),'closed by button');
+ok(G('wnSeenVersion()')===G('APP_VERSION'),'seen version persisted');
+G('maybeShowWhatsNew()');
+await sleep(800);
+ok(!document.getElementById('wnModal').classList.contains('open'),'does not reopen after seen');
+G('openWhatsNew()');
+ok(document.getElementById('wnModal').classList.contains('open'),'reopens on demand');
+G('closeWhatsNew()');
+
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
 process.exit(failures?1:0);
