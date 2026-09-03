@@ -224,25 +224,42 @@ ok(typeof norm==='string','gsNorm works');
 
 // ── 18. what's new modal
 console.log("18) what's new");
+const LATEST=G('WHATS_NEW[0].v');
 ok(!!document.getElementById('wnModal'),'whats-new modal exists');
 G("localStorage.removeItem('hk-whatsnew-seen')");
 ok(G('wnHasNew()'),'new version detected when never seen');
 G('maybeShowWhatsNew()');
 await sleep(800);
 ok(document.getElementById('wnModal').classList.contains('open'),'modal auto-opens after update');
-ok(document.getElementById('wnList').innerHTML.includes('v1.4.1'),'latest version shown');
+ok(document.getElementById('wnList').innerHTML.includes(LATEST),'latest version shown ('+LATEST+')');
 ok(document.getElementById('wnList').innerHTML.includes('جستجوی سراسری'),'feature bullet present');
-ok(document.getElementById('wnList').innerHTML.includes('۱۱ شهریور ۱۴۰۵'),'release date shown');
-ok(document.getElementById('wnSub').textContent.includes('v1.4.1'),'subtitle has version');
+ok(document.getElementById('wnList').innerHTML.includes('شهریور ۱۴۰۵'),'release date shown');
+ok(document.getElementById('wnSub').textContent.includes(LATEST),'subtitle has latest version');
+ok(document.getElementById('wnList').querySelector('.wn-ver.latest'),'latest entry highlighted');
 G('closeWhatsNew()');
 ok(!document.getElementById('wnModal').classList.contains('open'),'closed by button');
-ok(G('wnSeenVersion()')===G('APP_VERSION'),'seen version persisted');
+ok(G('wnSeenVersion()')===LATEST,'seen version persisted');
 G('maybeShowWhatsNew()');
 await sleep(800);
 ok(!document.getElementById('wnModal').classList.contains('open'),'does not reopen after seen');
 G('openWhatsNew()');
 ok(document.getElementById('wnModal').classList.contains('open'),'reopens on demand');
 G('closeWhatsNew()');
+
+// ── 19. brand: name removed from topbar, editing moved to footer
+console.log('19) brand cleanup');
+ok(!document.getElementById('brandName'),'name removed from topbar');
+ok(document.querySelector('.brand-t h1'),'app title still shown at top');
+const enb=document.getElementById('editNameBtn');
+ok(!!enb,'name-edit button exists in footer');
+click(enb);
+ok(document.getElementById('nameModal').classList.contains('open'),'footer button opens name modal');
+document.getElementById('nameInput').value='سارا';
+ev(document.getElementById('nameForm'),'submit');
+ok(G('getStoredName()')==='سارا','name saved');
+ok(!document.getElementById('nameModal').classList.contains('open'),'modal closed after save');
+ok((enb.title||'').includes('سارا'),'button tooltip reflects current name');
+G("localStorage.setItem('hk-username','مهدی عسکری')");
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
