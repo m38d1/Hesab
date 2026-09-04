@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ═══════════════════════════════════════════════
      حساب‌وکتاب · مهدی عسکری
-     نسخه: v1.4.2 — حذف نام از نوار بالا
+     نسخه: v1.5.0 — واردات از اکسل و CSV
      ═══════════════════════════════════════════════ -->
 <html lang="fa" dir="rtl">
 <head>
@@ -602,9 +602,51 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 .wn-ver li{position:relative;padding-inline-start:16px;font-size:.79rem;color:var(--text);line-height:1.65}
 .wn-ver li::before{content:'';position:absolute;inset-inline-start:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--gold)}
 .wn-ver.latest li::before{background:var(--turq)}
+/* ── واردات اکسل / CSV ── */
+.imp-tabs{display:flex;gap:6px;margin:2px 0 12px}
+.imp-tabs button{flex:1;padding:9px 6px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
+.imp-tabs button.on{background:rgba(56,213,189,.14);border-color:rgba(56,213,189,.5);color:var(--turq)}
+.imp-drop{border:1.5px dashed var(--line);border-radius:16px;padding:26px 14px;text-align:center;background:var(--soft);cursor:pointer;transition:.18s}
+.imp-drop:hover,.imp-drop.hot{border-color:var(--turq);background:rgba(56,213,189,.07)}
+.imp-drop b{display:block;font-size:15px;margin-bottom:5px}
+.imp-drop span{color:var(--muted);font-size:12px;line-height:1.7}
+.imp-file{margin-top:11px;padding:10px 12px;border-radius:12px;background:rgba(56,213,189,.1);border:1px solid rgba(56,213,189,.32);font-size:12.5px;font-weight:700;display:none;align-items:center;justify-content:space-between;gap:8px}
+.imp-file.show{display:flex}
+.imp-file i{font-style:normal;color:var(--muted);font-weight:400}
+.imp-paste{width:100%;min-height:104px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;color:var(--text);font-family:inherit;font-size:12.5px;padding:11px 12px;resize:vertical;line-height:1.8;direction:rtl}
+.imp-paste::placeholder{color:var(--muted)}
+.imp-rows{max-height:44vh;overflow-y:auto;padding-inline-end:2px;margin:2px 0}
+.imp-map{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.imp-map:last-child{border-bottom:0}
+.imp-map-h{font-size:11px;color:var(--muted);padding:9px 0 3px;border-bottom:1px solid var(--line);display:flex;gap:8px}
+.imp-map-h span{flex:0 0 92px}.imp-map-h span:nth-child(2){flex:1}.imp-map-h span:nth-child(3){flex:0 0 116px}
+.imp-cn{flex:0 0 92px;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-samp{flex:1;min-width:0;font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-map select{flex:0 0 116px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:12px;padding:7px 8px;font-weight:700}
+.imp-map select.ok{border-color:rgba(94,207,141,.55)}
+.imp-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 2px}
+.imp-opts label{font-size:11.5px;color:var(--muted);display:block}
+.imp-opts select{width:100%;margin-top:4px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;color:var(--text);font-family:inherit;font-size:13px;padding:9px 10px}
+.imp-stat{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+.imp-stat div{flex:1;min-width:84px;padding:11px 8px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);text-align:center}
+.imp-stat b{display:block;font-size:16px;font-weight:800}
+.imp-stat span{font-size:10.5px;color:var(--muted)}
+.imp-prev{width:100%;border-collapse:collapse;font-size:11.5px}
+.imp-prev th{text-align:right;color:var(--muted);font-weight:700;font-size:10.5px;padding:6px 5px;border-bottom:1px solid var(--line);white-space:nowrap}
+.imp-prev td{padding:6px 5px;border-bottom:1px dashed var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.imp-prev .in{color:var(--green);font-weight:700}
+.imp-prev .ex{color:var(--coral);font-weight:700}
+.imp-err{margin-top:11px;font-size:11.5px;color:var(--muted);background:rgba(244,117,106,.08);border:1px solid rgba(244,117,106,.28);border-radius:12px;padding:9px 11px;line-height:1.8}
+.imp-hint{font-size:11.5px;color:var(--muted);line-height:1.85;margin:10px 0 2px}
+.imp-hint b{color:var(--gold)}
+.imp-undo{margin-top:10px;width:100%;background:none;border:1px solid var(--line);color:var(--muted);border-radius:13px;padding:11px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
+.imp-undo:hover{border-color:rgba(244,117,106,.5);color:var(--coral)}
+.imp-steps{display:flex;gap:6px;margin-bottom:13px;font-size:10.5px;color:var(--muted)}
+.imp-steps i{font-style:normal;flex:1;text-align:center;padding:6px 2px;border-radius:10px;background:var(--panel2);border:1px solid var(--line)}
+.imp-steps i.on{color:var(--turq);border-color:rgba(56,213,189,.5);background:rgba(56,213,189,.12);font-weight:700}
 @media print{
   body{background:#fff!important;color:#000!important}
-  body::before,.glow,.grain,#loginScreen,#setupScreen,#appWrap,.modal,.toast,.dp,#gsModal,#wnModal{display:none!important}
+  body::before,.glow,.grain,#loginScreen,#setupScreen,#appWrap,.modal,.toast,.dp,#gsModal,#wnModal,#impModal{display:none!important}
   #printArea{display:block!important}
   @page{size:A4;margin:16mm}
 }
@@ -657,7 +699,7 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
   <section class="pane" id="pane-reports"><div class="card rep-head"><div class="pills" id="repPills"><button data-p="week">هفته</button><button data-p="month" class="active">ماه</button><button data-p="lastmonth">ماه قبل</button><button data-p="3m">۳ ماه</button><button data-p="year">امسال</button><button data-p="all">کل</button></div><div class="rep-tools"><span id="repLabel"></span><select id="repAcc"></select><select id="repCat"></select><select id="repPerson"></select><button class="btn-ghost" id="csvBtn">⬇ CSV</button><button class="btn-ghost" id="printBtn" title="چاپ یا ذخیره PDF">🖨 چاپ</button><button class="btn-ghost" id="cardBtn" title="کارت اشتراکی ماه">🖼 کارت ماه</button></div></div><div class="rep-grid"><div class="card"><h2>ترکیب هزینه‌ها</h2><div class="donut-wrap"><div id="repDonut"></div><ul class="legend" id="repLegend"></ul></div></div><div class="card"><h2>خلاصه</h2><div class="sum-strip" id="repSum"></div><h2 class="mt">بینش</h2><ul class="insights" id="repInsights"></ul></div></div><div class="card"><h2>۶ ماه اخیر</h2><div class="bchart" id="repBars"></div><div class="bchart-leg"><span><i class="sw in"></i>درآمد</span><span><i class="sw ex"></i>هزینه</span></div></div><div class="card" id="repPersonsCard"><h2>تفکیک بر اساس شخص</h2><div id="repPersons" style="margin-top:12px"></div></div></section>
   <section class="pane" id="pane-cal"><div class="cal-layout"><div class="card"><div class="cal-head"><button class="nav-btn" id="calPrev">›</button><div class="cal-title" id="calTitle"></div><button class="nav-btn" id="calNext">‹</button><button class="btn-ghost sm" id="calToday">امروز</button></div><div class="cal-sum" id="calSum"></div><div class="cal-wd" id="calWd"></div><div class="cal-grid" id="calGrid"></div></div><div class="card day-panel"><h2 id="dayTitle">یک روز انتخاب کنید</h2><div id="dayList" class="txlist"></div><div class="day-total" id="dayTotal"></div></div></div></section>
 </main>
-<footer><div class="wrap"><div class="backup-bar"><div class="ab-shield">🛡️</div><div class="ab-info"><b>پشتیبان‌گیری خودکار</b><span class="ab-status" id="abStatus">…</span></div><div class="ab-ctrl"><label class="switch"><input type="checkbox" id="abToggle" checked><i></i></label><select id="abInterval"><option value="1">روزانه</option><option value="3">۳ روز</option><option value="7" selected>هفتگی</option><option value="30">ماهانه</option></select><button class="btn-ghost sm" id="backupBtn">💾 پشتیبان دستی</button><button class="btn-ghost sm" id="abConnect" style="display:none">📌 اتصال به فایل</button><label class="restore-btn">⬆ بازیابی<input type="file" id="restoreFile" accept=".json" hidden></label></div></div><div class="foot-row"><span id="footInfo">حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند</span><div class="foot-actions"><button id="editNameBtn" title="نام شما در کارت ماهانه و گزارش چاپی استفاده می‌شود">👤 نام من</button><button id="changeCredBtn">⚙️ پین و امنیت</button><button id="logoutBtn">🚪 خروج</button></div></div><div class="credit" id="creditLine"></div></div></footer>
+<footer><div class="wrap"><div class="backup-bar"><div class="ab-shield">🛡️</div><div class="ab-info"><b>پشتیبان‌گیری خودکار</b><span class="ab-status" id="abStatus">…</span></div><div class="ab-ctrl"><label class="switch"><input type="checkbox" id="abToggle" checked><i></i></label><select id="abInterval"><option value="1">روزانه</option><option value="3">۳ روز</option><option value="7" selected>هفتگی</option><option value="30">ماهانه</option></select><button class="btn-ghost sm" id="backupBtn">💾 پشتیبان دستی</button><button class="btn-ghost sm" id="abConnect" style="display:none">📌 اتصال به فایل</button><button class="btn-ghost sm" id="importBtn">📥 واردات اکسل</button><label class="restore-btn">⬆ بازیابی<input type="file" id="restoreFile" accept=".json" hidden></label></div></div><div class="foot-row"><span id="footInfo">حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند</span><div class="foot-actions"><button id="editNameBtn" title="نام شما در کارت ماهانه و گزارش چاپی استفاده می‌شود">👤 نام من</button><button id="changeCredBtn">⚙️ پین و امنیت</button><button id="logoutBtn">🚪 خروج</button></div></div><div class="credit" id="creditLine"></div></div></footer>
 </div>
 
 <div class="modal" id="securityModal"><div class="modal-box"><button class="modal-x" id="secClose">✕</button><h2>🔐 بازیابی پین</h2><p class="sec-hint" id="secHint">برای بازیابی پین، پاسخ سوال امنیتی خود را وارد کنید.</p><div id="secQuestionBox"><div class="sec-q" id="secQuestionText"></div><form id="secForm"><label>پاسخ سوال امنیتی<input id="secAnswer" autocomplete="off" placeholder="پاسخ خود را بنویسید"></label><div class="login-err" id="secErr"></div><button class="btn-primary" type="submit">تأیید پاسخ</button></form></div><div id="secResetBox" style="display:none"><p class="sec-hint">پاسخ درست است! حالا یک پین جدید تعیین کنید.</p><form id="secResetForm"><label>پین جدید (۴ رقم به بالا)<input id="secNewPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label><label>تکرار پین جدید<input id="secNewPin2" type="password" inputmode="numeric" placeholder="دوباره" autocomplete="off"></label><div class="login-err" id="secResetErr"></div><button class="btn-primary" type="submit">ذخیره پین جدید</button></form></div></div></div>
@@ -671,15 +713,58 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 <div class="modal" id="cardModal"><div class="modal-box card-box"><button class="modal-x" id="cardClose">✕</button><h2>🖼 کارت ماهانه</h2><div class="card-preview"><canvas id="monthCard" width="1080" height="1920"></canvas></div><div class="card-acts"><button class="btn-primary" id="cardSave">⬇ دانلود PNG</button><button class="btn-ghost" id="cardShare" style="display:none">📤 اشتراک‌گذاری</button></div></div></div>
 <div class="modal gs-modal" id="gsModal"><div class="modal-box"><button class="modal-x" id="gsClose">✕</button><h2>🔍 جستجوی سراسری</h2><input id="gsInput" class="gs-input" placeholder="تراکنش، حساب، شخص، وام یا دوره‌ای…" autocomplete="off"><div class="gs-hint">↑↓ حرکت · Enter انتخاب · Esc بستن</div><div class="gs-results" id="gsResults"></div></div></div>
 <div class="modal wn-modal" id="wnModal"><div class="modal-box"><div class="wn-head"><span class="wn-spark">✨</span><div><h2 style="text-align:right;margin-bottom:2px">چه چیزهایی جدید است؟</h2><div class="wn-sub" id="wnSub"></div></div></div><div class="wn-list" id="wnList"></div><button class="btn-primary" id="wnOk">عالی، شروع کنیم 🚀</button></div></div>
+<div class="modal imp-modal" id="impModal"><div class="modal-box">
+<button class="modal-x" id="impClose">✕</button>
+<h2>📥 واردات از اکسل</h2>
+<div class="imp-steps"><i id="impS1" class="on">۱ · منبع</i><i id="impS2">۲ · ستون‌ها</i><i id="impS3">۳ · پیش‌نمایش</i></div>
+<div id="impStep1">
+<div class="imp-tabs"><button type="button" id="impTabFile" class="on">📂 فایل</button><button type="button" id="impTabPaste">📋 چسباندن</button></div>
+<div id="impFilePane">
+<div class="imp-drop" id="impDrop"><b>فایل را اینجا رها کنید</b><span>فرمت <b style="color:var(--turq)">.xlsx</b> یا <b style="color:var(--turq)">.csv</b> — مستقیم در مرورگر خوانده می‌شود، هیچ‌جا آپلود نمی‌شود</span></div>
+<input type="file" id="impFile" accept=".xlsx,.csv,.tsv,.txt" hidden>
+<div class="imp-file" id="impFileName"><span id="impFileLbl"></span><i id="impFileInfo"></i></div>
+</div>
+<div id="impPastePane" style="display:none">
+<textarea class="imp-paste" id="impPaste" placeholder="از اکسل یا گوگل‌شیت کپی کنید و اینجا بچسبانید (Ctrl+V).&#10;ستون اول باید سرستون باشد: تاریخ · شرح · مبلغ · …"></textarea>
+<div class="imp-hint">از نوار بالا مشخص است که هر ستون چه نقشی دارد — در مرحلهٔ بعد قابل تغییر است.</div>
+</div>
+<div class="imp-hint">💡 <b>نکته:</b> در اکسل <span dir="ltr">Save As → CSV</span> هم کار می‌کند. فرمت قدیمی <b dir="ltr">.xls</b> پشتیبانی نمی‌شود.</div>
+<button class="btn-primary" id="impNext1" style="margin-top:12px">ادامه ←</button>
+</div>
+<div id="impStep2" style="display:none">
+<div id="impSheetWrap" style="display:none;margin-bottom:10px"><label style="font-size:11.5px;color:var(--muted)">شیت
+<select id="impSheet" style="width:100%;margin-top:4px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;color:var(--text);font-family:inherit;font-size:13px;padding:9px 10px"></select></label></div>
+<label style="font-size:11.5px;color:var(--muted)">ردیف سرستون‌ها
+<select id="impHeader" style="width:100%;margin:4px 0 8px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;color:var(--text);font-family:inherit;font-size:13px;padding:9px 10px"></select></label>
+<div class="imp-map-h"><span>ستون</span><span>نمونه از داده</span><span>نقش</span></div>
+<div class="imp-rows" id="impMap"></div>
+<div class="imp-opts">
+<label>واحد مبالغ<select id="impUnit"><option value="R">ریال</option><option value="T">تومان</option></select></label>
+<label>حساب مقصد<select id="impAcc"></select></label>
+<label>نوع پیش‌فرض<select id="impType"><option value="ex">هزینه</option><option value="in">درآمد</option></select></label>
+<label>دستهٔ پیش‌فرض<select id="impCat"></select></label>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn-ghost" id="impBack2" style="flex:1">→ عقب</button><button class="btn-primary" id="impNext2" style="flex:2">پیش‌نمایش ←</button></div>
+</div>
+<div id="impStep3" style="display:none">
+<div class="imp-stat" id="impStat"></div>
+<div class="imp-rows" style="max-height:30vh"><table class="imp-prev"><thead><tr><th>تاریخ</th><th>شرح</th><th>نوع</th><th style="text-align:end">مبلغ</th></tr></thead><tbody id="impPrev"></tbody></table></div>
+<div id="impErr"></div>
+<div class="imp-hint">ردیف‌های تکراری (همان تاریخ + مبلغ + شرح) خودکار <b>رد می‌شوند</b>. ورود جایگزین اطلاعات فعلی نمی‌شود، <b>به آن اضافه می‌شود</b>.</div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn-ghost" id="impBack3" style="flex:1">→ اصلاح ستون‌ها</button><button class="btn-primary" id="impGo" style="flex:2">✅ ثبت واردات</button></div>
+<button class="imp-undo" id="impUndo" style="display:none"></button>
+</div>
+</div></div>
 <div id="printArea"></div>
 <div class="toast" id="toast"></div>
 <div class="dp" id="dp"></div>
 
 <script>
 'use strict';
-const APP_VERSION='v1.4.2';
+const APP_VERSION='v1.5.0';
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.5.0',d:'۱۳ شهریور ۱۴۰۵',items:['واردات از اکسل اضافه شد: فایل .xlsx یا .csv را مستقیم در مرورگر می‌خواند — بدون آپلود، بدون اینترنت','ویرایشگر سه‌مرحله‌ای: انتخاب شیت و ردیف سرستون، تعیین نقش هر ستون، پیش‌نمایش پیش از ثبت','تاریخ شمسی، میلادی و شماره‌تاریخ اکسل خودکار تشخیص داده می‌شود · ریال/تومان با یک انتخاب','ردیف‌های تکراری (همان تاریخ + مبلغ + شرح) خودکار رد می‌شوند · دکمهٔ «بازگردانی آخرین واردات»']},
  {v:'v1.4.2',d:'۱۲ شهریور ۱۴۰۵',items:['نام از نوار بالای صفحه حذف شد — ظاهر ساده‌تر و متمرکزتر','ویرایش نام به فوتر منتقل شد: دکمهٔ «👤 نام من» (نام در کارت ماهانه و گزارش چاپی استفاده می‌شود)']},
  {v:'v1.4.1',d:'۱۱ شهریور ۱۴۰۵',items:['مودال «چه چیزهایی جدید است؟» — بعد از هر به‌روزرسانی، امکانات تازه و تاریخ انتشار را نشان می‌دهد']},
  {v:'v1.4.0',d:'۱۱ شهریور ۱۴۰۵',items:['جستجوی سراسری با Ctrl+K — تراکنش، حساب، شخص، وام، دوره‌ای، دسته و مبلغ','ناوبری کیبورد (↑↓ / Enter / Esc) و پرش هوشمند با هایلایت نتیجه']},
@@ -868,8 +953,8 @@ function persist(){scheduleSilent();try{localStorage.setItem(LS,JSON.stringify(s
 
 let restored=false,state=null;
 try{const raw=localStorage.getItem(LS);if(raw)state=JSON.parse(raw);}catch(e){state=null;}
-if(!state){state={txs:[],accounts:[],cats:defaultCats(),people:[],loans:[],recurring:[],budgets:{...DEF_BUD},templates:[]};persist();}
-else{restored=true;state.budgets={...DEF_BUD,...(state.budgets||{})};if(!Array.isArray(state.accounts))state.accounts=[];if(!Array.isArray(state.cats))state.cats=defaultCats();if(!Array.isArray(state.people))state.people=[];if(!Array.isArray(state.loans))state.loans=[];if(!Array.isArray(state.recurring))state.recurring=[];if(!Array.isArray(state.templates))state.templates=[];state.txs.forEach(t=>{if(t.fee===undefined)t.fee=0;});}
+if(!state){state={txs:[],accounts:[],cats:defaultCats(),people:[],loans:[],recurring:[],budgets:{...DEF_BUD},templates:[],imports:[]};persist();}
+else{restored=true;state.budgets={...DEF_BUD,...(state.budgets||{})};if(!Array.isArray(state.accounts))state.accounts=[];if(!Array.isArray(state.cats))state.cats=defaultCats();if(!Array.isArray(state.people))state.people=[];if(!Array.isArray(state.loans))state.loans=[];if(!Array.isArray(state.recurring))state.recurring=[];if(!Array.isArray(state.templates))state.templates=[];if(!Array.isArray(state.imports))state.imports=[];state.txs.forEach(t=>{if(t.fee===undefined)t.fee=0;});}
 
 const accById=id=>state.accounts.find(a=>a.id===id);
 function accBalance(a){let b=+a.initial||0;for(const t of state.txs)if(t.acc===a.id)b+=t.type==='in'?t.amount:-t.amount;return b;}
@@ -1158,12 +1243,12 @@ async function connectBackupFile(){try{const h=await window.showSaveFilePicker({
 async function restoreBackupHandle(){if(!FS_OK)return;try{const h=await idb.get('hk-backup-handle');if(h){silentHandle=h;updateConnectBtn();renderABStatus();document.addEventListener('click',function once(){document.removeEventListener('click',once);writeSilent();});}}catch(e){}}
 $('#abConnect').addEventListener('click',async()=>{if(silentHandle){silentHandle=null;try{await idb.set('hk-backup-handle',null);}catch(e){}updateConnectBtn();renderABStatus();showToast('اتصال فایل قطع شد');return;}connectBackupFile();});
 if(FS_OK){$('#abConnect').style.display='';restoreBackupHandle();}
-$('#restoreFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!data||!Array.isArray(data.txs))throw 0;const num=v=>{const n=+v;return Number.isFinite(n)?n:0;};const txs=data.txs.filter(t=>t&&typeof t==='object').map(t=>{const jy=num(t.jy),jm=num(t.jm),jd=num(t.jd);return{id:String(t.id||uid()),type:t.type==='in'?'in':'ex',cat:t.cat||null,amount:Math.max(0,num(t.amount)),note:String(t.note||'').slice(0,60),acc:t.acc||null,method:t.method||'',person:String(t.person||'').slice(0,20),fee:Math.max(0,num(t.fee)),feeOf:t.feeOf||undefined,jy,jm,jd,ts:num(t.ts)||(jy&&jm&&jd?tsOf({jy,jm,jd}):Date.now())};});const bud={...DEF_BUD,...(data.budgets||{})};for(const k in bud)bud[k]=Math.max(0,num(bud[k]));state={txs,accounts:Array.isArray(data.accounts)?data.accounts:[],cats:Array.isArray(data.cats)&&data.cats.length?data.cats:defaultCats(),people:Array.isArray(data.people)?data.people.map(String):[],loans:Array.isArray(data.loans)?data.loans:[],recurring:Array.isArray(data.recurring)?data.recurring:[],budgets:bud,templates:Array.isArray(data.templates)?data.templates:[]};persist();renderAll();showToast(`بازیابی: ${fa(txs.length)} تراکنش ✅`);}catch(err){showToast('فایل معتبر نیست','err');}e.target.value='';};r.readAsText(f);});
+$('#restoreFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!data||!Array.isArray(data.txs))throw 0;const num=v=>{const n=+v;return Number.isFinite(n)?n:0;};const txs=data.txs.filter(t=>t&&typeof t==='object').map(t=>{const jy=num(t.jy),jm=num(t.jm),jd=num(t.jd);return{id:String(t.id||uid()),type:t.type==='in'?'in':'ex',cat:t.cat||null,amount:Math.max(0,num(t.amount)),note:String(t.note||'').slice(0,60),acc:t.acc||null,method:t.method||'',person:String(t.person||'').slice(0,20),fee:Math.max(0,num(t.fee)),feeOf:t.feeOf||undefined,jy,jm,jd,ts:num(t.ts)||(jy&&jm&&jd?tsOf({jy,jm,jd}):Date.now())};});const bud={...DEF_BUD,...(data.budgets||{})};for(const k in bud)bud[k]=Math.max(0,num(bud[k]));state={txs,accounts:Array.isArray(data.accounts)?data.accounts:[],cats:Array.isArray(data.cats)&&data.cats.length?data.cats:defaultCats(),people:Array.isArray(data.people)?data.people.map(String):[],loans:Array.isArray(data.loans)?data.loans:[],recurring:Array.isArray(data.recurring)?data.recurring:[],budgets:bud,templates:Array.isArray(data.templates)?data.templates:[],imports:[]};persist();renderAll();showToast(`بازیابی: ${fa(txs.length)} تراکنش ✅`);}catch(err){showToast('فایل معتبر نیست','err');}e.target.value='';};r.readAsText(f);});
 $('#calGrid').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;ui.selDay={jy:ui.calView.jy,jm:ui.calView.jm,jd:+b.dataset.day};renderCalendar();});
 $('#calPrev').onclick=()=>{let{jy,jm}=ui.calView;if(--jm<1){jm=12;jy--;}ui.calView={jy,jm};renderCalendar();};
 $('#calNext').onclick=()=>{let{jy,jm}=ui.calView;if(++jm>12){jm=1;jy++;}ui.calView={jy,jm};renderCalendar();};
 $('#calToday').onclick=()=>{const t=todayJ();ui.calView={jy:t.jy,jm:t.jm};ui.selDay=t;renderCalendar();};
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){const gsm=document.getElementById('gsModal');if(gsm&&gsm.classList.contains('open')){e.preventDefault();gsClose();}else if(document.getElementById('appWrap').classList.contains('unlocked')){e.preventDefault();gsOpen();}return;}if(e.key==='Escape'){closeDP();closeAccModal();closeCatModal();closeLoanModal();closeTplModal();closeRecModal();closeCardModal();gsClose();if(document.getElementById('wnModal').classList.contains('open'))closeWhatsNew();document.getElementById('credModal').classList.remove('open');document.getElementById('securityModal').classList.remove('open');$('#personPop').classList.remove('open');if(ui.editingId)cancelEdit();}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){const gsm=document.getElementById('gsModal');if(gsm&&gsm.classList.contains('open')){e.preventDefault();gsClose();}else if(document.getElementById('appWrap').classList.contains('unlocked')){e.preventDefault();gsOpen();}return;}if(e.key==='Escape'){closeDP();closeAccModal();closeCatModal();closeLoanModal();closeTplModal();closeRecModal();closeCardModal();gsClose();if(document.getElementById('wnModal').classList.contains('open'))closeWhatsNew();impClose();document.getElementById('credModal').classList.remove('open');document.getElementById('securityModal').classList.remove('open');$('#personPop').classList.remove('open');if(ui.editingId)cancelEdit();}});
 
 function tickClock(){const el=$('#liveClock');if(!el)return;const n=new Date();el.textContent='🕐 '+n.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});const ds=n.toDateString();if(tickClock._d&&ds!==tickClock._d){renderHeader();renderDueBanner();updateBell();runRecurring();}tickClock._d=ds;}
 tickClock();setInterval(tickClock,1000);
@@ -1267,6 +1352,345 @@ function renderWhatsNew(){
 function openWhatsNew(){renderWhatsNew();$('#wnModal').classList.add('open');}
 function closeWhatsNew(){const m=$('#wnModal');if(!m)return;m.classList.remove('open');wnMarkSeen(WHATS_NEW[0].v);}
 function maybeShowWhatsNew(){if(wnHasNew())setTimeout(openWhatsNew,700);}
+
+/* ===== واردات از اکسل / CSV (v1.5) ===== */
+/* خواندن .xlsx بدون هیچ کتابخانه‌ای: فایل xlsx در واقع یک ZIP از XML است.
+   آنزیپ با DecompressionStream و خواندن XML با DOMParser — همه‌چیز آفلاین و در مرورگر. */
+async function impInflate(bytes){
+  if(typeof DecompressionStream!=='function')throw new Error('مرورگر شما از خواندن xlsx پشتیبانی نمی‌کند — از CSV استفاده کنید');
+  const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(st).arrayBuffer());
+}
+async function impUnzip(buf){
+  const u8=new Uint8Array(buf),dv=new DataView(buf),td=new TextDecoder(),out={};
+  let eocd=-1;
+  for(let i=u8.length-22;i>=0;i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;}}
+  if(eocd<0)throw new Error('فایل xlsx معتبر نیست');
+  const n=dv.getUint16(eocd+10,true);let off=dv.getUint32(eocd+16,true);
+  for(let k=0;k<n;k++){
+    if(dv.getUint32(off,true)!==0x02014b50)break;
+    const method=dv.getUint16(off+10,true),csize=dv.getUint32(off+20,true);
+    const nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true);
+    const lho=dv.getUint32(off+42,true);
+    const name=td.decode(u8.subarray(off+46,off+46+nl));
+    const lnl=dv.getUint16(lho+26,true),lel=dv.getUint16(lho+28,true),st=lho+30+lnl+lel;
+    const data=u8.subarray(st,st+csize);
+    try{out[name]=method===0?data:await impInflate(data);}catch(e){out[name]=new Uint8Array(0);}
+    off+=46+nl+el+cl;
+  }
+  return out;
+}
+const impCol=n=>{let x=0;for(const c of n){if(/[A-Za-z]/.test(c))x=x*26+(c.toUpperCase().charCodeAt(0)-64);else break;}return x-1;};
+function impXml(s){return new DOMParser().parseFromString(s,'application/xml');}
+async function impReadXlsx(buf){
+  const files=await impUnzip(buf),td=new TextDecoder();
+  const xml=n=>files[n]?td.decode(files[n]):'';
+  const ss=impXml(xml('xl/sharedStrings.xml'));
+  const shared=[...ss.getElementsByTagName('si')].map(si=>si.textContent||'');
+  const wb=impXml(xml('xl/workbook.xml'));
+  const rl=impXml(xml('xl/_rels/workbook.xml.rels'));
+  const relMap={};[...rl.getElementsByTagName('Relationship')].forEach(r=>relMap[r.getAttribute('Id')]=r.getAttribute('Target')||'');
+  const out=[];
+  for(const sh of [...wb.getElementsByTagName('sheet')]){
+    const name=sh.getAttribute('name')||('شیت '+(out.length+1));
+    let rid=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')||'';
+    let tgt=relMap[rid]||('worksheets/sheet'+(out.length+1)+'.xml');
+    if(tgt.startsWith('/'))tgt=tgt.slice(1);
+    const path=tgt.startsWith('xl/')?tgt:'xl/'+tgt.replace(/^\.\//,'');
+    const doc=impXml(xml(path)),rows=[];
+    for(const r of [...doc.getElementsByTagName('row')]){
+      const cells=[];
+      for(const c of [...r.getElementsByTagName('c')]){
+        const ref=c.getAttribute('r')||'';const m=/^([A-Z]+)/.exec(ref);
+        const idx=m?impCol(m[1]):cells.length;
+        const t=c.getAttribute('t');let v='';
+        if(t==='inlineStr'){v=c.textContent||'';}
+        else{const vn=c.getElementsByTagName('v')[0];v=vn?vn.textContent:'';if(t==='s'&&v!=='')v=shared[+v]||'';}
+        cells[idx]=v;
+      }
+      rows.push(cells);
+    }
+    out.push({name,rows});
+  }
+  if(!out.length)throw new Error('شیتی در فایل پیدا نشد');
+  return out;
+}
+function impReadCsv(text){
+  text=String(text||'').replace(/^﻿/,'');
+  const line0=(text.split(/\r?\n/)[0]||'');
+  const dl=line0.includes('\t')?'\t':(line0.split(';').length>line0.split(',').length?';':',');
+  const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){if(ch==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;continue;}
+    if(ch==='"'){q=true;continue;}
+    if(ch===dl){row.push(cur);cur='';continue;}
+    if(ch==='\n'){row.push(cur);rows.push(row);row=[];cur='';continue;}
+    if(ch==='\r')continue;
+    cur+=ch;
+  }
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return [{name:'CSV',rows:rows.filter(r=>r.some(c=>String(c).trim()!==''))}];
+}
+/* ── نرمال‌سازی مقدار ── */
+function impAmt(v){
+  let s=toEn(String(v==null?'':v)).replace(/[,\s٬\u202f]/g,'');
+  if(!s)return null;
+  let neg=false;
+  if(/^\(.*\)$/.test(s)){neg=true;s=s.slice(1,-1);}
+  if(/-$/.test(s)){neg=true;s=s.slice(0,-1);}
+  s=s.replace(/^\+/,'').replace(/ریال|تومان|ر|ت/g,'');
+  const n=parseFloat(s);
+  if(!Number.isFinite(n))return null;
+  return neg?-Math.abs(n):n;
+}
+function impDate(v){
+  let s=toEn(String(v==null?'':v)).replace(/[\u200c\s]/g,'').replace(/[-.]/g,'/');
+  if(!s)return null;
+  if(/^\d+(\.\d+)?$/.test(s)){
+    const n=+s;
+    if(n>20000&&n<80000){const d=new Date(Date.UTC(1899,11,30)+Math.floor(n)*864e5);return J.toJalali(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
+    return null;
+  }
+  const m=/^(\d{1,4})\/(\d{1,2})(?:\/(\d{1,2}))?/.exec(s);
+  if(!m)return null;
+  let a=+m[1],b=+m[2],c=m[3]?+m[3]:1;
+  if(a<100)a+=1300;
+  if(a>=1800&&a<=2100){const d=new Date(a,b-1,c||1);return J.toJalali(d.getFullYear(),d.getMonth()+1,d.getDate());}
+  if(b<1||b>12||c<1||c>31)return null;
+  return{jy:a,jm:b,jd:Math.min(c,J.monthLength(a,b))};
+}
+const IMP_ROLES=[['','— نادیده گرفتن'],['date','تاریخ'],['desc','شرح / توضیح'],['amount','مبلغ'],['debit','برداشت (هزینه)'],['credit','واریز (درآمد)'],['type','نوع (برداشت/واریز)'],['unit','واحد (ریال/تومان)'],['person','شخص'],['cat','دسته'],['acc','حساب'],['note','یادداشت']];
+const IMP_AUTOCAT=[
+ [/میلگرد|سیمان|بلوک|آجر|ماسه|شن |کناف|کاشی|سرامیک|گچ|لوله|شیرآلات|ایزوگام|عایق|تیرچه|بنا|نقاشی ساختمان|پروانه|بنیاد مسکن|شهرداری|عوارض|دفتر ?خانه|بیمه ساختمان|ساختمان|ساخت و ساز|ساخت/,'construction'],
+ [/قبض|برق|گاز|اینترنت|موبایل|تلفن|شارژ|آبفا|کنتور|مالیات/,'bills'],
+ [/نان|برنج|گوشت|میوه|سبزی|مارکت|سوپر|غذا|رستوران|کافه|قند|روغن|مرغ|ماست|پنیر|خرید خانه/,'food'],
+ [/اسنپ|تپسی|تاکسی|بنزین|پارکین|قطار|اتوبوس|مترو|کرایه|حمل|وانت|لاستیک|تعمیرگاه|خودرو/,'transport'],
+ [/دارو|دکتر|کلینیک|بیمارستان|دندان|آزمایش|درمان|عینک|اپتیک/,'health'],
+ [/لباس|پوشاک|کفش|کاپشن|پارچه|خرازی/,'cloth'],
+ [/کتاب|کلاس|آموزش|دانشگاه|مدرسه|دوره|ثبت ?نام|استاد/,'edu'],
+ [/سینما|تئاتر|بازی|سفر|هتل|ویلا|تفریح|کنسرت/,'fun'],
+ [/اجاره|رهن|قسط|وام|مسکن|شارژ/,'housing']
+];
+function impGuess(h){
+  const s=toEn(String(h==null?'':h)).toLowerCase().replace(/\u200c/g,' ').replace(/\s+/g,' ').trim();
+  if(!s)return '';
+  if(/تاریخ|date|زمان/.test(s))return 'date';
+  if(/برداشت/.test(s))return 'debit';
+  if(/واریز/.test(s))return 'credit';
+  if(/شرح|عنوان|بابت|توضیح|description|memo|subject|title/.test(s))return 'desc';
+  if(/مبلغ|مقدار|amount|price|نقد|هزینه|خرج/.test(s))return 'amount';
+  if(/واحد|unit/.test(s))return 'unit';
+  if(/نوع|type|بدهکار|بستانکار/.test(s))return 'type';
+  if(/شخص|طرف|فروشنده|پیمانکار|payee|customer/.test(s))return 'person';
+  if(/دسته|گروه|category|group/.test(s))return 'cat';
+  if(/حساب|account|بانک/.test(s))return 'acc';
+  return '';
+}
+/* ── وضعیت ویزارد ── */
+const imp={mode:'file',sheets:[],sheetIdx:0,rows:[],hdr:0,map:{},label:'',parsed:null,busy:false};
+function impShowStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('impStep'+i).style.display=(i===n)?'':'none';
+    document.getElementById('impS'+i).classList.toggle('on',i===n);
+  });
+}
+function impOpen(){if(!document.getElementById('appWrap').classList.contains('unlocked'))return;document.getElementById('impModal').classList.add('open');impSyncUndo();}
+function impClose(){document.getElementById('impModal').classList.remove('open');}
+function impTabs(which){
+  const f=which==='file';
+  document.getElementById('impTabFile').classList.toggle('on',f);
+  document.getElementById('impTabPaste').classList.toggle('on',!f);
+  document.getElementById('impFilePane').style.display=f?'':'none';
+  document.getElementById('impPastePane').style.display=f?'none':'';
+  imp.mode=which;
+}
+function impSetSheets(sheets,label){
+  imp.sheets=sheets;imp.label=label;
+  const nonEmpty=sheets.map((s,i)=>({i,n:(s.rows||[]).filter(r=>r.some(c=>String(c).trim()!=='')).length})).filter(x=>x.n>0);
+  if(!nonEmpty.length)throw new Error('فایل خالی است یا ردیف معتبری ندارد');
+  const sel=document.getElementById('impSheet');
+  document.getElementById('impSheetWrap').style.display=sheets.length>1?'':'none';
+  sel.innerHTML=sheets.map((s,i)=>`<option value="${i}">${esc(s.name)} (${fa((s.rows||[]).length)} ردیف)</option>`).join('');
+  imp.sheetIdx=nonEmpty.sort((a,b)=>b.n-a.n)[0].i;
+  sel.value=String(imp.sheetIdx);
+  impLoadSheet();
+}
+function impLoadSheet(){
+  imp.rows=(imp.sheets[imp.sheetIdx].rows||[]).map(r=>r.map(c=>c==null?'':String(c)));
+  const hs=imp.rows.map((r,i)=>({i,n:r.filter(c=>String(c).trim()!=='').length,t:r.map(c=>String(c).trim()).join(' ').slice(0,40)}))
+                  .filter(x=>x.n>=2).slice(0,25);
+  const sel=document.getElementById('impHeader');
+  sel.innerHTML=hs.map(x=>`<option value="${x.i}">ردیف ${fa(x.i+1)} · ${esc(x.t||'—')}</option>`).join('')||'<option value="0">ردیف ۱</option>';
+  let best=hs.length?hs[0].i:0;
+  for(const h of hs){if(h.t&&/تاریخ|شرح|مبلغ|date|amount|ردیف/.test(toEn(h.t))){best=h.i;break;}}
+  sel.value=String(best);
+  imp.hdr=best;impBuildMap();
+}
+function impBuildMap(){
+  const w=Math.max(...imp.rows.slice(0,Math.max(imp.hdr+2,10)).map(r=>r.length),0);
+  const used=new Set();const out=[];
+  for(let c=0;c<w;c++){
+    const hdr=String(imp.rows[imp.hdr]?.[c]||'').trim();
+    const samples=imp.rows.slice(imp.hdr+1,imp.hdr+4).map(r=>String(r?.[c]||'').trim()).filter(Boolean);
+    let role=impGuess(hdr||samples[0]);
+    if(role&&used.has(role))role='';
+    if(role)used.add(role);
+    out.push({c,hdr:hdr||('ستون '+fa(c+1)),sample:samples.join(' · ').slice(0,42),role});
+  }
+  if(!out.some(o=>o.role==='amount'||o.role==='debit'||o.role==='credit')){
+    /* no amount column recognised — take the first unassigned numeric column */
+    const cand=out.find(o=>{if(o.role)return false;const v=impAmt((o.sample.split(' · ')[0]||'').trim());return v!==null&&Math.abs(v)>=100;});
+    if(cand)cand.role='amount';
+  }
+  imp.map=out;
+  const box=document.getElementById('impMap');
+  box.innerHTML=out.map(o=>`<div class="imp-map"><span class="imp-cn" title="${esc(o.hdr)}">${esc(o.hdr)}</span><span class="imp-samp" title="${esc(o.sample)}">${esc(o.sample||'—')}</span><select data-col="${o.c}" class="${o.role?'ok':''}">${IMP_ROLES.map(([v,l])=>`<option value="${v}"${v===o.role?' selected':''}>${l}</option>`).join('')}</select></div>`).join('');
+  const acc=document.getElementById('impAcc');
+  acc.innerHTML='<option value="">— بدون حساب —</option>'+state.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  const cat=document.getElementById('impCat');
+  cat.innerHTML=CATS.ex.map(c=>`<option value="${c.id}">${c.icon} ${esc(c.name)}</option>`).join('');
+  cat.value='otherex';
+}
+function impParse(){
+  const g=c=>{const o=imp.map.find(x=>x.c===c);return o?o.role:'';};
+  const col={};for(const o of imp.map)if(o.role)col[o.role]=o.c;
+  const unitSel=document.getElementById('impUnit').value;
+  const typeSel=document.getElementById('impType').value;
+  const accSel=document.getElementById('impAcc').value||null;
+  const catSel=document.getElementById('impCat').value;
+  const autoCat=true;
+  const ok=[],bad=[];
+  const hasDC=col.debit!==undefined||col.credit!==undefined;
+  for(let i=imp.hdr+1;i<imp.rows.length;i++){
+    const r=imp.rows[i];
+    if(!r||!r.some(c=>String(c).trim()!==''))continue;
+    const rawDesc=col.desc!==undefined?String(r[col.desc]||'').trim():'';
+    const rawAmt=col.amount!==undefined?impAmt(r[col.amount]):null;
+    const dVal=col.date!==undefined?impDate(r[col.date]):null;
+    const rowUnit=col.unit!==undefined?String(r[col.unit]||''):'';
+    const unit=/تومان/.test(rowUnit)?'T':(unitSel||'R');
+    const toToman=v=>unit==='R'?v/10:v;
+    let d=dVal;
+    if(col.date===undefined&&!d)d=todayJ();
+    const person=col.person!==undefined?String(r[col.person]||'').trim().slice(0,20):'';
+    const note2=col.note!==undefined?String(r[col.note]||'').trim():'';
+    const desc=(rawDesc||note2||'واردات').trim();
+    let catName=col.cat!==undefined?String(r[col.cat]||'').trim():'';
+    const mk=(type,amount)=>{
+      if(!d)return{why:'تاریخ نامعتبر یا خالی',row:i+1,desc};
+      if(!(amount>0))return{why:'مبلغ نامعتبر یا صفر',row:i+1,desc};
+      let cat=catName?((state.cats.find(c=>c.name===catName||c.id===catName)||{}).id||catSel):catSel;
+      if(autoCat&&cat===catSel&&desc){for(const [re,id] of IMP_AUTOCAT){if(re.test(desc)){if(state.cats.some(c=>c.id===id))cat=id;break;}}}
+      return{tx:{id:uid(),type,cat,amount:Math.round(toToman(Math.abs(amount))*100)/100,note:desc.slice(0,60),acc:accSel,method:'',person,fee:0,jy:d.jy,jm:d.jm,jd:d.jd,ts:tsOf(d)}};
+    };
+    let parts=[];
+    if(hasDC){
+      if(col.debit!==undefined){const v=impAmt(r[col.debit]);if(v)parts.push(mk('ex',v));}
+      if(col.credit!==undefined){const v=impAmt(r[col.credit]);if(v)parts.push(mk('in',v));}
+      if(!parts.length){const v=rawAmt;parts.push(mk(typeSel,v===null?0:v));}
+    }else{
+      let type=typeSel;
+      if(col.type!==undefined){const tv=String(r[col.type]||'');if(/برداشت|هزینه|خرج|debit|paid/i.test(tv))type='ex';else if(/واریز|درآمد|credit|in/i.test(tv))type='in';}
+      if(rawAmt!==null&&rawAmt<0&&col.type===undefined)type='ex';
+      parts.push(mk(type,rawAmt===null?0:rawAmt));
+    }
+    for(const p of parts){if(p.why)bad.push(p);else if(p.tx)ok.push(p.tx);}
+  }
+  const seen=new Set(state.txs.map(t=>t.jy+'/'+t.jm+'/'+t.jd+'|'+Math.round((+t.amount||0)*100)+'|'+(t.note||'')));
+  const fresh=ok.filter(t=>{const k=t.jy+'/'+t.jm+'/'+t.jd+'|'+Math.round(t.amount*100)+'|'+t.note;if(seen.has(k))return false;seen.add(k);return true;});
+  imp.parsed={ok:fresh,dup:ok.length-fresh.length,bad};
+  return imp.parsed;
+}
+function impPreview(){
+  const p=imp.parsed||impParse();
+  document.getElementById('impStat').innerHTML=`
+    <div><b style="color:var(--green)">${fa(p.ok.length)}</b><span>آمادهٔ ورود</span></div>
+    <div><b style="color:var(--gold)">${fa(p.dup)}</b><span>تکراری (رد می‌شود)</span></div>
+    <div><b style="color:var(--coral)">${fa(p.bad.length)}</b><span>بدون اعتبار</span></div>`;
+  document.getElementById('impPrev').innerHTML=p.ok.slice(0,10).map(t=>`<tr><td>${faY(t.jy)}/${fa(t.jm)}/${fa(t.jd)}</td><td>${esc(t.note)}${t.person?' · '+esc(t.person):''}</td><td>${catById(t.cat).icon||''}</td><td class="${t.type}" style="text-align:end">${t.type==='in'?'+':'−'} ${faM(displayVal(t.amount))}</td></tr>`).join('')||`<tr><td colspan="4" style="color:var(--muted);padding:14px 4px">ردیف معتبری پیدا نشد — نقش ستون‌ها را بررسی کنید</td></tr>`;
+  const e=document.getElementById('impErr');
+  e.innerHTML=p.bad.length?`<div class="imp-err">⚠️ ${fa(p.bad.length)} ردیف وارد نمی‌شود — نمونه: ${p.bad.slice(0,3).map(b=>`<b>${esc(b.desc||'—')}</b> (${b.why}، ردیف ${fa(b.row)})`).join(' · ')}</div>`:'';
+  document.getElementById('impGo').disabled=!p.ok.length;
+}
+function impSyncUndo(){
+  const b=document.getElementById('impUndo');
+  const last=(state.imports||[])[(state.imports||[]).length-1];
+  if(!last){b.style.display='none';return;}
+  b.style.display='';
+  b.textContent=`↩️ بازگردانی آخرین واردات (${fa(last.count)} تراکنش · ${esc(last.label)})`;
+}
+function impCommit(){
+  const p=imp.parsed;if(!p||!p.ok.length)return;
+  const batch='i'+Date.now().toString(36);
+  p.ok.forEach(t=>{t.imp=batch;});
+  state.txs=state.txs.concat(p.ok);
+  state.imports=state.imports||[];
+  state.imports.push({id:batch,label:imp.label||'فایل',ts:Date.now(),count:p.ok.length});
+  const peopleNow=new Set(state.people);
+  p.ok.forEach(t=>{if(t.person&&!peopleNow.has(t.person)){peopleNow.add(t.person);state.people.push(t.person);}});
+  state.people.sort((a,b)=>String(a).localeCompare(String(b),'fa'));
+  persist();renderAll();
+  showToast(`${fa(p.ok.length)} تراکنش وارد شد ✅`);
+  impSyncUndo();
+  document.getElementById('impStat').innerHTML=`<div><b style="color:var(--green)">${fa(p.ok.length)}</b><span>ثبت شد</span></div><div><b>${fa(p.dup)}</b><span>تکراری رد شد</span></div>`;
+  document.getElementById('impPrev').innerHTML='';
+  document.getElementById('impGo').disabled=true;
+}
+function impUndoLast(){
+  const last=(state.imports||[]).pop();
+  if(!last)return;
+  const n=state.txs.filter(t=>t.imp===last.id).length;
+  state.txs=state.txs.filter(t=>t.imp!==last.id);
+  persist();renderAll();impSyncUndo();
+  showToast(`${fa(n)} تراکنش حذف شد ↩️`);
+}
+async function impHandleFile(f){
+  if(!f)return;
+  imp.busy=true;
+  const box=document.getElementById('impFileName'),lbl=document.getElementById('impFileLbl'),info=document.getElementById('impFileInfo');
+  lbl.textContent=f.name;info.textContent='در حال خواندن…';box.classList.add('show');
+  try{
+    let sheets;
+    if(/\.xlsx$/i.test(f.name)||f.type.includes('spreadsheet'))sheets=await impReadXlsx(await f.arrayBuffer());
+    else sheets=impReadCsv(await f.text());
+    impSetSheets(sheets,f.name);
+    info.textContent=fa(sheets.length)+' شیت · '+fa((imp.rows||[]).length)+' ردیف';
+    document.getElementById('impNext1').disabled=false;
+  }catch(err){
+    imp.sheets=[];imp.rows=[];
+    info.textContent='';box.classList.remove('show');
+    showToast(err.message||'خواندن فایل ممکن نشد','err');
+  }
+  imp.busy=false;
+}
+/* ── اتصال رویدادها ── */
+$('#importBtn').addEventListener('click',impOpen);
+$('#impClose').addEventListener('click',impClose);
+$('#impModal').addEventListener('click',e=>{if(e.target.id==='impModal')impClose();});
+$('#impTabFile').addEventListener('click',()=>impTabs('file'));
+$('#impTabPaste').addEventListener('click',()=>impTabs('paste'));
+$('#impDrop').addEventListener('click',()=>$('#impFile').click());
+['dragenter','dragover'].forEach(t=>$('#impDrop').addEventListener(t,e=>{e.preventDefault();$('#impDrop').classList.add('hot');}));
+['dragleave','drop'].forEach(t=>$('#impDrop').addEventListener(t,e=>{e.preventDefault();$('#impDrop').classList.remove('hot');}));
+$('#impDrop').addEventListener('drop',e=>{const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];impHandleFile(f);});
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)impHandleFile(f);e.target.value='';});
+$('#impNext1').addEventListener('click',()=>{
+  if(imp.mode==='paste'){
+    const txt=$('#impPaste').value;
+    if(!txt.trim()){showToast('ابتدا داده‌ها را بچسبانید','err');return;}
+    try{impSetSheets(impReadCsv(txt),'چسبانده‌شده از کلیپ‌بورد');}catch(err){showToast(err.message||'خواندن ممکن نشد','err');return;}
+  }else if(!imp.rows.length){showToast('اول یک فایل انتخاب کنید','err');return;}
+  impShowStep(2);
+});
+$('#impSheet').addEventListener('change',e=>{imp.sheetIdx=+e.target.value||0;impLoadSheet();});
+$('#impHeader').addEventListener('change',e=>{imp.hdr=+e.target.value||0;impBuildMap();});
+$('#impMap').addEventListener('change',e=>{const s=e.target.closest('select[data-col]');if(!s)return;const o=imp.map.find(x=>x.c===+s.dataset.col);if(o)o.role=s.value;s.classList.toggle('ok',!!s.value);});
+$('#impBack2').addEventListener('click',()=>impShowStep(1));
+$('#impNext2').addEventListener('click',()=>{impParse();impShowStep(3);impPreview();});
+$('#impBack3').addEventListener('click',()=>impShowStep(2));
+$('#impGo').addEventListener('click',impCommit);
+$('#impUndo').addEventListener('click',impUndoLast);
 
 /* ===== کارت ماهانه (v1.3) ===== */
 function buildMonthCard(jy,jm){

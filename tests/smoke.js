@@ -261,6 +261,100 @@ ok(!document.getElementById('nameModal').classList.contains('open'),'modal close
 ok((enb.title||'').includes('سارا'),'button tooltip reflects current name');
 G("localStorage.setItem('hk-username','مهدی عسکری')");
 
+// ── 20. import from xlsx / csv
+console.log('20) import from xlsx / csv');
+const zlib=require('zlib');
+const crc32=buf=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}let x=0xFFFFFFFF;for(const b of buf)x=t[(x^b)&0xFF]^(x>>>8);return (x^0xFFFFFFFF)>>>0;};
+const mkZip=entries=>{
+  const enc=new TextEncoder(),body=[],cen=[];let off=0;
+  for(const [name,text] of entries){
+    const nameB=enc.encode(name),data=Buffer.from(enc.encode(text)),comp=zlib.deflateRawSync(data),crc=crc32(data);
+    const lh=Buffer.alloc(30);
+    lh.writeUInt32LE(0x04034b50,0);lh.writeUInt16LE(20,4);lh.writeUInt16LE(8,8);
+    lh.writeUInt32LE(crc,14);lh.writeUInt32LE(comp.length,18);lh.writeUInt32LE(data.length,22);lh.writeUInt16LE(nameB.length,26);
+    body.push(lh,nameB,comp);
+    const ch=Buffer.alloc(46);
+    ch.writeUInt32LE(0x02014b50,0);ch.writeUInt16LE(20,4);ch.writeUInt16LE(20,6);ch.writeUInt16LE(8,10);
+    ch.writeUInt32LE(crc,16);ch.writeUInt32LE(comp.length,20);ch.writeUInt32LE(data.length,24);
+    ch.writeUInt16LE(nameB.length,28);ch.writeUInt32LE(off,42);
+    cen.push(ch,nameB);
+    off+=30+nameB.length+comp.length;
+  }
+  const b=Buffer.concat(body),c=Buffer.concat(cen),e=Buffer.alloc(22);
+  e.writeUInt32LE(0x06054b50,0);e.writeUInt16LE(entries.length,8);e.writeUInt16LE(entries.length,10);
+  e.writeUInt32LE(c.length,12);e.writeUInt32LE(b.length,16);
+  return new Uint8Array(Buffer.concat([b,c,e]));
+};
+const SST=['تاریخ','شرح هزینه','مبلغ','خرید سیمان','دستمزد بنا','1404/03/15'];
+const XLSX=mkZip([
+  ['xl/sharedStrings.xml','<?xml version="1.0"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+SST.map(s=>`<si><t>${s}</t></si>`).join('')+'</sst>'],
+  ['xl/workbook.xml','<?xml version="1.0"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="هزینه‌ها" sheetId="1" r:id="rId1"/><sheet name="خالی" sheetId="2" r:id="rId2"/></sheets></workbook>'],
+  ['xl/_rels/workbook.xml.rels','<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Target="worksheets/sheet2.xml"/></Relationships>'],
+  ['xl/worksheets/sheet1.xml','<?xml version="1.0"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+
+    '<row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c><c r="C1" t="s"><v>2</v></c></row>'+
+    '<row r="2"><c r="A2"><v>45435</v></c><c r="B2" t="s"><v>3</v></c><c r="C2"><v>120000000</v></c></row>'+
+    '<row r="3"><c r="A3" t="s"><v>5</v></c><c r="B3" t="s"><v>4</v></c><c r="C3"><v>45000000</v></c></row>'+
+    '<row r="4"><c r="A4"><v>45435</v></c><c r="B4" t="s"><v>3</v></c><c r="C4"><v>120000000</v></c></row>'+
+    '</sheetData></worksheet>'],
+  ['xl/worksheets/sheet2.xml','<?xml version="1.0"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData/></worksheet>']
+]);
+/* jsdom has no Response/DecompressionStream — borrow Node's (same web APIs) */
+const _Blob=window.Blob,_Resp=window.Response,_DcS=window.DecompressionStream;
+window.Blob=Blob;window.Response=Response;window.DecompressionStream=DecompressionStream;
+
+ok(!!document.getElementById('importBtn'),'import button in footer');
+click(document.getElementById('importBtn'));
+ok(document.getElementById('impModal').classList.contains('open'),'import modal opens');
+ok(document.getElementById('impStep1').style.display==='','step 1 visible');
+
+/* xlsx path */
+await G('impHandleFile')({name:'fixture.xlsx',arrayBuffer:async()=>XLSX.buffer.slice(XLSX.byteOffset,XLSX.byteOffset+XLSX.byteLength)});
+await sleep(80);
+ok(document.getElementById('impFileName').classList.contains('show'),'xlsx file accepted');
+ok(G('imp.sheets.length')===2,'both sheets read from the zip');
+ok(G('imp.sheetIdx')===0,'non-empty sheet auto-selected');
+ok(G('imp.rows.length')===4,'4 rows decoded');
+ok(G('imp.rows[1][1]')==='خرید سیمان','shared string resolved');
+ok(G('imp.hdr')===0,'header row detected');
+const roles=G('imp.map.map(o=>o.role).join(",")');
+ok(roles.includes('date')&&roles.includes('desc')&&roles.includes('amount'),'columns auto-mapped: '+roles);
+click(document.getElementById('impNext1'));
+ok(document.getElementById('impStep2').style.display==='','step 2 shown');
+click(document.getElementById('impNext2'));
+ok(document.getElementById('impStep3').style.display==='','step 3 shown');
+ok(G('imp.parsed.ok.length')===2&&G('imp.parsed.dup')===1,'2 rows ready, 1 duplicate flagged');
+ok(G('imp.parsed.ok.some(t=>t.amount===12000000)'),'120,000,000 ریال → 12,000,000 تومان');
+ok(G('imp.parsed.ok.some(t=>t.jy===1403&&t.jm===3&&t.jd===3)'),'excel serial 45435 → 1403/03/03');
+ok(G('imp.parsed.ok.some(t=>t.jy===1404&&t.jm===3&&t.jd===15)'),'jalali text date parsed');
+ok(G("imp.parsed.ok.some(t=>t.cat==='construction')"),'auto category: سیمان → ساخت و ساز');
+const impBefore=G('state.txs.length');
+click(document.getElementById('impGo'));
+ok(G('state.txs.length')===impBefore+2,'2 transactions committed');
+ok(G('state.txs.filter(t=>t.imp).length')===2,'committed rows tagged with the batch id');
+ok(G('state.imports.length')===1,'import batch recorded');
+ok(document.getElementById('impUndo').style.display!=='none','undo button appears');
+click(document.getElementById('impUndo'));
+ok(G('state.txs.length')===impBefore,'undo removed exactly the imported rows');
+ok(G('state.imports.length')===0,'import batch cleared');
+
+/* csv paste path */
+click(document.getElementById('impTabPaste'));
+ok(document.getElementById('impPastePane').style.display==='','paste tab switches');
+document.getElementById('impPaste').value='تاریخ,شرح,مبلغ,نوع\n1404/04/01,اجاره خانه,90000000,برداشت\n1404/04/03,فروش لوازم,3000000,واریز';
+click(document.getElementById('impNext1'));
+ok(G('imp.rows.length')===3,'csv parsed into rows');
+click(document.getElementById('impNext2'));
+ok(G('imp.parsed.ok.length')===2,'csv rows parsed');
+ok(G("imp.parsed.ok.some(t=>t.type==='in')"),'واریز → income via the type column');
+const b2=G('state.txs.length');
+click(document.getElementById('impGo'));
+ok(G('state.txs.length')===b2+2,'csv import committed');
+click(document.getElementById('impUndo'));
+ok(G('state.txs.length')===b2,'csv import undone');
+window.Blob=_Blob;window.Response=_Resp;window.DecompressionStream=_DcS;
+G('renderAll()');
+ok(true,'renders clean after import tests');
+
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
 process.exit(failures?1:0);
