@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.7.0','APP_VERSION is v1.7.0');
-  ok(G('WHATS_NEW[0].v')==='v1.7.0','whats-new leads with v1.7.0');
+  ok(G('APP_VERSION')==='v1.8.0','APP_VERSION is v1.8.0');
+  ok(G('WHATS_NEW[0].v')==='v1.8.0','whats-new leads with v1.8.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v9/.test(sw),'service-worker cache bumped to v9');
+  ok(/hesabketab-v10/.test(sw),'service-worker cache bumped to v10');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -508,7 +508,41 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.7.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.8.0','version bumped to v1.7.0');
+}
+
+console.log('\n── 23) v1.8 bottom navigation ──');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const i=css.indexOf('@media(max-width:1023px)');
+  ok(i>0,'bottom-nav breakpoint exists');
+  const blk=css.slice(i,i+2400);
+  ok(/:root\{--nav-h:62px\}/.test(blk),'nav height is a token');
+  ok(/\.tabs\{position:fixed;inset-inline:0;top:auto;bottom:0/.test(blk),'tab bar is pinned to the bottom');
+  ok(/body\{padding-bottom:calc\(var\(--nav-h\) \+ env\(safe-area-inset-bottom\)\)/.test(blk),'content clears the bar and the safe area');
+  ok(/\.tabs \.wrap\{max-width:none;padding:0\}/.test(blk),'the bar spans the full width, not the content column');
+  ok(/\.tab\{flex:1 1 0/.test(blk)&&/min-height:var\(--nav-h\)/.test(blk),'every slot is an equal, thumb-sized target');
+  ok(/\.tab-lbl\{display:none/.test(blk)&&/\.tab\.active \.tab-lbl\{display:block\}/.test(blk),'only the active item shows its label');
+  ok(/\.ind\{[^}]*border-radius:var\(--r-pill\)/.test(blk),'the indicator is a pill');
+  ok(/\.ind\{[^}]*width:calc\(var\(--w,44px\) - 6px\)/.test(blk)&&/translateX\(calc\(var\(--x,0px\) \+ 3px\)\)/.test(blk),'the pill centres itself from --x/--w in pure CSS');
+  ok(/\.toast\{bottom:calc\(var\(--nav-h\)/.test(blk),'toast sits above the bar');
+  ok(/\.pop\.ntf\{bottom:calc\(var\(--nav-h\)/.test(blk),'notification sheet sits above the bar');
+  ok(!/--tabs-h/.test(html),'the old measured top offset is gone for good');
+  ok(/\.dayhead\{position:sticky;top:0/.test(css)&&/\.form-card\{position:sticky;top:22px/.test(css),'sticky rows use plain offsets now');
+  ok(/@media\(min-width:1024px\)/.test(css),'the desktop rail is untouched');
+  /* labels: short on screen, full name for assistive tech and the rail tooltip */
+  const tabs=[...document.querySelectorAll('.tab')];
+  ok(tabs.length===8,'eight tabs');
+  ok(tabs.every(t=>t.querySelector('.tab-lbl').textContent.length<=7),'bottom labels are short enough for 8 slots');
+  ok(tabs.every(t=>t.getAttribute('aria-label')&&t.getAttribute('aria-label').length>=t.querySelector('.tab-lbl').textContent.length),'aria-label carries the fuller name');
+  ok(tabs.every(t=>t.dataset.tip===t.getAttribute('aria-label')),'rail tooltip matches the accessible name');
+  const names=tabs.map(t=>t.getAttribute('aria-label')).join(',');
+  ok(/تراکنش‌ها/.test(names)&&/داشبورد/.test(names),'full Persian names preserved');
+  /* the click model still works after the restructure */
+  const b=document.querySelector('.tab[data-tab="budget"]');
+  b.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  ok(document.getElementById('pane-budget').classList.contains('active'),'bottom-nav tabs still switch panes');
+  G("setTab('dash')");
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
