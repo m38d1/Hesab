@@ -524,6 +524,12 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 .b-budget,.b-recent{grid-column:span 3}
 @media(max-width:1100px){.b-hero{grid-column:span 6}}
 @media(max-width:960px){.dash-bento{grid-template-columns:repeat(2,1fr)}.b-hero,.b-budget,.b-recent,.b-rate{grid-column:span 2}}
+/* restore the semantic edges that the tonal border:0 would have flattened */
+.m-in{border-inline-start:3px solid var(--green)}
+.m-ex{border-inline-start:3px solid var(--coral)}
+.m-save{border-inline-start:3px solid var(--gold)}
+.b-budget{border-top:3px solid var(--turq)}
+.b-recent{border-top:1px solid var(--line)}
 .hero-line{display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap;margin-top:2px}
 .delta{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r-pill);padding:3px 10px;font-size:var(--f-micro);font-weight:700;line-height:1.6;font-variant-numeric:tabular-nums;background:var(--soft2);color:var(--muted)}
 .delta.up{background:var(--green-soft);color:var(--green)}
