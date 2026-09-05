@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.6.0','APP_VERSION is v1.6.0');
-  ok(G('WHATS_NEW[0].v')==='v1.6.0','whats-new leads with v1.6.0');
+  ok(G('APP_VERSION')==='v1.7.0','APP_VERSION is v1.7.0');
+  ok(G('WHATS_NEW[0].v')==='v1.7.0','whats-new leads with v1.7.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,10 +458,57 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v8/.test(sw),'service-worker cache bumped to v8');
+  ok(/hesabketab-v9/.test(sw),'service-worker cache bumped to v9');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
+}
+
+console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
+{
+  const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  /* desktop rail */
+  ok(/@media\(min-width:1024px\)/.test(css),'desktop rail breakpoint present');
+  ok(/--rail-w:72px/.test(css),'rail width is a token');
+  ok(/body\{padding-inline-end:var\(--rail-w\)/.test(css),'content is inset by the rail (logical property)');
+  ok(/\.tabs\{position:fixed/.test(css),'tab bar becomes a fixed rail');
+  ok(/\.tab::after\{content:attr\(data-tip\)/.test(css),'rail labels survive as tooltips');
+  ok(document.querySelectorAll('.tab-ic use').length===8,'all 8 tabs have a glyph');
+  ok([...document.querySelectorAll('.tab')].every(t=>/^#i-[a-z]+$/.test(t.querySelector('.tab-ic use').getAttribute('href'))),'every glyph resolves to a sprite id');
+  ok(/\.ind\{[^}]*width:var\(--w/.test(css)&&js.includes("ind.style.setProperty('--y'"),'indicator is driven by custom props in both axes');
+  ok(!/ind\.style\.width=/.test(js),'no inline width left on the indicator');
+  /* card menus */
+  const menus=[...document.querySelectorAll('.card-menu')];
+  ok(menus.length>=6,'cards expose an action menu ('+menus.length+')');
+  ok(menus.every(b=>b.getAttribute('aria-haspopup')==='true'),'menu triggers declare aria-haspopup');
+  ok(menus.every(b=>/گزینه‌های/.test(b.getAttribute('aria-label'))),'menu triggers are labelled');
+  ok(menus.every(b=>b.querySelector('use').getAttribute('href')==='#i-dots'),'menu triggers use the dots glyph');
+  ok(!!document.getElementById('cardMenu'),'a single shared popover exists');
+  ok(/\.pop\{position:fixed/.test(css)&&/z-index:10002/.test(css),'popover floats above the app');
+  ok(/@media\(hover:hover\) and \(pointer:fine\)/.test(css),'hover lift is gated to fine pointers');
+  /* knob + sparklines */
+  ok(/@property\(--p\)/.test(css),'--p is registered so the knob can animate');
+  ok(/\.knob\{[^}]*conic-gradient/.test(css),'the KPI ring is a conic gradient');
+  ok(!!document.getElementById('dKnob'),'savings knob is in the bento');
+  ok(/\.mini-sp \.spark\{width:100%/.test(css),'tile sparklines fill their card');
+  ok(/function spark\(vals,w,h\)/.test(js),'spark() takes a size');
+  ok(/gid='spg'\+/.test(js),'spark() gives each gradient a unique id');
+  /* notifications */
+  ok(!!document.getElementById('notifPop'),'notification panel exists');
+  ok(document.getElementById('bellChip').getAttribute('aria-controls')==='notifPop','bell controls the panel');
+  ok(!document.getElementById('bellChip').hasAttribute('data-goto'),'bell no longer navigates directly');
+  ok(/function dueItems\(\)/.test(js),'due items come from one shared source');
+  ok(/\.pop\.ntf\{[^}]*max-height:min\(62vh/.test(css),'panel is scroll-capped');
+  ok(/@media\(max-width:640px\)\{\.pop\.ntf\{position:fixed/.test(css),'panel becomes a sheet on phones');
+  /* micro bars */
+  ok(/--magf:/.test(js),'rows publish their magnitude');
+  ok(/#dRecent \.txrow::after\{[^}]*transform:scaleX\(var\(--magf/.test(css),'magnitude bar uses transform, not width');
+  ok(/\.rec-prog>i\{/.test(css),'recurring rows have a period bar');
+  /* hygiene carried forward */
+  ok(!/transition:left/.test(css),'still no left-anchored transitions');
+  ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
+  ok(G("APP_VERSION")==='v1.7.0','version bumped to v1.7.0');
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
