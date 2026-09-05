@@ -20,6 +20,7 @@
 <meta name="apple-mobile-web-app-title" content="حساب‌وکتاب">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+button{color:inherit;font-family:inherit}
 :root{
   /* ── brand accents (hues unchanged) ── */
   --turq:#38d5bd;--gold:#e9b44c;--coral:#f4756a;--green:#5ecf8d;--blue:#5bc8dd;--pink:#e78fb3;
@@ -198,7 +199,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .txedit{color:var(--dim)}.txdel{color:var(--dim)}
 .txrow:hover .txedit,.txrow:hover .txdel,.txrow:active .txedit,.txrow:active .txdel{opacity:1}
 .txedit:hover{color:var(--turq);border-color:rgba(56,213,189,.4)}
-.txdel:hover{color:var(--coral);border-color:rgba(244,117,106,.4)}
+.txdel{color:var(--coral)}
+.txdel:hover{color:var(--coral);opacity:1;border-color:rgba(244,117,106,.4)}
 .txdel.armed{opacity:1;color:#fff;background:var(--coral);font-size:var(--f-micro);width:auto;padding:0 9px}
 .dayhead{position:sticky;top:0;background:linear-gradient(165deg,var(--panel),var(--panel2));font-size:.72rem;color:var(--gold);padding:9px 8px 4px;z-index:5}
 .empty{text-align:center;color:var(--muted);padding:34px 10px;font-size:var(--f-sm)}
@@ -663,8 +665,8 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 [data-theme="light"] .g1{opacity:.4;background:radial-gradient(circle,rgba(12,143,126,.15),transparent 70%)}
 [data-theme="light"] .g2{opacity:.4;background:radial-gradient(circle,rgba(176,118,26,.12),transparent 70%)}
 [data-theme="light"] body::before{opacity:.09;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%230c8f7e' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='34'/%3E%3Ccircle cx='60' cy='60' r='22'/%3E%3Crect x='36' y='36' width='48' height='48'/%3E%3Crect x='36' y='36' width='48' height='48' transform='rotate(45 60 60)'/%3E%3Cpath d='M60 8v104M8 60h104M26 26l68 68M94 26L26 94'/%3E%3Ccircle cx='60' cy='60' r='4' fill='%23b0761a' stroke='none'/%3E%3C/g%3E%3C/svg%3E")}
-.theme-toggle{width:42px;height:42px;flex:none;border-radius:var(--r-full);border:1px solid var(--line2);background:var(--ink);cursor:pointer;display:grid;place-items:center;font-size:var(--f-md);transition:transform .3s,border-color .3s,background .3s}
-.theme-toggle:hover{transform:rotate(25deg) scale(1.1);border-color:var(--gold)}
+.theme-toggle{width:42px;height:42px;flex:none;border-radius:var(--r-full);border:1px solid var(--line2);background:var(--ink);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:var(--f-md);transition:transform .3s,border-color .3s,background .3s}
+.theme-toggle:hover{transform:rotate(25deg) scale(1.1);border-color:var(--gold);color:var(--gold)}
 .theme-toggle .tt-ic{display:block;line-height:1;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .theme-toggle.spin .tt-ic{transform:rotate(360deg)}
 html.theming,html.theming *,html.theming *::before,html.theming *::after{transition:background-color .4s ease,color .4s ease,border-color .4s ease,box-shadow .4s ease,fill .4s ease,stroke .4s ease!important}
@@ -974,7 +976,7 @@ const WHATS_NEW=[
     'نشانگر به‌جای خط زیرِ تب، یک قرص رنگی است که زیر آیتم فعال می‌لغزد',
     'برچسب‌ها کوتاه شدند (خانه، تراکنش، حساب، دسته، وام، بودجه، گزارش، تقویم)؛ نام کامل برای خوانندهٔ صفحه‌نمایش و tooltipِ ریل حفظ شد',
     'اعلان، توست و شیت‌های پایینی بالا آمدند تا زیر منو نروند؛ ارتفاع صفحه با safe-area گوشی‌های نهایی‌شده تنظیم می‌شود',
-    'در دسکتاپ همان ریل عمودی آیکون‌دار می‌ماند'
+    'در دسکتاپ همان ریل عمودی آیکون‌دار می‌ماند','رفع دیده‌نشدن آیکون ماه و خورشید: دکمه‌ها رنگ متن را از صفحه نمی‌گیرند، پس نشانگرِ تم سیاه روی زمینه تیره کشیده می‌شد'
   ]},
   {v:'v1.7.0',date:'۱۵ شهریور ۱۴۰۵',items:[
     'نوار منو در صفحه‌نمایش بزرگ به یک ریل عمودی ۷۲ پیکسلی با آیکون تبدیل می‌شود؛ نشانگر رنگی به‌جای خط زیرِ تب، روی لبهٔ ریل می‌لغزد',

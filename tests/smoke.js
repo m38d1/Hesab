@@ -528,6 +528,14 @@ console.log('\n── 23) v1.8 bottom navigation ──');
   ok(/\.toast\{bottom:calc\(var\(--nav-h\)/.test(blk),'toast sits above the bar');
   ok(/\.pop\.ntf\{bottom:calc\(var\(--nav-h\)/.test(blk),'notification sheet sits above the bar');
   ok(!/--tabs-h/.test(html),'the old measured top offset is gone for good');
+  ok(/button\{color:inherit/.test(css),'buttons inherit text colour (SVG glyphs use currentColor)');
+  {const tr=(css.match(/\.theme-toggle\{[^}]*\}/)||[''])[0];
+   ok(/color:var\(--muted\)/.test(tr),'the theme toggle paints its moon/sun glyph');
+   ok(/\.theme-toggle:hover\{[^}]*color:var\(--gold\)/.test(css),'and brightens it on hover');}
+  {const noColor=[...css.matchAll(/([^{}\n]+)\{([^{}]*)\}/g)]
+     .filter(m=>/^\.(theme-toggle|bell-ic|tt-ic|txdel|card-menu|modal-x|nav-btn|tab)$/.test(m[1].trim())&&!/(^|;)\s*color\s*:/.test(m[2]))
+     .map(m=>m[1].trim());
+   ok(noColor.filter(x=>x!=='.bell-ic'&&x!=='.tt-ic').length===0,'no glyph-bearing button is left without a colour');}
   ok(/\.dayhead\{position:sticky;top:0/.test(css)&&/\.form-card\{position:sticky;top:22px/.test(css),'sticky rows use plain offsets now');
   ok(/@media\(min-width:1024px\)/.test(css),'the desktop rail is untouched');
   /* labels: short on screen, full name for assistive tech and the rail tooltip */
