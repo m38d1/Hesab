@@ -431,6 +431,9 @@ console.log('\n21) v1.6 design system');
 
   /* tabs: a11y + transform indicator */
   ok(document.querySelectorAll('.tab[role="tab"]').length===8,'every tab has role=tab');
+  {const b=document.querySelector('.tab[data-tab="cal"]');b.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+   ok(document.getElementById('pane-cal').classList.contains('active')&&b.getAttribute('aria-selected')==='true','menu click switches pane (regression: wiring was once deleted)');
+   G("setTab('dash')");}
   ok(document.querySelectorAll('.tab[aria-selected="true"]').length===1,'exactly one tab is selected');
   ok([...document.querySelectorAll('.tab')].every(b=>document.getElementById(b.getAttribute('aria-controls'))),'aria-controls resolves');
   ok(document.querySelectorAll('.pane[role="tabpanel"]').length===8,'panes are tabpanels');
