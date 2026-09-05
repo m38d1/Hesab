@@ -1,6 +1,6 @@
-const CACHE = 'hesabketab-v7';
+const CACHE = 'hesabketab-v8';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon.png',
-  'https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap'];
+  'https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@100..900&display=swap'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

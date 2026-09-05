@@ -355,6 +355,112 @@ window.Blob=_Blob;window.Response=_Resp;window.DecompressionStream=_DcS;
 G('renderAll()');
 ok(true,'renders clean after import tests');
 
+/* appended by v1.6 — design-system regression section */
+
+console.log('\n21) v1.6 design system');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const root=css.slice(0,css.indexOf('[data-theme="light"]'));
+  ok(G('APP_VERSION')==='v1.6.0','APP_VERSION is v1.6.0');
+  ok(G('WHATS_NEW[0].v')==='v1.6.0','whats-new leads with v1.6.0');
+  ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
+
+  /* token scales */
+  for(const t of ['--r-xs','--r-sm','--r-md','--r-lg','--r-xl','--r-pill','--r-full',
+                  '--s-1','--s-4','--s-6','--f-micro','--f-xs','--f-sm','--f-base','--f-md','--f-lg','--f-xl','--f-2xl',
+                  '--e-1','--e-2','--e-3','--e-4','--d-1','--d-2','--d-3','--d-4',
+                  '--ease-std','--ease-out','--ease-in','--ease-emph','--ease-spring',
+                  '--surface-1','--surface-2','--surface-3','--surface-4','--scrim','--glass','--on-accent','--grad-primary',
+                  '--turq-soft','--gold-soft','--coral-soft','--green-soft','--ring-focus','--glow','--sheen','--knob'])
+    if(!new RegExp('[\\s;{]'+t+'\\s*:').test(root)){ok(false,'token defined: '+t);break;}
+  ok(true,'radius / space / type / elevation / motion / surface scales all defined');
+  ok(/--e-1:[^;]*rgba\(2,16,19/.test(root)&&/--e-1:[^;]*,[^;]*rgba\(2,16,19/.test(root),'elevation is two-part (contact + ambient)');
+  {const bl=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)];let circ=0;
+   bl.forEach(m=>{for(const d of (m[1].match(/--[a-z0-9-]+\s*:[^;}]*/gi)||[])){
+     const nm=d.match(/^(--[a-z0-9-]+)\s*:/i)[1];
+     if(new RegExp('var\\('+nm+'\\s*[,)]').test(d.slice(nm.length+1)))circ++;}});
+   ok(circ===0,'no circular custom-property definitions');}
+  {const cs=window.getComputedStyle(document.documentElement);const get=k=>cs.getPropertyValue(k).trim();
+   ok(/^#[0-9a-f]{3,8}$/i.test(get('--on-accent')),'--on-accent resolves to a colour ('+get('--on-accent')+')');
+   ok(/^#[0-9a-f]{6}$/i.test(get('--turq-deep')),'--turq-deep resolves to a colour');
+   ok(/4,26,31/.test(get('--ink')),'--ink resolves to a tint');
+   ok(/rgba?\(/.test(get('--track'))&&/rgba?\(/.test(get('--soft'))&&/rgba?\(/.test(get('--turq-soft')),'alpha-tint tokens resolve');
+   ok(get('--r-lg')==='20px'&&get('--f-micro')==='.72rem'&&get('--d-2')==='180ms','scale tokens resolve to real values');}
+  ok(/--e-3:[^;]*,[^;]*rgba\(2,16,19/.test(root)&&/--e-3:[^;]*,[^;]*rgba\(2,16,19/.test(root),'--e-3 uses one black base');
+
+  /* contrast fixes */
+  ok(/--dim:#84a8a2/.test(root)&&/--muted:#9ec3bc/.test(root),'dark text tiers raised to AA');
+  ok(/--turq:#0a7d6d/.test(css)&&/--gold:#8a5c0f/.test(css)&&/--coral:#c33f34/.test(css)&&/--green:#1a7f4e/.test(css),'light accents darkened to AA');
+  ok(/--dim:#5d7d78/.test(css),'light --dim raised to AA');
+  ok((css.match(/#fff/g)||[]).length<20,'white literals mostly retired');
+
+  /* theme = pure token swap */
+  const lightPatches=(css.match(/\[data-theme="light"\]/g)||[]).length;
+  ok(lightPatches<=8,'light theme is a token swap, not a patch layer ('+lightPatches+' rules, was 28)');
+  const tc=G("document.documentElement.getAttribute('data-theme')");
+  G("document.documentElement.setAttribute('data-theme','light')");
+  const lt=window.getComputedStyle(document.documentElement).getPropertyValue('--turq').trim();
+  G("document.documentElement.setAttribute('data-theme','"+tc+"')");
+  ok(lt==='#0a7d6d','switching data-theme swaps tokens only');
+
+  /* typography */
+  ok(/\.txamt\{text-align:end\}/.test(css),'amounts are inline-end aligned');
+  ok(/font-variant-numeric:tabular-nums/.test(css),'money uses tabular figures');
+  ok(!/\.big-val\{[^}]*Lalezar/.test(css)&&!/text-shadow:0 2px 18px/.test(css),'hero number: no display face, no neon glow');
+  ok(!/letter-spacing:\.[3-9]px/.test(css),'no tracking on connected Persian script');
+
+  /* motion */
+  ok(!/transition:left/.test(css)&&!/transition:width 1s/.test(css),'no layout-property transitions left');
+  ok((css.match(/transition:var\(--tr\)/g)||[]).length>20,'shared transition token replaces bare `all` shorthands');
+  ok((css.match(/animation:[^;}]*infinite/g)||[]).every(x=>/livePulse/.test(x)),'only the functional live-status loop stays infinite');
+  ok(/@media \(prefers-reduced-motion:reduce\)/.test(css)&&!/reduce\)\{\*\{animation:none!important;transition:none!important\}\}/.test(css),'reduced motion reduces instead of destroying');
+  ok(/:focus-visible/.test(css),'focus-visible ring exists');
+
+  /* glass only on overlays */
+  const bd=css.split('}').filter(r=>/backdrop-filter/.test(r));
+  ok(bd.every(r=>/\.modal\{|\.modal\b/.test(r)),'backdrop-filter only on modal scrim');
+
+  /* bento dashboard */
+  const bento=document.querySelectorAll('.dash-bento > .card');
+  ok(bento.length===6,'dashboard is a 6-tile bento grid');
+  ok(document.querySelector('.b-hero')&&document.querySelector('.b-budget'),'bento tiles carry span classes');
+  ok(document.querySelectorAll('.dash-top,.dash-side,.dash-grid').length===0,'old dashboard wrappers removed');
+  G('renderDashboard()');
+  ok(document.getElementById('dDelta').textContent.length>0,'month-over-month delta chip renders');
+  ok(/up|down/.test(document.getElementById('dDelta').className),'delta chip has a direction state');
+
+  /* tabs: a11y + transform indicator */
+  ok(document.querySelectorAll('.tab[role="tab"]').length===8,'every tab has role=tab');
+  ok(document.querySelectorAll('.tab[aria-selected="true"]').length===1,'exactly one tab is selected');
+  ok([...document.querySelectorAll('.tab')].every(b=>document.getElementById(b.getAttribute('aria-controls'))),'aria-controls resolves');
+  ok(document.querySelectorAll('.pane[role="tabpanel"]').length===8,'panes are tabpanels');
+  ok(/transform:translateX\(var\(--x/.test(css),'tab indicator animates on transform');
+  G("setTab('tx')");
+  const ind=document.getElementById('tabInd');
+  ok(ind.style.getPropertyValue('--x')!=='','indicator position written to --x');
+  ok(document.querySelector('.tab[data-tab="tx"]').getAttribute('aria-selected')==='true','setTab updates aria-selected');
+  document.querySelector('.tab[data-tab="tx"]').focus();
+  document.getElementById('tabs').dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true}));
+  ok(document.querySelector('.tab[data-tab="acc"]').classList.contains('active'),'arrow-key tab navigation works');
+  G("setTab('dash')");
+
+  /* dialogs */
+  ok([...document.querySelectorAll('.modal')].every(m=>m.getAttribute('role')==='dialog'&&m.getAttribute('aria-modal')==='true'),'all modals are aria dialogs');
+  ok(document.getElementById('i-x')&&document.querySelectorAll('.modal-x svg use').length>=10,'close buttons use the SVG sprite');
+  ok(!document.querySelector('.modal-x')?.textContent.includes('✕'),'no ✕ glyph left in chrome');
+  ok(document.querySelector('.theme-toggle svg use'),'theme toggle is an SVG icon');
+  ok(document.querySelector('.gsc-chip svg use'),'search chip is an SVG icon');
+
+  /* PWA chrome */
+  ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
+  const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
+  ok(/hesabketab-v8/.test(sw),'service-worker cache bumped to v8');
+  ok(/contain:paint/.test(css),'long lists skip offscreen work');
+  ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
+  ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
+}
+
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
 process.exit(failures?1:0);
