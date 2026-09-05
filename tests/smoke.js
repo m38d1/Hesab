@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.8.0','APP_VERSION is v1.8.0');
-  ok(G('WHATS_NEW[0].v')==='v1.8.0','whats-new leads with v1.8.0');
+  ok(G('APP_VERSION')==='v1.9.0','APP_VERSION is v1.9.0');
+  ok(G('WHATS_NEW[0].v')==='v1.9.0','whats-new leads with v1.9.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -418,7 +418,7 @@ console.log('\n21) v1.6 design system');
 
   /* glass only on overlays */
   const bd=css.split('}').filter(r=>/backdrop-filter/.test(r));
-  ok(bd.every(r=>/\.modal\{|\.modal\b/.test(r)),'backdrop-filter only on modal scrim');
+  ok(bd.every(r=>/\.modal\{|\.modal\b|\.tabs\{/.test(r)),'backdrop-filter is used only by the scrim and the floating dock');
 
   /* bento dashboard */
   const bento=document.querySelectorAll('.dash-bento > .card');
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v10/.test(sw),'service-worker cache bumped to v10');
+  ok(/hesabketab-v11/.test(sw),'service-worker cache bumped to v11');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -508,7 +508,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.8.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.9.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -517,16 +517,16 @@ console.log('\n── 23) v1.8 bottom navigation ──');
   const i=css.indexOf('@media(max-width:1023px)');
   ok(i>0,'bottom-nav breakpoint exists');
   const blk=css.slice(i,i+2400);
-  ok(/:root\{--nav-h:62px\}/.test(blk),'nav height is a token');
-  ok(/\.tabs\{position:fixed;inset-inline:0;top:auto;bottom:0/.test(blk),'tab bar is pinned to the bottom');
-  ok(/body\{padding-bottom:calc\(var\(--nav-h\) \+ env\(safe-area-inset-bottom\)\)/.test(blk),'content clears the bar and the safe area');
+  ok(/--nav-h:62px/.test(blk)&&/--nav-inset:10px/.test(blk)&&/--nav-side:12px/.test(blk),'nav geometry is tokenised');
+  ok(/\.tabs\{position:fixed;inset-inline:0;top:auto;bottom:calc\(var\(--nav-inset\)/.test(blk),'the dock floats clear of the bottom edge');
+  ok(/body\{padding-bottom:calc\(var\(--nav-total\) \+ 8px\)/.test(blk)&&/--nav-total:calc\(var\(--nav-h\) \+ var\(--nav-inset\) \+ env\(safe-area-inset-bottom\)\)/.test(blk),'content clears the floating dock and the safe area');
   ok(/\.tabs \.wrap\{max-width:none;padding:0\}/.test(blk),'the bar spans the full width, not the content column');
   ok(/\.tab\{flex:1 1 0/.test(blk)&&/min-height:var\(--nav-h\)/.test(blk),'every slot is an equal, thumb-sized target');
   ok(/\.tab-lbl\{display:none/.test(blk)&&/\.tab\.active \.tab-lbl\{display:block\}/.test(blk),'only the active item shows its label');
   ok(/\.ind\{[^}]*border-radius:var\(--r-pill\)/.test(blk),'the indicator is a pill');
   ok(/\.ind\{[^}]*width:calc\(var\(--w,44px\) - 6px\)/.test(blk)&&/translateX\(calc\(var\(--x,0px\) \+ 3px\)\)/.test(blk),'the pill centres itself from --x/--w in pure CSS');
-  ok(/\.toast\{bottom:calc\(var\(--nav-h\)/.test(blk),'toast sits above the bar');
-  ok(/\.pop\.ntf\{bottom:calc\(var\(--nav-h\)/.test(blk),'notification sheet sits above the bar');
+  ok(/\.toast\{bottom:calc\(var\(--nav-total\)/.test(blk),'toast sits above the dock');
+  ok(/\.pop\.ntf\{bottom:calc\(var\(--nav-total\)/.test(blk),'notification sheet sits above the dock');
   ok(!/--tabs-h/.test(html),'the old measured top offset is gone for good');
   ok(/button\{color:inherit/.test(css),'buttons inherit text colour (SVG glyphs use currentColor)');
   {const tr=(css.match(/\.theme-toggle\{[^}]*\}/)||[''])[0];
@@ -551,6 +551,37 @@ console.log('\n── 23) v1.8 bottom navigation ──');
   b.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('pane-budget').classList.contains('active'),'bottom-nav tabs still switch panes');
   G("setTab('dash')");
+}
+
+console.log('\n── 24) v1.9 floating glass dock ──');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const i=css.indexOf('@media(max-width:1023px)');const blk=css.slice(i,i+2600);
+  const root=css.slice(0,css.indexOf('<'))||css;
+  ok(/--glass-bg:rgba\(10,44,51,\.74\)/.test(css),'the dark glass surface is a token');
+  {const lt=css.slice(css.indexOf('[data-theme="light"]'));
+   ok(/--glass-bg:rgba\(255,255,255,\.76\)/.test(lt),'light theme swaps the glass token too (still a pure token swap)');}
+  ok(/\.tabs\{[^}]*background:var\(--glass-bg\)/.test(blk),'the dock paints with the glass token');
+  ok(/\.tabs\{[^}]*backdrop-filter:var\(--glass\)/.test(blk)&&/\.tabs\{[^}]*-webkit-backdrop-filter:var\(--glass\)/.test(blk),'it blurs what is behind it, with the Safari prefix');
+  {const dr=(blk.match(/\.tabs\{[^}]*\}/)||[''])[0];
+   ok(!/backdrop-filter:blur\(/.test(dr)&&/backdrop-filter:var\(--glass\)/.test(dr),'it reuses the shared blur token instead of a new magic number');}
+  ok(/\.tabs\{[^}]*border-radius:var\(--r-pill\)/.test(blk),'fully rounded, like a dock');
+  ok(/\.tabs\{[^}]*inset-inline:0[^}]*width:min\(calc\(100% - var\(--nav-side\) \* 2\),var\(--nav-max\)\);margin-inline:auto/.test(blk),'detached from the side edges and centred, capped on tablets');
+  ok(/\.tabs\{[^}]*box-shadow:var\(--e-3\),inset 0 1px 0 var\(--sheen\)/.test(blk),'depth below plus a specular hairline on the top edge');
+  ok(/\.tabs\{[^}]*overflow:hidden/.test(blk),'children clip to the pill');
+  ok(/@supports not \(\(backdrop-filter:blur\(1px\)\) or \(-webkit-backdrop-filter:blur\(1px\)\)\)\{\.tabs\{background:var\(--surface-2\)\}\}/.test(blk),'WebView without backdrop-filter falls back to a solid surface');
+  ok(/\.tab:active\{transform:scale\(\.92\);transition-duration:90ms\}/.test(blk),'taps give a quick press response');
+  ok(!/\.tabs\{[^}]*border-top:1px solid/.test(blk),'the old edge-anchored top border is gone');
+  {const rl=css.slice(css.indexOf('@media(min-width:1024px)'));
+   const rtabs=(rl.match(/\.tabs\{[^}]*\}/)||[''])[0];
+   ok(/background:var\(--surface-1\)/.test(rtabs)&&!/backdrop-filter/.test(rtabs),'the desktop rail keeps its solid surface');}
+  /* logical properties only — RTL must not break */
+  const dockRule=(blk.match(/\.tabs\{[^}]*\}/)||[''])[0];
+  ok(!/(^|[;{]\s*)(left|right)\s*:/.test(dockRule),'the dock is positioned with logical properties');
+  /* the pill indicator still lives inside the clipped dock */
+  ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
+  /* version */
+  ok(G("APP_VERSION")==='v1.9.0','version bumped to v1.9.0');
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));

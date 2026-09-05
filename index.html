@@ -36,7 +36,7 @@ button{color:inherit;font-family:inherit}
   --ink:rgba(4,26,31,.6);--track:rgba(255,255,255,.08);--soft:rgba(255,255,255,.05);--soft2:rgba(255,255,255,.09);
   --turq-soft:rgba(56,213,189,.12);--gold-soft:rgba(233,180,76,.13);--coral-soft:rgba(244,117,106,.13);--green-soft:rgba(94,207,141,.13);
   --scrim:rgba(3,17,20,.62);--glass:blur(18px) saturate(150%);
-  --bar-a:rgba(255,255,255,.16);--sheen:rgba(255,255,255,.055);
+  --bar-a:rgba(255,255,255,.16);--sheen:rgba(255,255,255,.055);--glass-bg:rgba(10,44,51,.74);
   --glass-1:rgba(14,58,67,.72);--glass-2:rgba(8,42,48,.9);--knob:#cfe8e2;--gold-hairline:rgba(233,180,76,.28);--green-fill:rgba(94,207,141,.4);
   /* ── radius scale ── */
   --r-xs:8px;--r-sm:12px;--r-md:16px;--r-lg:20px;--r-xl:26px;--r-pill:999px;--r-full:50%;--r:var(--r-md);
@@ -624,9 +624,9 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 
 /* ── v1.8 bottom navigation (Material 3 nav bar): thumb-reachable, label only on the active item ── */
 @media(max-width:1023px){
-  :root{--nav-h:62px}
-  body{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom))}
-  .tabs{position:fixed;inset-inline:0;top:auto;bottom:0;z-index:60;border-bottom:0;border-top:1px solid var(--line);background:var(--surface-1);padding-bottom:env(safe-area-inset-bottom)}
+  :root{--nav-h:62px;--nav-inset:10px;--nav-side:12px;--nav-max:460px;--nav-total:calc(var(--nav-h) + var(--nav-inset) + env(safe-area-inset-bottom))}
+  body{padding-bottom:calc(var(--nav-total) + 8px)}
+  .tabs{position:fixed;inset-inline:0;top:auto;bottom:calc(var(--nav-inset) + env(safe-area-inset-bottom));z-index:60;width:min(calc(100% - var(--nav-side) * 2),var(--nav-max));margin-inline:auto;border:1px solid var(--line2);border-radius:var(--r-pill);background:var(--glass-bg);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--e-3),inset 0 1px 0 var(--sheen);overflow:hidden}
   .tabs .wrap{max-width:none;padding:0}
   .tabs-in{display:flex;gap:0;overflow:visible;padding:0}
   .tab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px;min-height:var(--nav-h);font-size:var(--f-micro);font-weight:700;border-radius:0;color:var(--dim)}
@@ -635,10 +635,12 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
   .tab.active{color:var(--turq)}
   .tab.active .tab-lbl{display:block}
   .tab:hover{color:var(--text)}
+  .tab:active{transform:scale(.92);transition-duration:90ms}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tabs{background:var(--surface-2)}}
   /* the underline becomes a pill that glides behind the active icon */
   .ind{bottom:auto;top:5px;left:0;width:calc(var(--w,44px) - 6px);height:32px;border-radius:var(--r-pill);background:var(--turq-soft);transform:translateX(calc(var(--x,0px) + 3px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
-  .toast{bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px)}
-  .pop.ntf{bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px)}
+  .toast{bottom:calc(var(--nav-total) + 14px)}
+  .pop.ntf{bottom:calc(var(--nav-total) + 8px)}
 }
 </style>
 <style id="themeCSS">
@@ -653,7 +655,7 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
   --ink:rgba(23,51,58,.055);--track:rgba(23,51,58,.1);--soft:rgba(23,51,58,.05);--soft2:rgba(23,51,58,.08);
   --turq-soft:rgba(10,125,109,.1);--gold-soft:rgba(138,92,15,.11);--coral-soft:rgba(195,63,52,.1);--green-soft:rgba(26,127,78,.1);
   --scrim:rgba(23,51,58,.34);--glass:blur(18px) saturate(140%);
-  --bar-a:rgba(255,255,255,.55);--sheen:rgba(255,255,255,.85);
+  --bar-a:rgba(255,255,255,.55);--sheen:rgba(255,255,255,.85);--glass-bg:rgba(255,255,255,.76);
   --e-1:0 1px 2px rgba(18,47,54,.09),0 2px 6px rgba(18,47,54,.05);
   --e-2:0 2px 4px rgba(18,47,54,.08),0 10px 24px rgba(18,47,54,.1);
   --e-3:0 12px 32px rgba(18,47,54,.13),0 32px 64px rgba(18,47,54,.12);
@@ -967,9 +969,17 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.8.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.9.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.9.0',date:'۱۵ شهریور ۱۴۰۵',items:[
+    'نوار منو از لبهٔ صفحه کناره گرفت و شناور شد؛ مثل داک iOS، اطرافش فضا دارد و گوشه‌هایش کاملاً گرد است',
+    'پشتِ داک شیشه‌ای مات است — محتوا از زیرش معلوم می‌ماند (با fallback سطحِ توپر برای مرورگرهای بدون blur)',
+    'با لمس، آیتم ۹۲٪ کوچک می‌شود و سریع برمی‌گردد؛ همان بازخورد فشرده‌شدن iOS',
+    'روی تبلت داک عریضِ بی‌قواره نمی‌شود: تا ۴۶۰px وسط می‌نشیند',
+    'توست و پنل اعلان به اندازهٔ ارتفاع جدیدِ شناور بالا آمدند',
+    'در دسکتاپ همان ریل توپر می‌ماند — شیشه فقط برای لایهٔ شناور است'
+  ]},
   {v:'v1.8.0',date:'۱۵ شهریور ۱۴۰۵',items:[
     'منوی اصلی پایین صفحه آمد؛ حالا با شست می‌رسید، نه با دست بالا',
     'آیتم فعال برچسب نشان می‌دهد و بقیه فقط آیکون‌اند — همان الگوی نوار ناوبری Material 3، تا هشت منو جا شوند',
