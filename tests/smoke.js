@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.9.0','APP_VERSION is v1.9.0');
-  ok(G('WHATS_NEW[0].v')==='v1.9.0','whats-new leads with v1.9.0');
+  ok(G('APP_VERSION')==='v1.10.0','APP_VERSION is v1.10.0');
+  ok(G('WHATS_NEW[0].v')==='v1.10.0','whats-new leads with v1.10.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -418,7 +418,7 @@ console.log('\n21) v1.6 design system');
 
   /* glass only on overlays */
   const bd=css.split('}').filter(r=>/backdrop-filter/.test(r));
-  ok(bd.every(r=>/\.modal\{|\.modal\b|\.tabs\{/.test(r)),'backdrop-filter is used only by the scrim and the floating dock');
+  ok(bd.every(r=>/\.modal\{|\.modal\b|\.tabs\{|\.moresheet\{/.test(r)),'backdrop-filter is used only by the scrim, the dock and the More sheet');
 
   /* bento dashboard */
   const bento=document.querySelectorAll('.dash-bento > .card');
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v11/.test(sw),'service-worker cache bumped to v11');
+  ok(/hesabketab-v12/.test(sw),'service-worker cache bumped to v12');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -474,7 +474,8 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   ok(/body\{padding-inline-end:var\(--rail-w\)/.test(css),'content is inset by the rail (logical property)');
   ok(/\.tabs\{position:fixed/.test(css),'tab bar becomes a fixed rail');
   ok(/\.tab::after\{content:attr\(data-tip\)/.test(css),'rail labels survive as tooltips');
-  ok(document.querySelectorAll('.tab-ic use').length===8,'all 8 tabs have a glyph');
+  ok(document.querySelectorAll('.tab .tab-ic use').length===8,'all 8 tabs have a glyph');
+  ok(document.querySelectorAll('#tabMore .tab-ic use').length===1,'the More slot has its own glyph');
   ok([...document.querySelectorAll('.tab')].every(t=>/^#i-[a-z]+$/.test(t.querySelector('.tab-ic use').getAttribute('href'))),'every glyph resolves to a sprite id');
   ok(/\.ind\{[^}]*width:var\(--w/.test(css)&&js.includes("ind.style.setProperty('--y'"),'indicator is driven by custom props in both axes');
   ok(!/ind\.style\.width=/.test(js),'no inline width left on the indicator');
@@ -508,7 +509,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.9.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.10.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -581,7 +582,53 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.9.0','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.10.0','version bumped to v1.9.0');
+}
+
+console.log('\n── 25) v1.10 four slots + More ──');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+  const i=css.indexOf('@media(max-width:1023px)');const blk=css.slice(i,i+4200);
+  ok(/<symbol id="i-more"[^>]*>(?:<rect[^>]*>){4}/.test(html),'the More glyph is four rounded squares');
+  ok(document.querySelectorAll('.tab.tab-opt').length===4,'four sections are marked secondary');
+  ok([...document.querySelectorAll('.tab.tab-opt')].map(b=>b.dataset.tab).join(',')==='cats,loans,reports,cal','the right four are secondary');
+  ok(/\.tab-more\{display:none\}/.test(css),'the More slot is hidden by default (desktop rail keeps all eight)');
+  ok(/\.tab-opt\{display:none\}/.test(blk),'secondary tabs collapse into More on small screens');
+  ok(blk.indexOf('.tab-opt{display:none}')>blk.indexOf('.tab-more{display:flex'),'and wins over the base .tab rule');
+  const more=document.getElementById('tabMore');
+  ok(!!more,'the More slot exists');
+  ok(more.getAttribute('aria-haspopup')==='dialog'&&more.getAttribute('aria-controls')==='morePop','it is wired as a dialog trigger');
+  ok(!more.hasAttribute('role')||more.getAttribute('role')!=='tab','it is not a tab, so the tablist stays honest');
+  const sheet=document.getElementById('morePop');
+  ok(!!sheet&&sheet.getAttribute('role')==='dialog','the sheet is a labelled dialog');
+  ok(/\.moresheet\{[^}]*background:var\(--glass-bg\)/.test(blk)&&/\.moresheet\{[^}]*backdrop-filter:var\(--glass\)/.test(blk),'the sheet reuses the dock glass, not a new recipe');
+  ok(/\.moresheet\{[^}]*bottom:calc\(var\(--nav-total\) \+ 8px\)/.test(blk),'the sheet floats above the dock');
+  ok(/\.moresheet\{[^}]*grid-template-columns:1fr 1fr/.test(blk)&&/\.moresheet\.open\{display:grid/.test(blk),'it opens as a two-up grid');
+  ok(/\.moresheet button\{[^}]*min-height:76px/.test(blk),'tiles are thumb-sized');
+  ok(/closeMore\(\)/.test(js)&&/addEventListener\('resize',\(\)=>\{closePop\(\);closeBell\(\);closeMore\(\)\}\)/.test(js),'the sheet closes on resize too');
+  ok(/function navSeq\(\)/.test(js)&&!/offsetParent/.test(js),'the keyboard sequence comes from state, not layout measurement');
+  /* runtime */
+  const seqMobile=G('navSeq().map(b=>b.dataset.tab||"more").join(",")');
+  ok(seqMobile==='dash,tx,acc,budget,more','mobile sequence is four primaries + More');
+  ok(G("(()=>{const r=RAIL,o=r.matches;r.matches=true;const n=navSeq().length;r.matches=o;return n})()")===8,'desktop sequence is all eight');
+  const moreBtn=document.getElementById('tabMore');
+  moreBtn.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  ok(sheet.classList.contains('open')&&moreBtn.getAttribute('aria-expanded')==='true','tapping More opens the sheet');
+  const tiles=[...sheet.querySelectorAll('button')];
+  ok(tiles.length===4&&tiles.map(t=>t.dataset.moret).join(',')==='cats,loans,reports,cal','the sheet lists exactly the four hidden sections');
+  ok(tiles.every(t=>/^#i-[a-z]+$/.test(t.querySelector('use').getAttribute('href'))),'every tile has its section glyph');
+  tiles[2].dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  ok(document.getElementById('pane-reports').classList.contains('active'),'choosing a tile navigates');
+  ok(!sheet.classList.contains('open'),'and closes the sheet');
+  ok(document.getElementById('moreLbl').textContent==='گزارش‌ها'&&document.getElementById('moreIc').getAttribute('href')==='#i-reports','the slot morphs into the active section');
+  ok(moreBtn.classList.contains('on'),'and reads as active');
+  moreBtn.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  ok(sheet.querySelector('button[data-moret="reports"]').getAttribute('aria-current')==='true','the open sheet marks the current section');
+  document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
+  ok(G("APP_VERSION")==='v1.10.0','version bumped to v1.10.0');
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
