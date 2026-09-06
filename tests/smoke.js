@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.13.1','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.13.1','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.14.0','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.14.0','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v16/.test(sw),'service-worker cache bumped to v15');
+  ok(/hesabketab-v17/.test(sw),'service-worker cache bumped to v15');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -474,7 +474,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   ok(/body\{padding-inline-end:var\(--rail-w\)/.test(css),'content is inset by the rail (logical property)');
   ok(/\.tabs\{position:fixed/.test(css),'tab bar becomes a fixed rail');
   ok(/\.tab::after\{content:attr\(data-tip\)/.test(css),'rail labels survive as tooltips');
-  ok(document.querySelectorAll('.tab .tab-ic use').length===8,'all 8 tabs have a glyph');
+  ok(document.querySelectorAll('.tab .tab-ic use').length===9,'every nav slot carries a glyph (8 sections + search)');
   ok(document.querySelectorAll('#tabMore .tab-ic use').length===1,'the More slot has its own glyph');
   ok([...document.querySelectorAll('.tab')].every(t=>/^#i-[a-z]+$/.test(t.querySelector('.tab-ic use').getAttribute('href'))),'every glyph resolves to a sprite id');
   ok(/\.ind\{[^}]*width:var\(--w/.test(css)&&js.includes("ind.style.setProperty('--y'"),'indicator is driven by custom props in both axes');
@@ -509,7 +509,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.14.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -518,7 +518,7 @@ console.log('\n── 23) v1.8 bottom navigation ──');
   const i=css.indexOf('@media(max-width:1023px)');
   ok(i>0,'bottom-nav breakpoint exists');
   const blk=css.slice(i,i+2400);
-  ok(/--nav-h:62px/.test(blk)&&/--nav-inset:10px/.test(blk)&&/--nav-side:12px/.test(blk),'nav geometry is tokenised');
+  ok(/--nav-h:64px/.test(blk)&&/--nav-inset:10px/.test(blk)&&/--nav-side:12px/.test(blk),'nav geometry is tokenised');
   ok(/\.tabs\{position:fixed;inset-inline:0;top:auto;bottom:calc\(var\(--nav-inset\)/.test(blk),'the dock floats clear of the bottom edge');
   ok(/body\{padding-bottom:calc\(var\(--nav-total\) \+ 8px\)/.test(blk)&&/--nav-total:calc\(var\(--nav-h\) \+ var\(--nav-inset\) \+ env\(safe-area-inset-bottom\)\)/.test(blk),'content clears the floating dock and the safe area');
   ok(/\.tabs \.wrap\{max-width:none;padding:0\}/.test(blk),'the bar spans the full width, not the content column');
@@ -541,10 +541,10 @@ console.log('\n── 23) v1.8 bottom navigation ──');
   ok(/@media\(min-width:1024px\)/.test(css),'the desktop rail is untouched');
   /* labels: short on screen, full name for assistive tech and the rail tooltip */
   const tabs=[...document.querySelectorAll('.tab')];
-  ok(tabs.length===8,'eight tabs');
+  ok(tabs.length===9,'nine slots: eight sections + the search action');
   ok(tabs.every(t=>t.querySelector('.tab-lbl').textContent.length<=7),'bottom labels are short enough for 8 slots');
   ok(tabs.every(t=>t.getAttribute('aria-label')&&t.getAttribute('aria-label').length>=t.querySelector('.tab-lbl').textContent.length),'aria-label carries the fuller name');
-  ok(tabs.every(t=>t.dataset.tip===t.getAttribute('aria-label')),'rail tooltip matches the accessible name');
+  ok(tabs.filter(t=>t.dataset.tip).every(t=>t.dataset.tip===t.getAttribute('aria-label')),'rail tooltip matches the accessible name (action slot opts out)');
   const names=tabs.map(t=>t.getAttribute('aria-label')).join(',');
   ok(/تراکنش‌ها/.test(names)&&/داشبورد/.test(names),'full Persian names preserved');
   /* the click model still works after the restructure */
@@ -568,7 +568,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
    ok(!/backdrop-filter:blur\(/.test(dr)&&/backdrop-filter:var\(--glass\)/.test(dr),'it reuses the shared blur token instead of a new magic number');}
   ok(/\.tabs\{[^}]*border-radius:var\(--r-pill\)/.test(blk),'fully rounded, like a dock');
   ok(/\.tabs\{[^}]*inset-inline:0[^}]*width:min\(calc\(100% - var\(--nav-side\) \* 2\),var\(--nav-max\)\);margin-inline:auto/.test(blk),'detached from the side edges and centred, capped on tablets');
-  ok(/\.tabs\{[^}]*box-shadow:var\(--e-3\),inset 0 1px 0 var\(--sheen\)/.test(blk),'depth below plus a specular hairline on the top edge');
+  ok(/\.tabs\{[^}]*box-shadow:var\(--e-4\),inset 0 1px 0 var\(--sheen\)/.test(blk),'depth below plus a specular hairline on the top edge');
   ok(/\.tabs\{[^}]*overflow:hidden/.test(blk),'children clip to the pill');
   ok(/@supports not \(\(backdrop-filter:blur\(1px\)\) or \(-webkit-backdrop-filter:blur\(1px\)\)\)\{\.tabs\{background:var\(--surface-2\)\}\}/.test(blk),'WebView without backdrop-filter falls back to a solid surface');
   ok(/\.tab:active\{transform:scale\(\.92\);transition-duration:90ms\}/.test(blk),'taps give a quick press response');
@@ -582,7 +582,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.14.0','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -591,8 +591,8 @@ console.log('\n── 25) v1.10 four slots + More ──');
   const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
   const i=css.indexOf('@media(max-width:1023px)');const blk=css.slice(i,i+4200);
   ok(/<symbol id="i-more"[^>]*>(?:<rect[^>]*>){4}/.test(html),'the More glyph is four rounded squares');
-  ok(document.querySelectorAll('.tab.tab-opt').length===4,'four sections are marked secondary');
-  ok([...document.querySelectorAll('.tab.tab-opt')].map(b=>b.dataset.tab).join(',')==='cats,budget,reports,cal','the right four are secondary');
+  ok(document.querySelectorAll('.tab.tab-opt').length===5,'loans joined the four hidden section tabs');
+  ok([...document.querySelectorAll('.tab.tab-opt')].map(b=>b.dataset.tab).join(',')==='cats,loans,budget,reports,cal','the five secondaries in place (loans keeps its old slot)');
   ok(/\.tab-more\{display:none\}/.test(css),'the More slot is hidden by default (desktop rail keeps all eight)');
   ok(/\.tab-opt\{display:none\}/.test(blk),'secondary tabs collapse into More on small screens');
   ok(blk.indexOf('.tab-opt{display:none}')>blk.indexOf('.tab-more{display:flex'),'and wins over the base .tab rule');
@@ -612,15 +612,15 @@ console.log('\n── 25) v1.10 four slots + More ──');
   ok(/function navSeq\(\)/.test(js)&&!/offsetParent/.test(js),'the keyboard sequence comes from state, not layout measurement');
   /* runtime */
   const seqMobile=G('navSeq().map(b=>b.dataset.tab||"more").join(",")');
-  ok(seqMobile==='dash,tx,acc,loans,more','mobile sequence is four primaries + More');
+  ok(seqMobile==='dash,tx,acc,search,more','mobile sequence: home, tx, accounts, search + More');
   ok(G("(()=>{const r=RAIL,o=r.matches;r.matches=true;const n=navSeq().length;r.matches=o;return n})()")===8,'desktop sequence is all eight');
   const moreBtn=document.getElementById('tabMore');
   moreBtn.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(sheet.classList.contains('open')&&moreBtn.getAttribute('aria-expanded')==='true','tapping More opens the sheet');
   const tiles=[...sheet.querySelectorAll('button')];
-  ok(tiles.length===4&&tiles.map(t=>t.dataset.moret).join(',')==='cats,budget,reports,cal','the sheet lists exactly the four hidden sections');
+  ok(tiles.length===5&&tiles.map(t=>t.dataset.moret).join(',')==='loans,cats,budget,reports,cal','the sheet lists exactly the five secondary sections (loans leads)');
   ok(tiles.every(t=>/^#i-[a-z]+$/.test(t.querySelector('use').getAttribute('href'))),'every tile has its section glyph');
-  tiles[2].dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
+  tiles[3].dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('pane-reports').classList.contains('active'),'choosing a tile navigates');
   ok(!sheet.classList.contains('open'),'and closes the sheet');
   ok(document.getElementById('moreLbl').textContent==='گزارش‌ها'&&document.getElementById('moreIc').getAttribute('href')==='#i-reports','the slot morphs into the active section');
@@ -630,7 +630,7 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.10.0');
+  ok(G("APP_VERSION")==='v1.14.0','version bumped to v1.14.0');
 }
 
 console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
@@ -684,6 +684,29 @@ console.log('\n── 27) v1.13 container queries + boot skeleton ──');
   ok(/setupScreen'\)\.style\.display='none';document\.getElementById\('loginScreen'\)\.style\.display='none'/.test(js),'the direct-open branch closes both screens');
 }
 
+// ── 28. v1.14 dock polish + search slot ──
+console.log('28) v1.14 dock polish + search slot');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+  ok(/@keyframes dockIn\{from\{opacity:0;transform:translateY\(72px\)\}\}/.test(css),'the bar springs in from below');
+  ok(/\.tabs\{[^}]*animation:dockIn/.test(css),'the bar itself carries the entrance');
+  ok(/@keyframes sheetUp\{from\{opacity:0;transform:translateY\(16px\) scale\(\.97\)\}\}/.test(css),'the sheet slides up like a real bottom sheet');
+  ok(/\.moresheet\.open\{display:grid;animation:sheetUp/.test(css),'and the sheet opener uses it');
+  ok(/\.moresheet::before\{[^}]*grid-column:1\/-1/.test(css),'a grabber handle caps the sheet');
+  ok(/\.moresheet button \.ic\{width:44px;height:44px/.test(css),'sheet icons sit in rounded chips');
+  ok(/\.ind\{[^}]*color-mix\(in srgb,var\(--turq\)/.test(css),'the active pill glows in both themes');
+  ok(/\.tab\.active \.tab-ic\{transform:translateY\(-1px\)\}/.test(css),'the active icon lifts a pixel');
+  ok(/--nav-h:64px/.test(css),'the bar is a touch taller');
+  ok(/\.toast,\.modal-box,\.pane\.active,\.tabs,\.moresheet,\.moresheet button\{transition:opacity 120ms linear!important;animation:none!important\}/.test(css),'reduced motion silences the new motion');
+  ok(/id="tabSearch"[^>]*aria-haspopup="dialog"[^>]*aria-controls="gsModal"/.test(html),'the dock search slot opens the global search dialog');
+  ok(/tabBtns\.forEach\(b=>\{if\(b\.dataset\.tab==='search'\)b\.addEventListener\('click',gsOpen\)/.test(js),'and it is wired straight to gsOpen');
+  ok(/\.tab-search\{display:none\}/.test(css),'the search slot stays out of the desktop rail');
+  ok(/<button class="tab tab-opt" id="tab-loans"/.test(html),'loans retired into the More sheet');
+  ok(/const MORE_SECTIONS=\['loans','cats','budget','reports','cal'\]/.test(js),'the sheet owns five sections now');
+  ok(/\.gsc-chip\{display:none\}/.test(css),'the topbar search chip steps aside on mobile');
+  ok(/if\(name==='search'\)return;/.test(js),'setTab ignores the action slot');
+}
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
 process.exit(failures?1:0);

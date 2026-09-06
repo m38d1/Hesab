@@ -112,7 +112,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .tabs{position:sticky;top:0;z-index:40;background:var(--surface-1);border-bottom:1px solid var(--line)}
 .tabs-in{display:flex;gap:2px;position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs-in::-webkit-scrollbar{display:none}
-.tab-more{display:none}
+.tab-more{display:none}.tab-search{display:none}
 .tab{background:none;border:none;color:var(--muted);font-family:inherit;font-size:var(--f-base);font-weight:600;padding:14px 15px;cursor:pointer;transition:var(--tr);white-space:nowrap;min-height:48px}
 .tab:hover,.tab:active{color:var(--text)}.tab.active{color:var(--turq)}
 .tab-ic{display:none}
@@ -464,7 +464,7 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 @media (prefers-reduced-motion:reduce){
   .g1,.g2,.wave,.credit-heart,.bell-ic,.pay.pulse{animation:none!important}
   *{transition-duration:1ms!important;scroll-behavior:auto!important}
-  .toast,.modal-box,.pane.active{transition:opacity 120ms linear!important;animation:none!important}
+  .toast,.modal-box,.pane.active,.tabs,.moresheet,.moresheet button{transition:opacity 120ms linear!important;animation:none!important}
 }
 /* ── v1.6: money typography — Vazirmatn 700 + tabular figures (Lalezar has no tnum) ── */
 .big-val,.hero-mini b,.mini b,.fsum b,.txamt,.ring-pct,.ring-txt b,.acc-total,.acard-bal,
@@ -580,6 +580,8 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 .pop button:hover,.pop button:focus-visible{background:var(--turq-soft);color:var(--turq);outline:none}
 .pop .pop-sep{height:1px;background:var(--line);margin:5px 8px}
 @keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes dockIn{from{opacity:0;transform:translateY(72px)}}
+@keyframes sheetUp{from{opacity:0;transform:translateY(16px) scale(.97)}}
 
 /* ── v1.7 KPI knob + tile sparklines ── */
 @property(--p){syntax:'<number>';inherits:false;initial-value:0}
@@ -626,21 +628,22 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 
 /* ── v1.8 bottom navigation (Material 3 nav bar): thumb-reachable, label only on the active item ── */
 @media(max-width:1023px){
-  :root{--nav-h:62px;--nav-inset:10px;--nav-side:12px;--nav-max:460px;--nav-total:calc(var(--nav-h) + var(--nav-inset) + env(safe-area-inset-bottom))}
+  :root{--nav-h:64px};--nav-inset:10px;--nav-side:12px;--nav-max:460px;--nav-total:calc(var(--nav-h) + var(--nav-inset) + env(safe-area-inset-bottom))}
   body{padding-bottom:calc(var(--nav-total) + 8px)}
-  .tabs{position:fixed;inset-inline:0;top:auto;bottom:calc(var(--nav-inset) + env(safe-area-inset-bottom));z-index:60;width:min(calc(100% - var(--nav-side) * 2),var(--nav-max));margin-inline:auto;border:1px solid var(--line2);border-radius:var(--r-pill);background:var(--glass-bg);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--e-3),inset 0 1px 0 var(--sheen);overflow:hidden}
+  .tabs{position:fixed;inset-inline:0;top:auto;bottom:calc(var(--nav-inset) + env(safe-area-inset-bottom));z-index:60;width:min(calc(100% - var(--nav-side) * 2),var(--nav-max));margin-inline:auto;border:1px solid var(--line2);border-radius:var(--r-pill);background:var(--glass-bg);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--e-4),inset 0 1px 0 var(--sheen);animation:dockIn .55s var(--ease-spring) both;overflow:hidden}
   .tabs .wrap{max-width:none;padding:0}
   .tabs-in{display:flex;gap:0;overflow:visible;padding:0}
   .tab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px;min-height:var(--nav-h);font-size:var(--f-micro);font-weight:700;position:relative;border-radius:0;color:var(--dim)}
-  .tab-ic{display:block;font-size:1.32rem;width:1.3em;height:1.3em;position:relative;z-index:1}
+  .tab-ic{display:block;font-size:1.32rem;width:1.3em;height:1.3em;position:relative;z-index:1;transition:transform var(--d-3) var(--ease-spring)}
   .tab-lbl{display:none;line-height:1.15;max-width:100%;overflow:hidden;white-space:nowrap;position:relative;z-index:1}
-  .tab.active{color:var(--turq)}
+  .tab.active{color:var(--turq)}.tab.active .tab-ic{transform:translateY(-1px)}
   .tab.active .tab-lbl{display:block}
   .tab:hover{color:var(--text)}
   .tab:active{transform:scale(.92);transition-duration:90ms}
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tabs{background:var(--surface-2)}}
   /* the underline becomes a pill that glides behind the active icon */
-  .ind{bottom:auto;top:5px;left:0;width:calc(var(--w,44px) - 6px);height:32px;border-radius:var(--r-pill);background:var(--turq-soft);transform:translateX(calc(var(--x,0px) + 3px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
+  .ind{bottom:auto;top:5px;left:0;width:calc(var(--w,44px) - 6px);height:32px;border-radius:var(--r-pill);background:var(--turq-soft);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--turq) 55%,transparent);transform:translateX(calc(var(--x,0px) + 3px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
+  .gsc-chip{display:none}
   .toast{bottom:calc(var(--nav-total) + 14px)}
   .pop.ntf{bottom:calc(var(--nav-total) + 8px)}
 }
@@ -649,17 +652,20 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 @media(max-width:1023px){
   .tab-more{display:flex;flex:1 1 0;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:var(--nav-h);padding:7px 2px 6px;font-size:var(--f-micro);font-weight:700;font-family:inherit;color:var(--dim);background:none;border:0;border-radius:0;cursor:pointer;position:relative;transition:var(--tr)}
   .tab-more .tab-lbl{display:block;line-height:1.15;max-width:100%;overflow:hidden;white-space:nowrap;position:relative;z-index:1}
+  .tab-search .tab-lbl{display:block}
   .tab-more:hover{color:var(--text)}
   .tab-more:active{transform:scale(.92);transition-duration:90ms}
   .tab-more.on,.tab-more[aria-expanded="true"]{color:var(--turq)}
   .tab-opt{display:none}
   .moresheet{position:fixed;inset-inline:var(--nav-side);bottom:calc(var(--nav-total) + 8px);z-index:10003;display:none;grid-template-columns:1fr 1fr;gap:8px;padding:12px;margin-inline:auto;max-width:calc(var(--nav-max) + 130px);border:1px solid var(--line2);border-radius:var(--r-xl);background:var(--glass-bg);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--e-3),inset 0 1px 0 var(--sheen)}
-  .moresheet.open{display:grid;animation:popIn var(--d-2) var(--ease-spring)}
+  .moresheet.open{display:grid;animation:sheetUp .32s var(--ease-spring) both}
   .moresheet button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:76px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--soft);color:var(--muted);font-family:inherit;font-size:var(--f-xs);font-weight:700;cursor:pointer;transition:var(--tr)}
-  .moresheet button .ic{font-size:1.4rem;width:1.35em;height:1.35em}
+  .moresheet button .ic{width:44px;height:44px;padding:10px;box-sizing:border-box;background:var(--soft2);border-radius:14px}
   .moresheet button:hover{color:var(--text);background:var(--soft2)}
   .moresheet button.on{color:var(--turq);background:var(--turq-soft);border-color:var(--turq-soft)}
   .moresheet button:active{transform:scale(.96);transition-duration:90ms}
+  .moresheet::before{content:'';grid-column:1/-1;width:44px;height:4px;border-radius:var(--r-pill);background:var(--line2);opacity:.65;margin:-2px auto 4px}
+  .moresheet button.on .ic{background:var(--turq-soft)}
 }
 /* ── v1.13 boot skeleton ── */
 .boot-sk{display:block;pointer-events:none;padding:26px;max-width:860px;margin-inline:auto}
@@ -923,7 +929,7 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 <div class="boot-sk" id="bootSk" aria-hidden="true"><div class="sk-line" style="width:46%"></div><div class="sk-big"></div><div class="sk-line" style="width:78%"></div><div class="sk-line" style="width:64%"></div><div class="sk-big"></div><div class="sk-line" style="width:34%"></div><div class="sk-line" style="width:82%"></div></div>
 <div id="appWrap">
 <header class="topbar"><div class="wrap topbar-in"><div class="brand"><span class="logo"><svg width="30" height="30" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></span><div class="brand-t"><h1>حساب‌و<em>کتاب</em></h1><svg class="signature" viewBox="0 0 118 13" preserveAspectRatio="none"><path d="M2 9 C 12 2, 20 12, 30 7 S 46 1, 54 8 C 62 13, 70 3, 80 7 S 100 11, 116 4"/></svg></div></div><div class="top-chips"><div class="chip chip-date" id="chipDate"></div><button class="chip chip-bell" id="bellChip" aria-haspopup="dialog" aria-expanded="false" aria-controls="notifPop" title="یادآور اقساط" style="display:none"><span class="bell-ic"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></span><span class="bell-badge" id="bellBadge" style="display:none">۰</span></button><button class="chip gsc-chip" id="gscOpen" title="جستجوی سراسری" aria-label="جستجوی سراسری"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span class="gsc-lbl">جستجو</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" id="themeToggle" title="تغییر قالب" aria-label="تغییر قالب"><span class="tt-ic" id="ttIcon"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span></button><div class="unit-toggle" id="unitToggle" title="تغییر واحد نمایش"><span class="ut-glider" id="utGlider"></span><span class="ut-opt" data-u="T">تومان</span><span class="ut-opt" data-u="R">ریال</span></div></div></div></header>
-<nav class="tabs" id="tabs"><div class="wrap tabs-in" role="tablist" aria-label="بخش‌های اصلی"><button class="tab active" id="tab-dash" role="tab" aria-label="داشبورد" aria-selected="true" aria-controls="pane-dash" tabindex="0" data-tab="dash" data-tip="داشبورد"><span class="tab-lbl">خانه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-dash"/></svg></button><button class="tab" id="tab-tx" role="tab" aria-label="تراکنش‌ها" aria-selected="false" aria-controls="pane-tx" tabindex="-1" data-tab="tx" data-tip="تراکنش‌ها"><span class="tab-lbl">تراکنش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-tx"/></svg></button><button class="tab" id="tab-acc" role="tab" aria-label="حساب‌ها" aria-selected="false" aria-controls="pane-acc" tabindex="-1" data-tab="acc" data-tip="حساب‌ها"><span class="tab-lbl">حساب</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-acc"/></svg></button><button class="tab tab-opt" id="tab-cats" role="tab" aria-label="دسته‌ها" aria-selected="false" aria-controls="pane-cats" tabindex="-1" data-tab="cats" data-tip="دسته‌ها"><span class="tab-lbl">دسته</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cats"/></svg></button><button class="tab" id="tab-loans" role="tab" aria-label="وام‌ها" aria-selected="false" aria-controls="pane-loans" tabindex="-1" data-tab="loans" data-tip="وام‌ها"><span class="tab-lbl">وام</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-loans"/></svg></button><button class="tab tab-opt" id="tab-budget" role="tab" aria-label="بودجه" aria-selected="false" aria-controls="pane-budget" tabindex="-1" data-tab="budget" data-tip="بودجه"><span class="tab-lbl">بودجه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-budget"/></svg></button><button class="tab tab-opt" id="tab-reports" role="tab" aria-label="گزارش‌ها" aria-selected="false" aria-controls="pane-reports" tabindex="-1" data-tab="reports" data-tip="گزارش‌ها"><span class="tab-lbl">گزارش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-reports"/></svg></button><button class="tab tab-opt" id="tab-cal" role="tab" aria-label="تقویم" aria-selected="false" aria-controls="pane-cal" tabindex="-1" data-tab="cal" data-tip="تقویم"><span class="tab-lbl">تقویم</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cal"/></svg></button><button class="tab-more" id="tabMore" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="morePop" aria-label="بخش‌های بیشتر"><span class="tab-lbl" id="moreLbl">بیشتر</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-more" id="moreIc"/></svg></button><span class="ind" id="tabInd" aria-hidden="true"></span></div></nav>
+<nav class="tabs" id="tabs"><div class="wrap tabs-in" role="tablist" aria-label="بخش‌های اصلی"><button class="tab active" id="tab-dash" role="tab" aria-label="داشبورد" aria-selected="true" aria-controls="pane-dash" tabindex="0" data-tab="dash" data-tip="داشبورد"><span class="tab-lbl">خانه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-dash"/></svg></button><button class="tab" id="tab-tx" role="tab" aria-label="تراکنش‌ها" aria-selected="false" aria-controls="pane-tx" tabindex="-1" data-tab="tx" data-tip="تراکنش‌ها"><span class="tab-lbl">تراکنش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-tx"/></svg></button><button class="tab" id="tab-acc" role="tab" aria-label="حساب‌ها" aria-selected="false" aria-controls="pane-acc" tabindex="-1" data-tab="acc" data-tip="حساب‌ها"><span class="tab-lbl">حساب</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-acc"/></svg></button><button class="tab tab-opt" id="tab-cats" role="tab" aria-label="دسته‌ها" aria-selected="false" aria-controls="pane-cats" tabindex="-1" data-tab="cats" data-tip="دسته‌ها"><span class="tab-lbl">دسته</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cats"/></svg></button><button class="tab tab-search" id="tabSearch" type="button" aria-haspopup="dialog" aria-controls="gsModal" aria-label="جستجوی سراسری" data-tip="جستجوی سراسری" title="جستجوی سراسری (Ctrl+K)" data-tab="search"><span class="tab-lbl">جستجو</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-search"/></svg></button><button class="tab tab-opt" id="tab-loans" role="tab" aria-label="وام‌ها" aria-selected="false" aria-controls="pane-loans" tabindex="-1" data-tab="loans" data-tip="وام‌ها"><span class="tab-lbl">وام</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-loans"/></svg></button><button class="tab tab-opt" id="tab-budget" role="tab" aria-label="بودجه" aria-selected="false" aria-controls="pane-budget" tabindex="-1" data-tab="budget" data-tip="بودجه"><span class="tab-lbl">بودجه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-budget"/></svg></button><button class="tab tab-opt" id="tab-reports" role="tab" aria-label="گزارش‌ها" aria-selected="false" aria-controls="pane-reports" tabindex="-1" data-tab="reports" data-tip="گزارش‌ها"><span class="tab-lbl">گزارش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-reports"/></svg></button><button class="tab tab-opt" id="tab-cal" role="tab" aria-label="تقویم" aria-selected="false" aria-controls="pane-cal" tabindex="-1" data-tab="cal" data-tip="تقویم"><span class="tab-lbl">تقویم</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cal"/></svg></button><button class="tab-more" id="tabMore" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="morePop" aria-label="بخش‌های بیشتر"><span class="tab-lbl" id="moreLbl">بیشتر</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-more" id="moreIc"/></svg></button><span class="ind" id="tabInd" aria-hidden="true"></span></div></nav>
 <main class="wrap">
   <section class="pane active" id="pane-dash" role="tabpanel" aria-labelledby="tab-dash" tabindex="0"><div id="dueBanner"></div><div class="dash-bento"><div class="card hero-bal b-hero"><div class="card-k">مجموع دارایی</div><div class="big-val" id="dBalance">۰</div><div class="hero-line"><span class="toman" id="dUnit">تومان</span><span class="delta" id="dDelta"></span></div><div class="spark-wrap" id="dSpark"></div><div class="spark-cap">روند ۳۰ روز اخیر</div><div class="hero-mini" id="dHeroMini"></div></div><div class="card mini m-in b-inc"><div class="mini-ic">📥</div><div class="mini-body"><div class="card-k">درآمد ماه</div><b id="dInc">۰</b></div><div class="mini-sp" id="dIncSp"></div></div><div class="card mini m-ex b-exp"><div class="mini-ic">📤</div><div class="mini-body"><div class="card-k">هزینه ماه</div><b id="dExp">۰</b></div><div class="mini-sp" id="dExpSp"></div></div><div class="card mini m-save b-rate"><div class="mini-ic">🎯</div><div class="mini-body"><div class="card-k">نرخ پس‌انداز</div><span class="card-sub">چقدر از درآمد می‌ماند</span></div><div class="knob" id="dKnob" data-lvl="lo" style="--p:0" role="img" aria-label="نرخ پس‌انداز ماه"><b id="dRate">٪۰</b></div></div><div class="card b-budget"><div class="card-h"><h2>بودجهٔ ماه</h2><div class="card-acts"><button class="link-btn" data-goto="budget">مدیریت ←</button><button class="card-menu" data-acts="dashBudget" aria-haspopup="true" aria-expanded="false" aria-label="گزینه‌های بودجهٔ ماه" title="گزینه‌ها"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg></button></div></div><div id="dBudget"></div></div><div class="card b-recent"><div class="card-h"><h2>آخرین تراکنش‌ها</h2><div class="card-acts"><button class="link-btn" data-goto="tx">همه ←</button><button class="card-menu" data-acts="dashRecent" aria-haspopup="true" aria-expanded="false" aria-label="گزینه‌های آخرین تراکنش‌ها" title="گزینه‌ها"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg></button></div></div><div id="dRecent" class="txlist"></div></div></div></section>
   <section class="pane" id="pane-tx" role="tabpanel" aria-labelledby="tab-tx" tabindex="0"><div class="card tpl-card"><div class="card-h"><h2>⚡ ثبت سریع</h2><span class="card-k">یک ضربه = ثبت تراکنش</span></div><div class="tpl-row" id="tplRow"></div></div><div class="card rec-card"><div class="card-h"><h2>⏰ دوره‌ای‌ها</h2><span class="card-k">حقوق، اجاره، اشتراک…</span><div class="card-acts"><button class="btn-primary sm" id="recNew" style="width:auto;margin-inline-start:auto">＋ دوره‌ای</button><button class="card-menu" data-acts="recurring" aria-haspopup="true" aria-expanded="false" aria-label="گزینه‌های تراکنش‌های دوره‌ای" title="گزینه‌ها"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg></button></div></div><div id="recList" class="rec-list"></div></div><div class="tx-layout"><div class="card form-card" id="formCard"><h2 id="txFormTitle">ثبت تراکنش</h2><form id="txForm"><div class="seg" id="typeSeg"><button type="button" data-type="ex" class="active">− هزینه</button><button type="button" data-type="in">+ درآمد</button></div><label>مبلغ (<span class="cur-label">تومان</span>)<input id="fAmount" inputmode="numeric" placeholder="۲۵۰۰" autocomplete="off"></label><label>دسته<div class="inline-sel"><select id="fCat"></select><button type="button" class="mini-add" id="fCatAdd">＋</button></div></label><div class="flabel">حساب<div class="inline-sel"><select id="fAcc"></select><button type="button" class="mini-add" id="fAccAdd">＋</button></div></div><label id="methodWrap">روش پرداخت<select id="fMethod"></select></label><div class="fee-wrap" id="feeWrap" style="display:none"><label>کارمزد (<span class="cur-label">تومان</span>)<input id="fFee" inputmode="numeric" placeholder="۵۰" autocomplete="off"></label><div class="fee-total" id="feeTotal"></div></div><div class="flabel"><span id="personLbl">پرداخت‌کننده</span><div class="inline-sel"><select id="fPerson"></select><button type="button" class="mini-add" id="fPersonAdd">＋</button></div><div class="person-pop" id="personPop"><div class="pp-add"><input id="ppName" placeholder="نام شخص…" maxlength="20"><button type="button" id="ppSave">افزودن</button></div><div class="pp-list" id="ppList"></div></div></div><label>تاریخ<input id="fDate" readonly class="dp-input" autocomplete="off"></label><label>توضیح<input id="fNote" placeholder="خرید هفتگی" maxlength="60"></label><button class="btn-primary" type="submit" id="txSubmitBtn">ثبت تراکنش</button><button type="button" class="btn-ghost" id="txCancelEdit" style="display:none;margin-top:8px;width:100%">لغو ویرایش</button></form></div><div><div class="card filter-card"><input id="fSearch" placeholder="🔍 جستجو…"><select id="fTypeF"><option value="all">همه</option><option value="in">درآمدها</option><option value="ex">هزینه‌ها</option></select><select id="fCatF"></select><select id="fAccF"></select><div class="fsum" id="txSum"></div></div><div class="card"><div id="txList" class="txlist"></div></div></div></div></section>
@@ -999,9 +1005,14 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.13.1';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.14.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.14.0',date:'۱۶ شهریور ۱۴۰۵',items:[
+    'نوار پایین مدرن‌تر شد: ورود فنری از پایین، هالهٔ نرم دور بخش فعال، پرش ریز آیکن فعال و نوار کمی بلندتر',
+    'جای‌گیری بزرگ: «وام‌ها» به شیتی «بیشتر» رفت و «جستجوی سراسری» (همان Ctrl+K) جای‌اش را در نوار پایین گرفت؛ چیپ جستجوی نوار بالا هم در موبایل کنار رفت',
+    'شیتی «بیشتر» مثل برگهٔ واقعی از پایین می‌آید: دستگیرهٔ بالا، چیپِ گرد دور آیکن‌ها و تینت رنگی بخش فعال'
+  ]},
   {v:'v1.13.1',date:'۱۶ شهریور ۱۴۰۵',items:[
     'رفع باگ دکمه‌های میانی نوار پایین: توستِ اعلان نامرئی اما ضربه‌خوار بود و دقیقاً روی اسلات وسط می‌نشست — حالا هیچ ضربه‌ای را نمی‌بلعد',
     'ورود مستقیم (بدون پین) حالا صفحه‌های ورود/راه‌اندازی را خودش می‌بندد؛ اسکلت بوت هم واقعاً دیده می‌شود و ضربه‌ها را رد می‌کند'
@@ -1310,12 +1321,12 @@ document.addEventListener('keydown',e=>{
 addEventListener('resize',()=>{closePop();closeBell();closeMore()});addEventListener('scroll',()=>{closePop();closeBell();closeMore()},true);
 
 /* ── v1.10 «بیشتر»: four primary slots, the rest one tap away ── */
-const MORE_SECTIONS=['cats','budget','reports','cal'];
+const MORE_SECTIONS=['loans','cats','budget','reports','cal'];
 const moreBtn=$('#tabMore'),morePop=$('#morePop'),moreLbl=$('#moreLbl'),moreIc=$('#moreIc');
 function renderMore(){if(!morePop)return;const cur=document.querySelector('.tab.active');const c=cur?cur.dataset.tab:'';
   morePop.innerHTML=MORE_SECTIONS.map(function(k){const b=document.getElementById('tab-'+k);const nm=b?(b.getAttribute('aria-label')||k):k;
     return '<button type="button" data-moret="'+k+'"'+(c===k?' class="on" aria-current="true"':'')+'><svg class="ic" aria-hidden="true"><use href="#i-'+k+'"/></svg><span>'+nm+'</span></button>';}).join('');}
-function navSeq(){const prim=tabBtns.filter(b=>RAIL.matches||!b.classList.contains('tab-opt'));return (RAIL.matches||!moreBtn)?prim:prim.concat([moreBtn]);}
+function navSeq(){const prim=tabBtns.filter(b=>RAIL.matches?!b.classList.contains('tab-search'):!b.classList.contains('tab-opt'));return (RAIL.matches||!moreBtn)?prim:prim.concat([moreBtn]);}
 function closeMore(){if(!morePop||!morePop.classList.contains('open'))return;morePop.classList.remove('open');morePop.setAttribute('aria-hidden','true');if(moreBtn)moreBtn.setAttribute('aria-expanded','false');}
 function openMore(){if(!morePop)return;renderMore();morePop.classList.add('open');morePop.setAttribute('aria-hidden','false');if(moreBtn)moreBtn.setAttribute('aria-expanded','true');const f=morePop.querySelector('button');if(f)f.focus();}
 if(moreBtn)moreBtn.addEventListener('click',function(e){e.stopPropagation();morePop.classList.contains('open')?closeMore():openMore();});
@@ -1520,15 +1531,15 @@ const tabBtns=[...document.querySelectorAll('.tab')];const ind=$('#tabInd');
 const RAIL=window.matchMedia?matchMedia('(min-width:1024px)'):{matches:false,addEventListener(){}};
 function moveInd(btn){if(!btn)return;
   ind.style.setProperty('--w',btn.offsetWidth+'px');ind.style.setProperty('--h',btn.offsetHeight+'px');ind.style.setProperty('--x',btn.offsetLeft+'px');ind.style.setProperty('--y',btn.offsetTop+'px');}
-function setTab(name){const apply=()=>{tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;});document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+name));const _tb=tabBtns.find(b=>b.dataset.tab===name);const _onMore=MORE_SECTIONS.includes(name);
+function setTab(name){if(name==='search')return;const apply=()=>{tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;});document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+name));const _tb=tabBtns.find(b=>b.dataset.tab===name);const _onMore=MORE_SECTIONS.includes(name);
     if(moreBtn){moreBtn.classList.toggle('on',_onMore);moreLbl.textContent=_onMore?(_tb.getAttribute('aria-label')||'بیشتر'):'بیشتر';moreIc.setAttribute('href',_onMore?'#i-'+name:'#i-more');}
     moveInd(_onMore?moreBtn:_tb);renderAll();};
   if(document.startViewTransition&&!REDUCED)document.startViewTransition(apply);else apply();}
-tabBtns.forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+tabBtns.forEach(b=>{if(b.dataset.tab==='search')b.addEventListener('click',gsOpen);else b.addEventListener('click',()=>setTab(b.dataset.tab));});
 
 $('#tabs').addEventListener('keydown',e=>{const seq=navSeq();const i=seq.indexOf(document.activeElement);if(i<0)return;const k=e.key;let j=null;
   if(k==='ArrowRight'||k==='ArrowLeft')j=(i+(k==='ArrowRight'?-1:1)+seq.length)%seq.length;
-  else if(k==='Home')j=0;else if(k==='End')j=seq.length-1;if(j===null)return;e.preventDefault();const b=seq[j];if(b===moreBtn){openMore();return;}b.focus();setTab(b.dataset.tab);});
+  else if(k==='Home')j=0;else if(k==='End')j=seq.length-1;if(j===null)return;e.preventDefault();const b=seq[j];if(b===moreBtn){openMore();return;}if(b.dataset.tab==='search'){b.focus();gsOpen();return;}b.focus();setTab(b.dataset.tab);});
 
 window.addEventListener('resize',()=>{moveInd(document.querySelector('.tab.active'));positionGlider();});
 document.addEventListener('click',e=>{const g=e.target.closest('[data-goto]');if(g)setTab(g.dataset.goto);});

@@ -33,8 +33,8 @@ setTimeout(()=>{
   ok(document.querySelector('.txic').style.getPropertyValue('--cc')!=='','category chip publishes --cc');
 
   /* ── v1.7 ── */
-  ok(document.querySelectorAll('.tab .tab-ic use').length===8,'every tab carries a section glyph');
-  ok(document.querySelectorAll('.tab[data-tip]').length===8,'every tab has a rail tooltip label');
+  ok(document.querySelectorAll('.tab .tab-ic use').length===9,'every nav slot carries a glyph (8 sections + search)');
+  ok(document.querySelectorAll('.tab[data-tip]').length===9,'every tab has a rail tooltip label (search included)');
   ok(/min-width:1024px/.test(html),'desktop rail breakpoint exists');
   ok(document.querySelectorAll('.card-menu').length>=6,'cards expose an action menu');
   {const m=document.querySelector('.card-menu[data-acts="accounts"]');
