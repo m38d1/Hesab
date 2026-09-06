@@ -551,16 +551,7 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 
 /* ── v1.7 desktop rail: the tab bar becomes a 72px icon rail (Novo's mini-sidebar idea) ── */
 @media(min-width:1024px){
-  /* the desktop keeps the classic top menu — now wearing the same glass pill as the phone dock */
-  .tabs{position:sticky;top:var(--nav-inset);z-index:40;width:min(calc(100% - var(--nav-side)*2),880px);margin:0 auto var(--nav-inset);border-bottom:0;border-radius:var(--r-pill);background:var(--glass-bg);backdrop-filter:var(--glass);box-shadow:var(--e-4),inset 0 1px 0 var(--sheen);animation:dockDown .55s var(--ease-spring) both;overflow:hidden}
-  .tabs-in{max-width:none;overflow:visible;height:var(--nav-h);gap:4px;padding:0 10px}
-  .tab{flex:1 1 0;min-height:var(--nav-h);padding:0 8px;font-size:var(--f-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dim);border-radius:0;position:relative}
-  .tab:hover{color:var(--text);background:transparent}
-  .tab.active{color:var(--turq);background:transparent}
-  .tab-ic{display:block;font-size:1.3rem;width:1.3em;height:1.3em;position:relative;z-index:1}
-  .tab-lbl{display:block;font-size:var(--f-xs);line-height:1;max-width:100%;overflow:hidden;white-space:nowrap;position:relative;z-index:1}
-  .tab-more .tab-lbl{display:block;line-height:1.15}
-  .ind{top:4px;bottom:auto;left:0;width:calc(var(--w,44px) - 6px);height:calc(100% - 8px);border-radius:var(--r-pill);background:var(--turq-soft);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--turq) 55%,transparent);transform:translateX(calc(var(--x,0px) + 3px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
+  /* the classic full-width top bar — the base rules already draw it; only overlays drop below it */
   .moresheet{inset-inline:0;margin-inline:auto;bottom:auto;top:calc(env(safe-area-inset-top) + var(--nav-total) + 8px)}
   .moresheet.open{animation:sheetDown .32s var(--ease-spring) both}
   .toast{bottom:auto;top:calc(env(safe-area-inset-top) + var(--nav-total) + 14px)}
@@ -581,7 +572,6 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 .pop .pop-sep{height:1px;background:var(--line);margin:5px 8px}
 @keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes dockIn{from{opacity:0;transform:translateY(72px)}}
-@keyframes dockDown{from{opacity:0;transform:translateY(-72px)}}
 @keyframes sheetDown{from{opacity:0;transform:translateY(-16px) scale(.97)}}
 @keyframes sheetUp{from{opacity:0;transform:translateY(16px) scale(.97)}}
 
@@ -630,7 +620,7 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 
 /* ── v1.8 bottom navigation (Material 3 nav bar): thumb-reachable, label only on the active item ── */
 @media(max-width:1023px){
-  :root{--nav-h:64px};--nav-inset:10px;--nav-side:12px;--nav-max:460px;--nav-total:calc(var(--nav-h) + var(--nav-inset) + env(safe-area-inset-bottom))}
+  :root{--nav-h:64px;--nav-inset:10px;--nav-side:12px;--nav-max:460px;--nav-total:calc(var(--nav-h) + var(--nav-inset) + env(safe-area-inset-bottom))}
   body{padding-bottom:calc(var(--nav-total) + 8px)}
   .tabs{position:fixed;inset-inline:0;top:auto;bottom:calc(var(--nav-inset) + env(safe-area-inset-bottom));z-index:60;width:min(calc(100% - var(--nav-side) * 2),var(--nav-max));margin-inline:auto;border:1px solid var(--line2);border-radius:var(--r-pill);background:var(--glass-bg);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--e-4),inset 0 1px 0 var(--sheen);animation:dockIn .55s var(--ease-spring) both;overflow:hidden}
   .tabs .wrap{max-width:none;padding:0}
@@ -1007,9 +997,13 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.15.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.16.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.16.0',date:'۱۶ شهریور ۱۴۰۵',items:[
+    'رفع باگ موبایل: داک پایین صفحه دوباره محکم به لبهٔ پایین می‌چسبد (توکن‌های خراب از v1.14.0)',
+    'دسکتاپ: بازگشت به همان نوار بالای کلاسیک تمام‌عرض'
+  ]},
   {v:'v1.15.0',date:'۱۶ شهریور ۱۴۰۵',items:[
     'دسکتاپ هم همان منوی بالایی را دارد: به‌جای ستون کناری، همان نوار شیشه‌ای با آیکن و برچسب بالای صفحه می‌نشیند و با اسکرول شناور می‌ماند',
     'شیت «بیشتر» و پیام‌های ذخیره‌سازی در دسکتاپ از زیر نوار بالا باز می‌شوند'

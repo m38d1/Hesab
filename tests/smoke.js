@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.15.0','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.15.0','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.16.0','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.16.0','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v18/.test(sw),'service-worker cache bumped to v15');
+  ok(/hesabketab-v19/.test(sw),'service-worker cache bumped to v15');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -470,10 +470,11 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   /* desktop rail */
   ok(/@media\(min-width:1024px\)/.test(css),'desktop rail breakpoint present');
-  ok(/\.tabs\{position:sticky;top:var\(--nav-inset\)/.test(css),'desktop keeps the classic top menu, sticking as a floating pill');
+  ok(/\.tabs\{position:sticky;top:0;z-index:40;background:var\(--surface-1\)/.test(css),'the classic sticky top bar serves the desktop');
+  ok(/\.toast\{bottom:auto;top:calc\(env\(safe-area-inset-top\) \+ var\(--nav-total\) \+ 14px\)\}/.test(css),'desktop toasts drop below the bar');
   ok(!/--rail-w/.test(css),'the side-rail inset and its token are retired');
   ok(/\.tabs\{position:fixed/.test(css),'tab bar becomes a fixed rail');
-  ok(/\.tab-lbl\{display:block/.test(css),'desktop tabs show their labels again');
+  ok(/\.tab-ic\{display:none\}/.test(css),'the desktop bar is text-only like the old top menu');
   ok(document.querySelectorAll('.tab .tab-ic use').length===9,'every nav slot carries a glyph (8 sections + search)');
   ok(document.querySelectorAll('#tabMore .tab-ic use').length===1,'the More slot has its own glyph');
   ok([...document.querySelectorAll('.tab')].every(t=>/^#i-[a-z]+$/.test(t.querySelector('.tab-ic use').getAttribute('href'))),'every glyph resolves to a sprite id');
@@ -509,7 +510,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.15.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -573,16 +574,15 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   ok(/@supports not \(\(backdrop-filter:blur\(1px\)\) or \(-webkit-backdrop-filter:blur\(1px\)\)\)\{\.tabs\{background:var\(--surface-2\)\}\}/.test(blk),'WebView without backdrop-filter falls back to a solid surface');
   ok(/\.tab:active\{transform:scale\(\.92\);transition-duration:90ms\}/.test(blk),'taps give a quick press response');
   ok(!/\.tabs\{[^}]*border-top:1px solid/.test(blk),'the old edge-anchored top border is gone');
-  {const rl=css.slice(css.indexOf('@media(min-width:1024px)'));
-   const rtabs=(rl.match(/\.tabs\{[^}]*\}/)||[''])[0];
-   ok(/background:var\(--glass-bg\)/.test(rtabs)&&/backdrop-filter:var\(--glass\)/.test(rtabs),'the desktop top menu wears the glass recipe');}
+  {const baseTabs=(css.slice(0,css.indexOf('@media')).match(/\.tabs\{[^}]*\}/)||[''])[0];
+   ok(/position:sticky;top:0;z-index:40/.test(baseTabs)&&/background:var\(--surface-1\)/.test(baseTabs),'the desktop bar keeps its solid classic surface');}
   /* logical properties only — RTL must not break */
   const dockRule=(blk.match(/\.tabs\{[^}]*\}/)||[''])[0];
   ok(!/(^|[;{]\s*)(left|right)\s*:/.test(dockRule),'the dock is positioned with logical properties');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.15.0','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -630,7 +630,7 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.15.0','version bumped to v1.14.0');
+  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.14.0');
 }
 
 console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
