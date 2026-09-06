@@ -1,4 +1,4 @@
-const CACHE = 'hesabketab-v20';
+const CACHE = 'hesabketab-v21';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon.png',
   'https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@100..900&display=swap'];
 
