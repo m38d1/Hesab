@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.11.0','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.11.0','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.12.0','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.12.0','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -389,9 +389,9 @@ console.log('\n21) v1.6 design system');
   ok(/--e-3:[^;]*,[^;]*rgba\(2,16,19/.test(root)&&/--e-3:[^;]*,[^;]*rgba\(2,16,19/.test(root),'--e-3 uses one black base');
 
   /* contrast fixes */
-  ok(/--dim:#84a8a2/.test(root)&&/--muted:#9ec3bc/.test(root),'dark text tiers raised to AA');
+  ok(/--dim:#88b6a4/.test(root)&&/--muted:#9ec3bc/.test(root),'dark text tiers raised to AA');
   ok(/--turq:#0a7d6d/.test(css)&&/--gold:#8a5c0f/.test(css)&&/--coral:#c33f34/.test(css)&&/--green:#1a7f4e/.test(css),'light accents darkened to AA');
-  ok(/--dim:#5d7d78/.test(css),'light --dim raised to AA');
+  ok(/--dim:#587678/.test(css),'light --dim raised to AA');
   ok((css.match(/#fff/g)||[]).length<20,'white literals mostly retired');
 
   /* theme = pure token swap */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v13/.test(sw),'service-worker cache bumped to v13');
+  ok(/hesabketab-v14/.test(sw),'service-worker cache bumped to v14');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -509,7 +509,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.11.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.12.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -582,7 +582,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.11.0','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.12.0','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -630,7 +630,32 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.11.0','version bumped to v1.10.0');
+  ok(G("APP_VERSION")==='v1.12.0','version bumped to v1.10.0');
+}
+
+console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
+{
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const lum=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');
+    const v=[0,2,4].map(i=>{const n=parseInt(h.slice(i,i+2),16)/255;return n<=.03928?n/12.92:Math.pow((n+.055)/1.055,2.4);});
+    return .2126*v[0]+.7152*v[1]+.0722*v[2];};
+  const cr=(a,b)=>{const x=lum(a),y=lum(b),hi=Math.max(x,y),lo=Math.min(x,y);return (hi+.05)/(lo+.05);};
+  const grab=(blk,n)=>{const m=blk.match(new RegExp(n+'\\s*:\\s*([^;}]+)'));return m?m[1].trim():null;};
+  const root=css.match(/:root\{[^}]*\}/)[0];
+  const light=css.match(/\[data-theme="light"\]\{[^}]*\}/)[0];
+  for(const[n,blk]of[['dark',root],['light',light]]){
+    for(const fg of['--dim','--muted']){
+      const fc=grab(blk,fg);
+      for(const bg of['--surface-1','--surface-2','--surface-3']){
+        const bc=grab(blk,bg);
+        if(fc&&bc&&/^#/.test(fc)&&/^#/.test(bc)) ok(cr(fc,bc)>=4.5,n+' '+fg+' روی '+bg+' ≥ 4.5 (واقعاً '+cr(fc,bc).toFixed(2)+')');
+      }
+    }
+  }
+  ok(/\.modal-x\{[^}]*inset-inline-end:15px/.test(css),'the close button uses a logical edge');
+  ok(/\.tpl-del\{[^}]*inset-inline-end:-6px/.test(css),'the template delete badge uses a logical edge');
+  ok(/\.chip-bell \.bell-badge\{[^}]*inset-inline-end:-5px/.test(css),'the bell badge uses a logical edge');
+  ok(/\.ind\{[^}]*pointer-events:none/.test(css),'the indicator still ignores pointer events');
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
