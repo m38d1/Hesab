@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.16.0','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.16.0','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.17.0','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.17.0','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v19/.test(sw),'service-worker cache bumped to v15');
+  ok(/hesabketab-v20/.test(sw),'service-worker cache bumped to v15');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -510,7 +510,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.17.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -582,7 +582,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.17.0','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -630,7 +630,7 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.16.0','version bumped to v1.14.0');
+  ok(G("APP_VERSION")==='v1.17.0','version bumped to v1.14.0');
 }
 
 console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
@@ -706,6 +706,18 @@ console.log('28) v1.14 dock polish + search slot');
   ok(/const MORE_SECTIONS=\['loans','cats','budget','reports','cal'\]/.test(js),'the sheet owns five sections now');
   ok(/\.gsc-chip\{display:none\}/.test(css),'the topbar search chip steps aside on mobile');
   ok(/if\(name==='search'\)return;/.test(js),'setTab ignores the action slot');
+}
+console.log('\n── 32) v1.17 soft page hand-off ──');
+{
+  const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  ok(/const apply=\(\)=>\{window\.scrollTo\(0,0\);/.test(js),'a new section opens at the top, not at the old scroll offset');
+  ok(/@supports \(view-transition-name:none\)\{\.pane\.active\{animation:none\}\}/.test(css),'the dissolve owns the motion — no second slide');
+  ok(/@keyframes vtOut\{to\{opacity:0\}\}/.test(css),'the outgoing page only fades, it never slides');
+  ok(/@keyframes vtIn\{from\{opacity:0;transform:translateY\(6px\)\}\}/.test(css),'the incoming page rises 6px as it fades in');
+  ok(/::view-transition-new\(pane\)\{animation:vtIn var\(--d-4\) var\(--ease-out\)\}/.test(css),'the hand-off eases out over 380ms');
+  ok(/\.pane\.active\{display:block;animation:paneIn \.34s var\(--ease-out\) both\}/.test(css),'browsers without view transitions get a soft fade-up');
+  ok(G('APP_VERSION')==='v1.17.0','version bumped to v1.17.0');
 }
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();

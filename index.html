@@ -118,7 +118,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .tab-ic{display:none}
 .ind{position:absolute;bottom:0;left:0;pointer-events:none;width:var(--w,0px);height:3px;border-radius:var(--r-pill) var(--r-pill) 0 0;background:linear-gradient(to right,var(--turq),var(--gold));transform:translateX(var(--x,0px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
 main.wrap{padding:26px 20px 40px}
-.pane{display:none}.pane.active{display:block;animation:fadeUp .45s ease both}
+.pane{display:none}.pane.active{display:block;animation:paneIn .34s var(--ease-out) both}
 .card{background:linear-gradient(165deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);transition:transform .25s,border-color .25s,box-shadow .3s}
 .card:hover{border-color:var(--line2);box-shadow:var(--e-4),0 0 0 1px var(--turq-soft)}
 .card h2{font-family:'Lalezar';font-weight:400;font-size:1.3rem}
@@ -543,11 +543,14 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 .gsc-chip .ic,.chip-bell .ic{width:15px;height:15px;vertical-align:-.18em}
 @media (prefers-reduced-motion:no-preference){
   .pane.active{view-transition-name:pane}
+  /* the dissolve owns the motion — a second slide stacked on it is what read as a jump */
+  @supports (view-transition-name:none){.pane.active{animation:none}}
   ::view-transition-old(pane){animation:vtOut var(--d-2) var(--ease-in)}
-  ::view-transition-new(pane){animation:vtIn var(--d-3) var(--ease-out)}
+  ::view-transition-new(pane){animation:vtIn var(--d-4) var(--ease-out)}
 }
-@keyframes vtOut{to{opacity:0;transform:translateY(-6px)}}
-@keyframes vtIn{from{opacity:0;transform:translateY(8px)}}
+@keyframes vtOut{to{opacity:0}}
+@keyframes vtIn{from{opacity:0;transform:translateY(6px)}}
+@keyframes paneIn{from{opacity:0;transform:translateY(8px)}}
 
 /* ── v1.7 desktop rail: the tab bar becomes a 72px icon rail (Novo's mini-sidebar idea) ── */
 @media(min-width:1024px){
@@ -997,9 +1000,13 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.16.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.17.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.17.0',date:'۱۶ شهریور ۱۴۰۵',items:[
+    'انتقال بین صفحه‌ها نرم‌تر شد: محوِ تدریجی به‌جای پرش ناگهانی، و هر بخش از بالای صفحه باز می‌شود',
+    'در مرورگرهای قدیمی‌تر هم ورود پن با محو و بالا آمدن ملایم است'
+  ]},
   {v:'v1.16.0',date:'۱۶ شهریور ۱۴۰۵',items:[
     'رفع باگ موبایل: داک پایین صفحه دوباره محکم به لبهٔ پایین می‌چسبد (توکن‌های خراب از v1.14.0)',
     'دسکتاپ: بازگشت به همان نوار بالای کلاسیک تمام‌عرض'
@@ -1531,7 +1538,7 @@ const tabBtns=[...document.querySelectorAll('.tab')];const ind=$('#tabInd');
 const RAIL=window.matchMedia?matchMedia('(min-width:1024px)'):{matches:false,addEventListener(){}};
 function moveInd(btn){if(!btn)return;
   ind.style.setProperty('--w',btn.offsetWidth+'px');ind.style.setProperty('--h',btn.offsetHeight+'px');ind.style.setProperty('--x',btn.offsetLeft+'px');ind.style.setProperty('--y',btn.offsetTop+'px');}
-function setTab(name){if(name==='search')return;const apply=()=>{tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;});document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+name));const _tb=tabBtns.find(b=>b.dataset.tab===name);const _onMore=MORE_SECTIONS.includes(name);
+function setTab(name){if(name==='search')return;const apply=()=>{window.scrollTo(0,0);tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;});document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+name));const _tb=tabBtns.find(b=>b.dataset.tab===name);const _onMore=MORE_SECTIONS.includes(name);
     if(moreBtn){moreBtn.classList.toggle('on',_onMore);moreLbl.textContent=_onMore?(_tb.getAttribute('aria-label')||'بیشتر'):'بیشتر';moreIc.setAttribute('href',_onMore?'#i-'+name:'#i-more');}
     moveInd(_onMore?moreBtn:_tb);renderAll();};
   if(document.startViewTransition&&!REDUCED)document.startViewTransition(apply);else apply();}
