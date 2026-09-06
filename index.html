@@ -551,19 +551,19 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 
 /* ── v1.7 desktop rail: the tab bar becomes a 72px icon rail (Novo's mini-sidebar idea) ── */
 @media(min-width:1024px){
-  :root{--rail-w:72px}
-  body{padding-inline-end:var(--rail-w)}
-  .tabs{position:fixed;inset-block:0;inset-inline-end:0;inset-inline-start:auto;width:var(--rail-w);border-bottom:0;border-inline-start:1px solid var(--line);background:var(--surface-1);z-index:40;display:block}
-  .tabs-in{display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:12px 0;height:100%;max-width:none;overflow:visible}
-  .tab{font-size:0;padding:0;min-height:54px;display:grid;place-items:center;border-radius:0;position:relative;color:var(--muted)}
-  .tab:hover{color:var(--text);background:var(--soft)}
-  .tab.active{color:var(--turq);background:var(--turq-soft)}
-  .tab-lbl{display:none}
-  .tab-ic{display:block;font-size:1.5rem;width:1.32em;height:1.32em}
-  .ind{inset-block:0 auto;inset-inline:0 0;width:3px!important;height:var(--h,54px);transform:translateY(var(--y,0px));border-radius:3px 0 0 3px;background:linear-gradient(to bottom,var(--turq),var(--gold));transition:transform var(--d-3) var(--ease-emph),height var(--d-3) var(--ease-emph)}
-  /* the label lives on as a tooltip, so hiding the text costs nothing */
-  .tab::after{content:attr(data-tip);position:absolute;inset-inline-end:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(6px);background:var(--surface-4);color:var(--text);font-size:var(--f-sm);font-weight:600;padding:7px 12px;border-radius:var(--r-sm);white-space:nowrap;box-shadow:var(--e-2);opacity:0;pointer-events:none;transition:opacity var(--d-2) var(--ease-out),transform var(--d-2) var(--ease-out)}
-  .tab:hover::after,.tab:focus-visible::after{opacity:1;transform:translateY(-50%) translateX(0)}
+  /* the desktop keeps the classic top menu — now wearing the same glass pill as the phone dock */
+  .tabs{position:sticky;top:var(--nav-inset);z-index:40;width:min(calc(100% - var(--nav-side)*2),880px);margin:0 auto var(--nav-inset);border-bottom:0;border-radius:var(--r-pill);background:var(--glass-bg);backdrop-filter:var(--glass);box-shadow:var(--e-4),inset 0 1px 0 var(--sheen);animation:dockDown .55s var(--ease-spring) both;overflow:hidden}
+  .tabs-in{max-width:none;overflow:visible;height:var(--nav-h);gap:4px;padding:0 10px}
+  .tab{flex:1 1 0;min-height:var(--nav-h);padding:0 8px;font-size:var(--f-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dim);border-radius:0;position:relative}
+  .tab:hover{color:var(--text);background:transparent}
+  .tab.active{color:var(--turq);background:transparent}
+  .tab-ic{display:block;font-size:1.3rem;width:1.3em;height:1.3em;position:relative;z-index:1}
+  .tab-lbl{display:block;font-size:var(--f-xs);line-height:1;max-width:100%;overflow:hidden;white-space:nowrap;position:relative;z-index:1}
+  .tab-more .tab-lbl{display:block;line-height:1.15}
+  .ind{top:4px;bottom:auto;left:0;width:calc(var(--w,44px) - 6px);height:calc(100% - 8px);border-radius:var(--r-pill);background:var(--turq-soft);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--turq) 55%,transparent);transform:translateX(calc(var(--x,0px) + 3px));transition:transform var(--d-3) var(--ease-emph),width var(--d-3) var(--ease-emph)}
+  .moresheet{inset-inline:0;margin-inline:auto;bottom:auto;top:calc(env(safe-area-inset-top) + var(--nav-total) + 8px)}
+  .moresheet.open{animation:sheetDown .32s var(--ease-spring) both}
+  .toast{bottom:auto;top:calc(env(safe-area-inset-top) + var(--nav-total) + 14px)}
   .pane{padding-block-end:var(--s-8)}
 }
 
@@ -581,6 +581,8 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
 .pop .pop-sep{height:1px;background:var(--line);margin:5px 8px}
 @keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes dockIn{from{opacity:0;transform:translateY(72px)}}
+@keyframes dockDown{from{opacity:0;transform:translateY(-72px)}}
+@keyframes sheetDown{from{opacity:0;transform:translateY(-16px) scale(.97)}}
 @keyframes sheetUp{from{opacity:0;transform:translateY(16px) scale(.97)}}
 
 /* ── v1.7 KPI knob + tile sparklines ── */
@@ -1005,9 +1007,13 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.14.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.15.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.15.0',date:'۱۶ شهریور ۱۴۰۵',items:[
+    'دسکتاپ هم همان منوی بالایی را دارد: به‌جای ستون کناری، همان نوار شیشه‌ای با آیکن و برچسب بالای صفحه می‌نشیند و با اسکرول شناور می‌ماند',
+    'شیت «بیشتر» و پیام‌های ذخیره‌سازی در دسکتاپ از زیر نوار بالا باز می‌شوند'
+  ]},
   {v:'v1.14.0',date:'۱۶ شهریور ۱۴۰۵',items:[
     'نوار پایین مدرن‌تر شد: ورود فنری از پایین، هالهٔ نرم دور بخش فعال، پرش ریز آیکن فعال و نوار کمی بلندتر',
     'جای‌گیری بزرگ: «وام‌ها» به شیتی «بیشتر» رفت و «جستجوی سراسری» (همان Ctrl+K) جای‌اش را در نوار پایین گرفت؛ چیپ جستجوی نوار بالا هم در موبایل کنار رفت',
