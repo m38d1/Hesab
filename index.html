@@ -436,8 +436,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .swatch.active{border-color:#fff;box-shadow:0 0 0 2px rgba(56,213,189,.5)}
 .swatch.color{border-radius:var(--r-full)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,90px);background:var(--surface-3);color:var(--text);border:1px solid var(--line2);border-inline-start:4px solid var(--green);padding:12px 20px;border-radius:var(--r-sm);font-size:var(--f-sm);box-shadow:var(--e-3);z-index:10001;transition:transform var(--d-3) var(--ease-out),opacity var(--d-3) var(--ease-out);opacity:0;max-width:90vw}
-.toast.show{transform:translate(-50%,0);opacity:1}
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,90px);background:var(--surface-3);color:var(--text);border:1px solid var(--line2);border-inline-start:4px solid var(--green);padding:12px 20px;border-radius:var(--r-sm);font-size:var(--f-sm);box-shadow:var(--e-3);z-index:10001;transition:transform var(--d-3) var(--ease-out),opacity var(--d-3) var(--ease-out);opacity:0;visibility:hidden;pointer-events:none;max-width:90vw}
+.toast.show{transform:translate(-50%,0);opacity:1;visibility:visible;pointer-events:auto}
 .toast.err{border-inline-start-color:var(--coral)}
 .backup-bar{margin-top:8px;background:linear-gradient(165deg,var(--surface-2),var(--surface-1));border:1px solid var(--gold-hairline);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .backup-bar::before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--gold),var(--turq))}
@@ -662,11 +662,13 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
   .moresheet button:active{transform:scale(.96);transition-duration:90ms}
 }
 /* ── v1.13 boot skeleton ── */
-.boot-sk{display:none;padding:26px;max-width:860px;margin-inline:auto}
+.boot-sk{display:block;pointer-events:none;padding:26px;max-width:860px;margin-inline:auto}
 .sk-line,.sk-big{height:14px;border-radius:var(--r-pill);margin:12px 0;background:linear-gradient(90deg,var(--soft),var(--surface-2),var(--soft));background-size:220% 100%;animation:skWash 1.4s ease-in-out infinite}
 .sk-big{height:56px}
 @keyframes skWash{0%{background-position:100% 0}100%{background-position:-100% 0}}
 @media(prefers-reduced-motion:reduce){.boot-sk *{animation:none}}
+
+/* ── v1.13 fix: boot screens visible before JS runs (root level, NOT inside print) ── */
 </style>
 <style id="themeCSS">
 /* light theme = pure token swap (no per-component patches) */
@@ -877,8 +879,6 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 @media print{
   body{background:#fff!important;color:#000!important}
   body::before,.glow,.grain,#loginScreen,#setupScreen,#appWrap,.modal,.toast,.dp,#gsModal,#wnModal,#impModal{display:none!important}
-#loginScreen{display:flex!important}#loginScreen .boot-sk{display:block!important}
-#setupScreen{display:flex!important}#setupScreen .boot-sk{display:block!important}
   #printArea{display:block!important}
   @page{size:A4;margin:16mm}
 }
@@ -999,9 +999,13 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.13.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.13.1';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.13.1',date:'۱۶ شهریور ۱۴۰۵',items:[
+    'رفع باگ دکمه‌های میانی نوار پایین: توستِ اعلان نامرئی اما ضربه‌خوار بود و دقیقاً روی اسلات وسط می‌نشست — حالا هیچ ضربه‌ای را نمی‌بلعد',
+    'ورود مستقیم (بدون پین) حالا صفحه‌های ورود/راه‌اندازی را خودش می‌بندد؛ اسکلت بوت هم واقعاً دیده می‌شود و ضربه‌ها را رد می‌کند'
+  ]},
   {v:'v1.13.0',date:'۱۶ شهریور ۱۴۰۵',items:[
     'نقطة مردهٔ روشن شدن از بین رفت: صفحهٔ ورود/راه‌اندازی حالا با CSS سریع دیده می‌شود، قبل از اینکه جاوااسکریپت آماده شود؛ اسکلتِ موج‌دار هم تا اولین رندر واقعی همراهی می‌کند',
     'بخش‌های داشبورد حالا به عرض خودشان حساس‌اند نه فقط عرض صفحه: در پنجره‌های میانی (بین ۶۶۰ و ۹۶۰ پیکسل) کاشی‌ها یک‌ستون و باز می‌شوند'
@@ -1141,7 +1145,7 @@ document.getElementById('secResetForm').addEventListener('submit',function(e){e.
 document.getElementById('logoutBtn').addEventListener('click',()=>{
   if(hasPin()){
     document.getElementById('appWrap').classList.remove('unlocked');
-    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginScreen').style.display='flex';document.getElementById('setupScreen').style.display='none';
     document.getElementById('loginPin').value='';
     const le=document.getElementById('loginErr');le.textContent='';le.style.color='var(--coral)';
   } else {
@@ -2245,12 +2249,13 @@ function initApp(){killBootSkeleton();
 /* ===== تصمیم ورود: نصب / قفل / ورود مستقیم ===== */
 (function(){
   if(!hasSetupDone()){
-    document.getElementById('setupScreen').style.display='flex';
+    document.getElementById('setupScreen').style.display='flex';document.getElementById('loginScreen').style.display='none';
     setTimeout(()=>{const e=document.getElementById('suPin');if(e)e.focus();},150);
   } else if(hasPin()){
     document.getElementById('loginScreen').style.display='flex';
     setTimeout(()=>{const e=document.getElementById('loginPin');if(e)e.focus();},150);
   } else {
+    document.getElementById('setupScreen').style.display='none';document.getElementById('loginScreen').style.display='none';
     document.getElementById('appWrap').classList.add('unlocked');
     if(!window.__appInited){window.__appInited=true;initApp();}
   }

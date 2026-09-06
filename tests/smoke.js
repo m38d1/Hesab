@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.13.0','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.13.0','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.13.1','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.13.1','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -458,7 +458,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v15/.test(sw),'service-worker cache bumped to v15');
+  ok(/hesabketab-v16/.test(sw),'service-worker cache bumped to v15');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -509,7 +509,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.13.0','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -582,7 +582,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.13.0','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -630,7 +630,7 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.13.0','version bumped to v1.10.0');
+  ok(G("APP_VERSION")==='v1.13.1','version bumped to v1.10.0');
 }
 
 console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
@@ -667,8 +667,9 @@ console.log('\n── 27) v1.13 container queries + boot skeleton ──');
   ok(/grid-template-columns:1fr/.test(cq),'it collapses to one column below 660px');
   ok(/\.b-hero[^{]*\{grid-column:1\/-1\}/.test(cq)&&/\.b-inc,\.b-exp\{grid-column:1\/-1\}|\.b-exp\{grid-column:1\/-1\}/.test(cq),'every tile spans full width there');
   ok(css.indexOf('@container bento')>css.indexOf('@media(max-width:960px)'),'the CQ cascade comes after the viewport cascade');
-  /* پیش‌فرض بوت: صفحه‌های ورود/راه‌اندازی پیش از JS دیده می‌شوند */
-  ok(/#setupScreen\{display:flex!important\}/.test(css)&&/#loginScreen\{display:flex!important\}/.test(css),'the boot screens are visible by default');
+  /* پیش‌فرض بوت: اسکلت با CSS دیده می‌شود؛ صفحه‌ها با JS تصمیم می‌گیرند */
+  ok(/\.boot-sk\{display:block;pointer-events:none/.test(css),'the skeleton paints before JS and never eats taps');
+  ok(!/#loginScreen\{display:flex!important\}/.test(css)&&!/#setupScreen\{display:flex!important\}/.test(css),'no !important boot rule can block the JS decision');
   ok(/#appWrap[,{][^}]*display:none/.test(css),'and the app shell still hides behind !important');
   /* اسکلت */
   ok(/class="boot-sk"/.test(html)&&/id="bootSk"/.test(html),'the skeleton exists before the app shell');
@@ -677,6 +678,10 @@ console.log('\n── 27) v1.13 container queries + boot skeleton ──');
   ok(/function killBootSkeleton/.test(js)&&/initApp\(\)\{killBootSkeleton\(\);/.test(js),'the skeleton dies the moment the app paints');
   /* در مسیر راه‌اندازی، صفحهٔ setup بالاترین z-index را دارد و اسکلت پشت آن می‌ماند */
   ok(/#setupScreen\{[^}]*z-index:9999/.test(css),'the setup screen covers the skeleton (z 9999)');
+  /* توست اعلان هرگز ضربه نمی‌بلعد — علت باگ دکمه‌های میانی داک */
+  ok(/\.toast\{[^}]*opacity:0;visibility:hidden;pointer-events:none/.test(css),'the hidden toast is untouchable');
+  ok(/\.toast\.show\{[^}]*pointer-events:auto/.test(css),'but a shown toast still hits');
+  ok(/setupScreen'\)\.style\.display='none';document\.getElementById\('loginScreen'\)\.style\.display='none'/.test(js),'the direct-open branch closes both screens');
 }
 
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
