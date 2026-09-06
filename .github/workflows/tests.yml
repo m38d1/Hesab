@@ -1,0 +1,32 @@
+name: tests
+
+# These tests existed and passed by hand, which means they protected nothing:
+# a regression only surfaced if someone remembered to run them. jsdom is
+# installed with --no-save so the app stays dependency-free at runtime; only CI
+# needs it.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install --no-save --no-fund --no-audit jsdom@30
+
+      - name: smoke — structure, rendering, RTL edges
+        run: node tests/smoke.js
+
+      - name: real session — seeded storage, boot, menus, chips
+        run: node tests/session.js
