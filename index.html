@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- ═══════════════════════════════════════════════
      حساب‌وکتاب · مهدی عسکری
-     نسخه: v1.5.0 — واردات از اکسل و CSV
+     نسخه: v1.18.0 — کارت‌های کیف‌پولی حساب‌ها + پالت تأکیدی
      ═══════════════════════════════════════════════ -->
 <html lang="fa" dir="rtl">
 <head>
@@ -250,6 +250,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .acard-meta{display:flex;gap:12px;font-size:var(--f-micro);color:var(--muted);margin-top:6px;flex-wrap:wrap}
 .ac-in{color:var(--green)}.ac-ex{color:var(--coral)}
 .acard-foot{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:var(--f-micro);color:var(--dim)}
+/* v1.18 — کارت کیف‌پولی: گرادیانِ سیراب از رنگِ خودِ حساب؛ جوهر و خطوط مویی را JS بر اساس کنتراست AA تعیین می‌کند */
+.acard.is-wallet{border:1px solid var(--whair,rgba(255,255,255,.16));box-shadow:var(--e-2)}
+.acard.is-wallet:hover{box-shadow:var(--e-3)}
+.acard.is-wallet .acard-t span{color:inherit;opacity:.82}
+.acard.is-wallet .acard-ic{background:var(--wchip,rgba(255,255,255,.16));box-shadow:inset 0 0 0 1px var(--whair,rgba(255,255,255,.25))}
+.acard.is-wallet .acard-actions button{background:var(--wchip,rgba(255,255,255,.14));color:inherit;border-color:var(--whair,rgba(255,255,255,.32))}
+.acard.is-wallet .acard-actions button:hover{color:inherit;border-color:currentColor}
+.acard.is-wallet .acard-actions button.armed{background:var(--coral);color:#fff;border-color:var(--coral)}
+.acard.is-wallet .acard-meta,.acard.is-wallet .acard-bal small{color:inherit;opacity:.8}
+.acard.is-wallet .ac-in,.acard.is-wallet .ac-ex{color:inherit;opacity:.92}
+.acard.is-wallet .acard-foot{border-top:1px dashed var(--whair,rgba(255,255,255,.3));color:inherit;opacity:.8}
+.acard.is-wallet .acard-bal.neg{color:inherit}
+.acard-mid{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.acard-chip{width:34px;height:26px;flex:none}
+.acard-wave{margin-inline-start:auto;width:20px;height:20px}
+.acard-no{direction:ltr;letter-spacing:2px;font-size:var(--f-xs)}
+.neg-pill{display:inline-block;margin-inline-start:8px;padding:0 9px;border:1px solid currentColor;border-radius:var(--r-pill);background:var(--wchip,rgba(255,255,255,.16));font-size:var(--f-micro);font-family:'Vazirmatn';vertical-align:middle}
 .loan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .lcard{border-radius:var(--r);padding:18px;box-shadow:var(--shadow);transition:var(--tr);position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(165deg,var(--panel),var(--panel2))}
 .lcard::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;background:var(--lc,var(--turq))}
@@ -465,6 +482,7 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
   .g1,.g2,.wave,.credit-heart,.bell-ic,.pay.pulse{animation:none!important}
   *{transition-duration:1ms!important;scroll-behavior:auto!important}
   .toast,.modal-box,.pane.active,.tabs,.moresheet,.moresheet button{transition:opacity 120ms linear!important;animation:none!important}
+  .accent-toggle.spin{animation:none!important}
 }
 /* ── v1.6: money typography — Vazirmatn 700 + tabular figures (Lalezar has no tnum) ── */
 .big-val,.hero-mini b,.mini b,.fsum b,.txamt,.ring-pct,.ring-txt b,.acc-total,.acard-bal,
@@ -695,13 +713,73 @@ footer button:hover,.restore-btn:hover{color:var(--turq);border-color:var(--line
   --glass-1:rgba(255,255,255,.86);--glass-2:rgba(252,254,253,.92);--knob:#ffffff;--gold-hairline:rgba(138,92,15,.26);--green-fill:rgba(26,127,78,.35);
 }
 [data-theme="light"] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234f716c' fill='none' stroke-width='1.5'/%3E%3C/svg%3E")}
-[data-theme="light"] .g1{opacity:.4;background:radial-gradient(circle,rgba(12,143,126,.15),transparent 70%)}
-[data-theme="light"] .g2{opacity:.4;background:radial-gradient(circle,rgba(176,118,26,.12),transparent 70%)}
+[data-theme="light"] .g1{opacity:.4;background:radial-gradient(circle,var(--turq-soft),transparent 70%)}
+[data-theme="light"] .g2{opacity:.4;background:radial-gradient(circle,var(--gold-soft),transparent 70%)}
 [data-theme="light"] body::before{opacity:.09;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%230c8f7e' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='34'/%3E%3Ccircle cx='60' cy='60' r='22'/%3E%3Crect x='36' y='36' width='48' height='48'/%3E%3Crect x='36' y='36' width='48' height='48' transform='rotate(45 60 60)'/%3E%3Cpath d='M60 8v104M8 60h104M26 26l68 68M94 26L26 94'/%3E%3Ccircle cx='60' cy='60' r='4' fill='%23b0761a' stroke='none'/%3E%3C/g%3E%3C/svg%3E")}
 .theme-toggle{width:42px;height:42px;flex:none;border-radius:var(--r-full);border:1px solid var(--line2);background:var(--ink);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:var(--f-md);transition:transform .3s,border-color .3s,background .3s}
 .theme-toggle:hover{transform:rotate(25deg) scale(1.1);border-color:var(--gold);color:var(--gold)}
 .theme-toggle .tt-ic{display:block;line-height:1;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .theme-toggle.spin .tt-ic{transform:rotate(360deg)}
+/* ── v1.18 — پالت‌های تأکیدی: فقط «مقدارِ» توکن عوض می‌شود، نه قواعد کامپوننت ──
+   فیروزه (پیش‌فرض = مقادیر :root) · لاجورد · انار · زعفران
+   نامِ توکن‌ها (--turq/--gold) عمداً ثابت مانده است: این‌ها «شکافِ رنگ»اند، نه نامِ رنگ. */
+[data-accent="lajevard"]{
+  --turq:#7bb0ff;--turq-deep:#4a7de0;--gold:#f0a83c;--on-accent:#04122b;
+  --turq-soft:rgba(123,176,255,.12);--gold-soft:rgba(240,168,60,.13);--gold-hairline:rgba(240,168,60,.28);
+  --ring-focus:0 0 0 3px rgba(123,176,255,.34);--glow:0 6px 20px rgba(123,176,255,.26);
+}
+[data-theme="dark"][data-accent="lajevard"]{
+  --bg:#091421;--surface-1:#0c1c2e;--surface-2:#102539;--surface-3:#142e47;--surface-4:#1a3855;
+  --panel:#102539;--panel2:#0b1a2b;--line:rgba(123,176,255,.13);--line2:rgba(123,176,255,.3);
+  --text:#eaf1fb;--muted:#aec4de;--dim:#95adca;
+  --glass-bg:rgba(12,28,46,.74);--glass-1:rgba(16,37,57,.72);--glass-2:rgba(9,20,33,.9);
+}
+[data-theme="light"][data-accent="lajevard"]{
+  --turq:#1d5cd6;--turq-deep:#174bb4;--gold:#8a5c0f;--on-accent:#ffffff;
+  --turq-soft:rgba(29,92,214,.1);--gold-soft:rgba(138,92,15,.11);--gold-hairline:rgba(138,92,15,.26);
+  --line:rgba(29,92,214,.14);--line2:rgba(29,92,214,.32);
+  --ring-focus:0 0 0 3px rgba(29,92,214,.3);--glow:0 6px 18px rgba(29,92,214,.2);
+}
+[data-accent="anar"]{
+  --turq:#ff8a78;--turq-deep:#d95b49;--gold:#ffd166;--on-accent:#2b0603;
+  --turq-soft:rgba(255,138,120,.12);--gold-soft:rgba(255,209,102,.13);--gold-hairline:rgba(255,209,102,.28);
+  --ring-focus:0 0 0 3px rgba(255,138,120,.34);--glow:0 6px 20px rgba(255,138,120,.26);
+}
+[data-theme="dark"][data-accent="anar"]{
+  --bg:#1e0d10;--surface-1:#251317;--surface-2:#2d1a1e;--surface-3:#372024;--surface-4:#43282c;
+  --panel:#2d1a1e;--panel2:#231114;--line:rgba(255,138,120,.14);--line2:rgba(255,138,120,.32);
+  --text:#f7efec;--muted:#dcb9b1;--dim:#c79e96;
+  --glass-bg:rgba(37,19,23,.74);--glass-1:rgba(45,26,30,.72);--glass-2:rgba(30,13,16,.9);
+}
+[data-theme="light"][data-accent="anar"]{
+  --turq:#c2402e;--turq-deep:#a03325;--gold:#8a5c0f;--on-accent:#ffffff;
+  --turq-soft:rgba(194,64,46,.1);--gold-soft:rgba(138,92,15,.11);--gold-hairline:rgba(138,92,15,.26);
+  --line:rgba(194,64,46,.14);--line2:rgba(194,64,46,.32);
+  --ring-focus:0 0 0 3px rgba(194,64,46,.3);--glow:0 6px 18px rgba(194,64,46,.2);
+}
+[data-accent="zafaran"]{
+  --turq:#f6b352;--turq-deep:#d99a33;--gold:#38d5bd;--on-accent:#241703;
+  --turq-soft:rgba(246,179,82,.12);--gold-soft:rgba(56,213,189,.13);--gold-hairline:rgba(56,213,189,.28);
+  --ring-focus:0 0 0 3px rgba(246,179,82,.34);--glow:0 6px 20px rgba(246,179,82,.26);
+}
+[data-theme="dark"][data-accent="zafaran"]{
+  --bg:#201908;--surface-1:#28200d;--surface-2:#302812;--surface-3:#3a3017;--surface-4:#463a1d;
+  --panel:#302812;--panel2:#261f0c;--line:rgba(246,179,82,.14);--line2:rgba(246,179,82,.32);
+  --text:#f8f2e2;--muted:#dcc79d;--dim:#c6b083;
+  --glass-bg:rgba(40,32,13,.74);--glass-1:rgba(48,40,18,.72);--glass-2:rgba(32,25,8,.9);
+}
+[data-theme="light"][data-accent="zafaran"]{
+  --turq:#8a5c0f;--turq-deep:#6f4a0c;--gold:#0a7d6d;--on-accent:#ffffff;
+  --turq-soft:rgba(138,92,15,.1);--gold-soft:rgba(10,125,109,.1);--gold-hairline:rgba(10,125,109,.26);
+  --line:rgba(138,92,15,.14);--line2:rgba(138,92,15,.32);
+  --ring-focus:0 0 0 3px rgba(138,92,15,.3);--glow:0 6px 18px rgba(138,92,15,.2);
+}
+.accent-toggle{width:42px;height:42px;flex:none;border-radius:var(--r-full);border:1px solid var(--line2);background:var(--ink);cursor:pointer;display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:11px;transition:transform .3s,border-color .3s,background .3s}
+.accent-toggle:hover{border-color:var(--gold);transform:scale(1.08)}
+.accent-toggle:active{transform:scale(.94)}
+.accent-toggle span{border-radius:var(--r-full);transition:background .3s}
+.accent-toggle.spin{animation:accentSpin .55s var(--ease-spring)}
+@keyframes accentSpin{from{transform:rotate(0) scale(1)}to{transform:rotate(180deg) scale(1.1)}}
 html.theming,html.theming *,html.theming *::before,html.theming *::after{transition:background-color .4s ease,color .4s ease,border-color .4s ease,box-shadow .4s ease,fill .4s ease,stroke .4s ease!important}
 </style>
 <style id="nameCreditCSS">
@@ -887,7 +965,7 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
   @page{size:A4;margin:16mm}
 }
 </style>
-<script>try{var _m=localStorage.getItem('hk-theme')||'dark';var _e=_m==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):_m;document.documentElement.setAttribute('data-theme',_e);}catch(e){}</script>
+<script>try{var _m=localStorage.getItem('hk-theme')||'dark';var _e=_m==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):_m;document.documentElement.setAttribute('data-theme',_e);var _a=localStorage.getItem('hk-accent');if(_a==='lajevard'||_a==='anar'||_a==='zafaran')document.documentElement.setAttribute('data-accent',_a);}catch(e){}</script>
 </head>
 <body>
 <svg aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><defs><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5 4-4"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></symbol><symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol><symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="5" rx="1.6"/><rect x="13" y="10" width="8" height="11" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/></symbol><symbol id="i-tx" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 8.5h5M9.5 12.5h5"/></symbol><symbol id="i-acc" viewBox="0 0 24 24"><path d="m12 3 9 5H3z"/><path d="M5.5 8.5v9M10 8.5v9M14 8.5v9M18.5 8.5v9M3.5 21h17"/></symbol><symbol id="i-cats" viewBox="0 0 24 24"><path d="M20.6 13.4 12 22l-9-9V4h9z"/><path d="M7.5 8.5h.01"/></symbol><symbol id="i-loans" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="16.5" cy="16.5" r="2.6"/></symbol><symbol id="i-budget" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/></symbol><symbol id="i-reports" viewBox="0 0 24 24"><path d="M5 20v-7M11 20V5M17 20v-4M3 21h18"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><rect x="3" y="3" width="7.4" height="7.4" rx="2.3"/><rect x="13.6" y="3" width="7.4" height="7.4" rx="2.3"/><rect x="3" y="13.6" width="7.4" height="7.4" rx="2.3"/><rect x="13.6" y="13.6" width="7.4" height="7.4" rx="2.3"/></symbol>
@@ -926,7 +1004,7 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <div class="boot-sk" id="bootSk" aria-hidden="true"><div class="sk-line" style="width:46%"></div><div class="sk-big"></div><div class="sk-line" style="width:78%"></div><div class="sk-line" style="width:64%"></div><div class="sk-big"></div><div class="sk-line" style="width:34%"></div><div class="sk-line" style="width:82%"></div></div>
 <div id="appWrap">
-<header class="topbar"><div class="wrap topbar-in"><div class="brand"><span class="logo"><svg width="30" height="30" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></span><div class="brand-t"><h1>حساب‌و<em>کتاب</em></h1><svg class="signature" viewBox="0 0 118 13" preserveAspectRatio="none"><path d="M2 9 C 12 2, 20 12, 30 7 S 46 1, 54 8 C 62 13, 70 3, 80 7 S 100 11, 116 4"/></svg></div></div><div class="top-chips"><div class="chip chip-date" id="chipDate"></div><button class="chip chip-bell" id="bellChip" aria-haspopup="dialog" aria-expanded="false" aria-controls="notifPop" title="یادآور اقساط" style="display:none"><span class="bell-ic"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></span><span class="bell-badge" id="bellBadge" style="display:none">۰</span></button><button class="chip gsc-chip" id="gscOpen" title="جستجوی سراسری" aria-label="جستجوی سراسری"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span class="gsc-lbl">جستجو</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" id="themeToggle" title="تغییر قالب" aria-label="تغییر قالب"><span class="tt-ic" id="ttIcon"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span></button><div class="unit-toggle" id="unitToggle" title="تغییر واحد نمایش"><span class="ut-glider" id="utGlider"></span><span class="ut-opt" data-u="T">تومان</span><span class="ut-opt" data-u="R">ریال</span></div></div></div></header>
+<header class="topbar"><div class="wrap topbar-in"><div class="brand"><span class="logo"><svg width="30" height="30" viewBox="0 0 28 28"><rect x="6" y="6" width="16" height="16" fill="none" stroke="#38d5bd" stroke-width="1.8"/><rect x="6" y="6" width="16" height="16" transform="rotate(45 14 14)" fill="none" stroke="#e9b44c" stroke-width="1.8"/><circle cx="14" cy="14" r="3" fill="#38d5bd"/></svg></span><div class="brand-t"><h1>حساب‌و<em>کتاب</em></h1><svg class="signature" viewBox="0 0 118 13" preserveAspectRatio="none"><path d="M2 9 C 12 2, 20 12, 30 7 S 46 1, 54 8 C 62 13, 70 3, 80 7 S 100 11, 116 4"/></svg></div></div><div class="top-chips"><div class="chip chip-date" id="chipDate"></div><button class="chip chip-bell" id="bellChip" aria-haspopup="dialog" aria-expanded="false" aria-controls="notifPop" title="یادآور اقساط" style="display:none"><span class="bell-ic"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></span><span class="bell-badge" id="bellBadge" style="display:none">۰</span></button><button class="chip gsc-chip" id="gscOpen" title="جستجوی سراسری" aria-label="جستجوی سراسری"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span class="gsc-lbl">جستجو</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" id="themeToggle" title="تغییر قالب" aria-label="تغییر قالب"><span class="tt-ic" id="ttIcon"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span></button><button class="accent-toggle" id="accentToggle" title="پالت رنگ" aria-label="تغییر پالت رنگ"><span id="atA"></span><span id="atB"></span></button><div class="unit-toggle" id="unitToggle" title="تغییر واحد نمایش"><span class="ut-glider" id="utGlider"></span><span class="ut-opt" data-u="T">تومان</span><span class="ut-opt" data-u="R">ریال</span></div></div></div></header>
 <nav class="tabs" id="tabs"><div class="wrap tabs-in" role="tablist" aria-label="بخش‌های اصلی"><button class="tab active" id="tab-dash" role="tab" aria-label="داشبورد" aria-selected="true" aria-controls="pane-dash" tabindex="0" data-tab="dash" data-tip="داشبورد"><span class="tab-lbl">خانه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-dash"/></svg></button><button class="tab" id="tab-tx" role="tab" aria-label="تراکنش‌ها" aria-selected="false" aria-controls="pane-tx" tabindex="-1" data-tab="tx" data-tip="تراکنش‌ها"><span class="tab-lbl">تراکنش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-tx"/></svg></button><button class="tab" id="tab-acc" role="tab" aria-label="حساب‌ها" aria-selected="false" aria-controls="pane-acc" tabindex="-1" data-tab="acc" data-tip="حساب‌ها"><span class="tab-lbl">حساب</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-acc"/></svg></button><button class="tab tab-opt" id="tab-cats" role="tab" aria-label="دسته‌ها" aria-selected="false" aria-controls="pane-cats" tabindex="-1" data-tab="cats" data-tip="دسته‌ها"><span class="tab-lbl">دسته</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cats"/></svg></button><button class="tab tab-search" id="tabSearch" type="button" aria-haspopup="dialog" aria-controls="gsModal" aria-label="جستجوی سراسری" data-tip="جستجوی سراسری" title="جستجوی سراسری (Ctrl+K)" data-tab="search"><span class="tab-lbl">جستجو</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-search"/></svg></button><button class="tab tab-opt" id="tab-loans" role="tab" aria-label="وام‌ها" aria-selected="false" aria-controls="pane-loans" tabindex="-1" data-tab="loans" data-tip="وام‌ها"><span class="tab-lbl">وام</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-loans"/></svg></button><button class="tab tab-opt" id="tab-budget" role="tab" aria-label="بودجه" aria-selected="false" aria-controls="pane-budget" tabindex="-1" data-tab="budget" data-tip="بودجه"><span class="tab-lbl">بودجه</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-budget"/></svg></button><button class="tab tab-opt" id="tab-reports" role="tab" aria-label="گزارش‌ها" aria-selected="false" aria-controls="pane-reports" tabindex="-1" data-tab="reports" data-tip="گزارش‌ها"><span class="tab-lbl">گزارش</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-reports"/></svg></button><button class="tab tab-opt" id="tab-cal" role="tab" aria-label="تقویم" aria-selected="false" aria-controls="pane-cal" tabindex="-1" data-tab="cal" data-tip="تقویم"><span class="tab-lbl">تقویم</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-cal"/></svg></button><button class="tab-more" id="tabMore" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="morePop" aria-label="بخش‌های بیشتر"><span class="tab-lbl" id="moreLbl">بیشتر</span><svg class="ic tab-ic" aria-hidden="true"><use href="#i-more" id="moreIc"/></svg></button><span class="ind" id="tabInd" aria-hidden="true"></span></div></nav>
 <main class="wrap">
   <section class="pane active" id="pane-dash" role="tabpanel" aria-labelledby="tab-dash" tabindex="0"><div id="dueBanner"></div><div class="dash-bento"><div class="card hero-bal b-hero"><div class="card-k">مجموع دارایی</div><div class="big-val" id="dBalance">۰</div><div class="hero-line"><span class="toman" id="dUnit">تومان</span><span class="delta" id="dDelta"></span></div><div class="spark-wrap" id="dSpark"></div><div class="spark-cap">روند ۳۰ روز اخیر</div><div class="hero-mini" id="dHeroMini"></div></div><div class="card mini m-in b-inc"><div class="mini-ic">📥</div><div class="mini-body"><div class="card-k">درآمد ماه</div><b id="dInc">۰</b></div><div class="mini-sp" id="dIncSp"></div></div><div class="card mini m-ex b-exp"><div class="mini-ic">📤</div><div class="mini-body"><div class="card-k">هزینه ماه</div><b id="dExp">۰</b></div><div class="mini-sp" id="dExpSp"></div></div><div class="card mini m-save b-rate"><div class="mini-ic">🎯</div><div class="mini-body"><div class="card-k">نرخ پس‌انداز</div><span class="card-sub">چقدر از درآمد می‌ماند</span></div><div class="knob" id="dKnob" data-lvl="lo" style="--p:0" role="img" aria-label="نرخ پس‌انداز ماه"><b id="dRate">٪۰</b></div></div><div class="card b-budget"><div class="card-h"><h2>بودجهٔ ماه</h2><div class="card-acts"><button class="link-btn" data-goto="budget">مدیریت ←</button><button class="card-menu" data-acts="dashBudget" aria-haspopup="true" aria-expanded="false" aria-label="گزینه‌های بودجهٔ ماه" title="گزینه‌ها"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg></button></div></div><div id="dBudget"></div></div><div class="card b-recent"><div class="card-h"><h2>آخرین تراکنش‌ها</h2><div class="card-acts"><button class="link-btn" data-goto="tx">همه ←</button><button class="card-menu" data-acts="dashRecent" aria-haspopup="true" aria-expanded="false" aria-label="گزینه‌های آخرین تراکنش‌ها" title="گزینه‌ها"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg></button></div></div><div id="dRecent" class="txlist"></div></div></div></section>
@@ -1003,9 +1081,13 @@ mark{background:rgba(233,180,76,.35);color:var(--text);border-radius:3px;padding
 
 <script>
 'use strict';
-const APP_VERSION='v1.17.1';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const APP_VERSION='v1.18.0';const REDUCED=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
 /* سابقهٔ به‌روزرسانی‌ها — جدیدترین اول (برای مودال «چه چیزهایی جدید است؟») */
 const WHATS_NEW=[
+  {v:'v1.18.0',date:'۱۹ شهریور ۱۴۰۵',items:[
+    'حساب‌ها حالا مثل کارت واقعی‌اند: گرادیانِ رنگِ خودِ حساب، چیپ و موجِ بی‌سیم، شمارهٔ کارت ماسک‌شده با ارقام فارسی و نشان «منفی» روی ماندهٔ منفی',
+    'پالت رنگی قابل انتخاب: دکمهٔ کنار «تغییر قالب» بین فیروزه، لاجورد، انار و زعفران می‌چرخد — فقط مقدار توکن‌ها عوض می‌شود، نه قواعد کامپوننت'
+  ]},
   {v:'v1.17.1',date:'۱۶ شهریور ۱۴۰۵',items:[
     'منو دیگر وسط عوض‌شدن صفحه محو و ظاهر نمی‌شود؛ سر جایش ثابت می‌ماند و فقط محتوا دِروِل می‌شود',
     'خط زیرینِ تب بعد از پایان محو نرم سُر می‌خورد، نه وسط انیمیشن'
@@ -1250,6 +1332,32 @@ function faC(n){const a=Math.abs(n);if(a>=1e6)return(n/1e6).toLocaleString('fa-I
 const toEn=s=>String(s).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const parseAmt=s=>{const n=Number(toEn(s).replace(/[^\d]/g,''));return isNaN(n)?0:n;};
 const alpha=(hex,a)=>{const h=(typeof hex==='string'&&hex[0]==='#')?hex:'#38d5bd';const n=parseInt(h.slice(1),16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
+/* v1.18 — ابزار کارت کیف‌پولی: متن با کنتراست AA روی هر دو سرِ گرادیان، ماسک شمارهٔ کارت با ارقام فارسی */
+const hexRGB=h=>{const n=parseInt(h.slice(1),16);return[n>>16&255,n>>8&255,n&255];};
+const rgbStr=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
+const mixHex=(h,t,f)=>{const A=hexRGB(h),B=hexRGB(t);return rgbStr(A.map((v,i)=>Math.round(v*(1-f)+B[i]*f)));};
+const toBlack=(c,f)=>c.map(v=>Math.round(v*(1-f)));
+const toWhite=(c,f)=>c.map(v=>Math.round(v+(255-v)*f));
+const relLum=c=>{const s=c.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*s[0]+.7152*s[1]+.0722*s[2];};
+const crat=(a,b)=>{const x=relLum(a),y=relLum(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+const W_INK=[255,255,255],W_DARK=[26,26,32];
+/* پوستِ کارت: جوهر (سفید/تیره) را از نزدیک‌ترین کنتراست انتخاب و گرادیان را تا سقفِ مجازِ AA (≥4.5) تیره می‌کند */
+function accSkin(hex){
+  const c=(typeof hex==='string'&&/^#[0-9a-fA-F]{6}$/.test(hex))?hexRGB(hex):hexRGB('#38d5bd');
+  const T=4.6,ink=crat(c,W_DARK)>=T?W_DARK:W_INK,white=ink===W_INK;
+  if(white){ /* جوهر سفید: تیره‌کردن همیشه کمک می‌کند؛ فقط روشن‌ترین سر باید AA بماند */
+    let f=0;while(f<.94&&crat(toBlack(c,f),ink)<T)f+=.02;
+    return{hi:rgbStr(toBlack(c,f)),lo:rgbStr(toBlack(c,Math.min(f+.22,.94))),fg:rgbStr(ink),
+      hair:'rgba(255,255,255,.2)',chip:'rgba(255,255,255,.16)'};
+  }
+  /* جوهر تیره: تیره‌شدن کنتراست را کم می‌کند؛ عمیق‌ترین سرِ مجاز را پیدا کن، سرِ دیگر کمی روشن‌تر */
+  let f=0;while(f<.86&&crat(toBlack(c,f+.02),ink)>=T)f+=.02;
+  return{hi:rgbStr(toWhite(toBlack(c,f),.1)),lo:rgbStr(toBlack(c,f)),fg:rgbStr(ink),
+    hair:'rgba(18,18,24,.18)',chip:'rgba(255,255,255,.55)'};
+}
+const toFaDigits=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);
+const maskCard=v=>{const d=String(v||'').replace(/\D/g,'');if(!d)return'';if(d.length<=4)return toFaDigits(d);return toFaDigits(('•••• '.repeat(3)+d.slice(-4)).trim());};
+const ACC_TYPE_FA={cash:'نقدی',card:'کارت',ewallet:'کیف پول',save:'پس‌انداز'};
 const todayJ=()=>{const n=new Date();return J.toJalali(n.getFullYear(),n.getMonth()+1,n.getDate());};
 const jWd=(jy,jm,jd)=>{const g=J.toGregorian(jy,jm,jd);return(new Date(g.gy,g.gm-1,g.gd).getDay()+1)%7;};
 const jSerial=j=>{const g=J.toGregorian(j.jy,j.jm,j.jd);return Date.UTC(g.gy,g.gm-1,g.gd);};
@@ -1390,7 +1498,7 @@ function fillCatSelects(){const opts=arr=>arr.map(c=>`<option value="${c.id}">${
 function fillAccSelects(){const ops=state.accounts.map(a=>`<option value="${a.id}">${a.icon} ${esc(a.name)}</option>`).join('');const f=$('#fAcc');f.innerHTML=`<option value="">بدون حساب</option>`+ops;f.value=state.accounts.some(a=>a.id===ui.formAcc)?ui.formAcc:(state.accounts[0]?state.accounts[0].id:'');ui.formAcc=f.value;const ff=$('#fAccF');ff.innerHTML=`<option value="all">همه</option><option value="none">بدون حساب</option>`+ops;ff.value=['all','none'].includes(ui.txF.acc)?ui.txF.acc:(state.accounts.some(a=>a.id===ui.txF.acc)?ui.txF.acc:'all');ui.txF.acc=ff.value;const ra=$('#repAcc');const curA=ra.value||ui.repAcc;ra.innerHTML=`<option value="all">همهٔ حساب‌ها</option>`+ops;ra.value=[...ra.options].some(o=>o.value===curA)?curA:'all';ui.repAcc=ra.value;const rp=$('#repPerson');const curP=rp.value||ui.repPerson;rp.innerHTML=`<option value="all">همهٔ اشخاص</option>`+state.people.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');rp.value=[...rp.options].some(o=>o.value===curP)?curP:'all';ui.repPerson=rp.value;}
 function fillPersonSelect(){const f=$('#fPerson');const cur=f.value;f.innerHTML=state.people.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('')||'<option value="">—</option>';if([...f.options].some(o=>o.value===cur))f.value=cur;$('#ppList').innerHTML=state.people.map(p=>`<div class="pp-row"><span>👤 ${esc(p)}</span><button type="button" data-pdel="${esc(p)}">✕</button></div>`).join('')||'<div style="font-size:.75rem;color:var(--dim)">خالی</div>';}
 function renderTransactions(){const{type,cat,q,acc}=ui.txF;let list=[...state.txs].filter(t=>!t.feeOf).sort((a,b)=>b.ts-a.ts);if(type!=='all')list=list.filter(t=>t.type===type);if(cat!=='all')list=list.filter(t=>t.cat===cat);if(acc!=='all')list=list.filter(t=>acc==='none'?!t.acc:t.acc===acc);if(q){const ql=q.toLowerCase();list=list.filter(t=>(t.note||'').toLowerCase().includes(ql)||catById(t.cat).name.toLowerCase().includes(ql)||(t.person||'').toLowerCase().includes(ql));}const tt=totals(list);$('#txSum').innerHTML=`<span>${fa(list.length)} تراکنش</span><span>درآمد: <b style="color:var(--green)">${faM(displayVal(tt.inc))}</b></span><span>هزینه: <b style="color:var(--coral)">${faM(displayVal(tt.ex))}</b></span><span>خالص: <b style="color:var(--turq)">${faM(displayVal(tt.net))}</b></span>`;let html='',lastKey='';for(const t of list){const key=`${t.jy}/${t.jm}/${t.jd}`;if(key!==lastKey){html+=`<div class="dayhead">${WD_FULL[jWd(t.jy,t.jm,t.jd)]} · ${jStr(t)}</div>`;lastKey=key;}html+=txRow(t);}$('#txList').innerHTML=html||emptyHtml('تراکنشی یافت نشد');}
-function renderAccounts(){const t=todayJ();const total=state.accounts.reduce((s,a)=>s+accBalance(a),0);$('#accTotal').textContent=faM(displayVal(total));$('#accCount').textContent=fa(state.accounts.length)+' حساب';$('#accGrid').innerHTML=state.accounts.map(a=>{const bal=accBalance(a);const mt=totals(state.txs.filter(x=>x.acc===a.id&&x.jy===t.jy&&x.jm===t.jm));const n=state.txs.filter(x=>x.acc===a.id).length;return`<div class="acard" data-acc="${a.id}" style="background:linear-gradient(150deg,${alpha(a.color,.16)},var(--panel2) 65%);border-color:${alpha(a.color,.4)};border-top:3px solid ${a.color}"><div class="acard-top"><span class="acard-ic" style="background:${alpha(a.color,.18)}">${a.icon}</span><div class="acard-t"><b>${esc(a.name)}</b><span>${a.cardNo?`<span class="cardno" dir="ltr">${esc(a.cardNo)}</span>`:''}</span></div><div class="acard-actions"><button data-aedit="${a.id}">✎</button><button data-adel="${a.id}">✕</button></div></div><div class="acard-bal${bal<0?' neg':''}">${faM(displayVal(bal))} <small>${getUnitLabel()}</small></div><div class="acard-meta"><span>اولیه: ${faC(displayVal(+a.initial||0))}</span><span class="ac-in">+${faC(displayVal(mt.inc))}</span><span class="ac-ex">−${faC(displayVal(mt.ex))}</span></div><div class="acard-foot">${fa(n)} تراکنش</div></div>`;}).join('')||emptyHtml('حسابی نیست');}
+function renderAccounts(){const t=todayJ();const total=state.accounts.reduce((s,a)=>s+accBalance(a),0);$('#accTotal').textContent=faM(displayVal(total));$('#accCount').textContent=fa(state.accounts.length)+' حساب';$('#accGrid').innerHTML=state.accounts.map(a=>{const bal=accBalance(a);const mt=totals(state.txs.filter(x=>x.acc===a.id&&x.jy===t.jy&&x.jm===t.jm));const n=state.txs.filter(x=>x.acc===a.id).length;const sk=accSkin(a.color);const sub=a.cardNo?`<span class="cardno acard-no" dir="ltr">${maskCard(a.cardNo)}</span>`:(ACC_TYPE_FA[a.type]||'');return`<div class="acard is-wallet" data-acc="${a.id}" style="background:linear-gradient(140deg,${sk.hi},${sk.lo});color:${sk.fg};--whair:${sk.hair};--wchip:${sk.chip}"><div class="acard-top"><span class="acard-ic">${a.icon}</span><div class="acard-t"><b>${esc(a.name)}</b><span>${sub}</span></div><div class="acard-actions"><button data-aedit="${a.id}">✎</button><button data-adel="${a.id}">✕</button></div></div><div class="acard-mid"><svg class="acard-chip" viewBox="0 0 34 26" aria-hidden="true"><rect x="1" y="1" width="32" height="24" rx="5" fill="rgba(255,255,255,.22)" stroke="currentColor" stroke-opacity=".55"/><path d="M11 1v7a3 3 0 0 1-3 3H1M11 25v-7a3 3 0 0 0-3-3H1M23 1v7a3 3 0 0 0 3 3h7M23 25v-7a3 3 0 0 1 3-3h7M12 13h10" fill="none" stroke="currentColor" stroke-opacity=".55"/></svg><svg class="acard-wave" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7a8 8 0 0 1 0 6M7.5 4.5a12 12 0 0 1 0 11M11 2a16 16 0 0 1 0 16" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/></svg></div><div class="acard-bal${bal<0?' neg':''}">${faM(displayVal(bal))} <small>${getUnitLabel()}</small>${bal<0?'<span class="neg-pill">منفی</span>':''}</div><div class="acard-meta"><span>اولیه: ${faC(displayVal(+a.initial||0))}</span><span class="ac-in">+${faC(displayVal(mt.inc))}</span><span class="ac-ex">−${faC(displayVal(mt.ex))}</span></div><div class="acard-foot">${fa(n)} تراکنش</div></div>`;}).join('')||emptyHtml('حسابی نیست');}
 function renderCats(){$('#catCount').textContent=fa(state.cats.length)+' دسته';$('#exCatInfo').textContent=fa(CATS.ex.length);$('#inCatInfo').textContent=fa(CATS.in.length);const card=c=>{const list=state.txs.filter(t=>t.cat===c.id);const sum=list.reduce((s,t)=>s+(t.type==='in'?t.amount:-t.amount),0);return`<div class="ccard" style="border-inline-start-color:${c.color}"><span class="ccard-ic" style="background:${alpha(c.color,.18)}">${c.icon}</span><div class="ccard-t"><b>${esc(c.name)}</b><span>${fa(list.length)} تراکنش · ${faC(displayVal(sum))}</span></div><div class="acard-actions"><button data-cup="${c.id}" title="انتقال به بالا">▲</button><button data-cdown="${c.id}" title="انتقال به پایین">▼</button><button data-cedit="${c.id}">✎</button><button data-cdel="${c.id}">✕</button></div></div>`;};$('#catGridEx').innerHTML=CATS.ex.map(card).join('')||emptyHtml('خالی');$('#catGridIn').innerHTML=CATS.in.map(card).join('')||emptyHtml('خالی');}
 function moveCat(id,dir){const i=state.cats.findIndex(c=>c.id===id);if(i<0)return;const ty=state.cats[i].type;let j=i+dir;while(j>=0&&j<state.cats.length&&state.cats[j].type!==ty)j+=dir;if(j<0||j>=state.cats.length){showToast(dir<0?'این دسته اول لیست است':'این دسته آخر لیست است');return;}[state.cats[i],state.cats[j]]=[state.cats[j],state.cats[i]];persist();renderCats();fillCatSelects();renderBudget();animateAll();showToast('جابه‌جا شد 🔀');}
 function loanNextDue(l){if((l.paidCount||0)>=(l.totalInstallments||0))return null;let jy=l.startJy,jm=(l.startJm||1)+(l.paidCount||0);while(jm>12){jm-=12;jy++;}const day=Math.min(l.dueDay||1,J.monthLength(jy,jm));return{jy,jm,jd:day};}
@@ -2259,9 +2367,28 @@ function initTheme(){
   });
 }
 
+/* ===== v1.18 — پالت تأکیدی: فقط مقدارِ توکن‌ها را عوض می‌کند ===== */
+const ACCENTS={firuze:{a:'#38d5bd',b:'#e9b44c',fa:'فیروزه',ic:'💠'},lajevard:{a:'#7bb0ff',b:'#f0a83c',fa:'لاجورد',ic:'🔷'},anar:{a:'#ff8a78',b:'#ffd166',fa:'انار',ic:'🍎'},zafaran:{a:'#f6b352',b:'#38d5bd',fa:'زعفران',ic:'🧡'}};
+const ACCENT_ORDER=['firuze','lajevard','anar','zafaran'];
+function initAccent(){
+  const KEY='hk-accent',btn=$('#accentToggle'),A=$('#atA'),B=$('#atB');
+  const cur=()=>{try{const v=localStorage.getItem(KEY);return ACCENT_ORDER.includes(v)?v:'firuze';}catch(e){return 'firuze';}};
+  const save=v=>{try{localStorage.setItem(KEY,v);}catch(e){}};
+  function paint(){const v=cur();document.documentElement.setAttribute('data-accent',v);const p=ACCENTS[v];if(A)A.style.background=p.a;if(B)B.style.background=p.b;if(btn)btn.title='پالت: '+p.fa+' — کلیک برای تغییر';}
+  paint();
+  if(btn)btn.addEventListener('click',()=>{
+    const next=ACCENT_ORDER[(ACCENT_ORDER.indexOf(cur())+1)%ACCENT_ORDER.length];
+    save(next);
+    btn.classList.add('spin');setTimeout(()=>btn.classList.remove('spin'),560);
+    paint();
+    const p=ACCENTS[next];
+    showToast(`پالت ${p.fa} ${p.ic} فعال شد`);
+  });
+}
+
 function killBootSkeleton(){const b=document.getElementById('bootSk');if(b&&b.parentNode)b.parentNode.removeChild(b);}
 function initApp(){killBootSkeleton();
-  applyName(getStoredName()||'مهدی عسکری');setupCredit();initTheme();var _fi=$('#footInfo');if(_fi)_fi.innerHTML='حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند · <b style="color:var(--dim);font-weight:400">'+APP_VERSION+'</b>';
+  applyName(getStoredName()||'مهدی عسکری');setupCredit();initTheme();initAccent();var _fi=$('#footInfo');if(_fi)_fi.innerHTML='حساب‌وکتاب · داده‌ها در مرورگر ذخیره می‌شوند · <b style="color:var(--dim);font-weight:400">'+APP_VERSION+'</b>';
   syncDateInput();moveInd(document.querySelector('.tab.active'));renderAll();positionGlider();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>moveInd(document.querySelector('.tab.active')));
   $('#abToggle').checked=ab.enabled;$('#abInterval').value=String(ab.intervalDays);

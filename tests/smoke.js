@@ -361,8 +361,8 @@ console.log('\n21) v1.6 design system');
 {
   const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
   const root=css.slice(0,css.indexOf('[data-theme="light"]'));
-  ok(G('APP_VERSION')==='v1.17.1','APP_VERSION is v1.11.0');
-  ok(G('WHATS_NEW[0].v')==='v1.17.1','whats-new leads with v1.11.0');
+  ok(G('APP_VERSION')==='v1.18.0','APP_VERSION is v1.11.0');
+  ok(G('WHATS_NEW[0].v')==='v1.18.0','whats-new leads with v1.11.0');
   ok(G('typeof REDUCED')==='boolean','REDUCED motion preference is defined');
 
   /* token scales */
@@ -394,8 +394,9 @@ console.log('\n21) v1.6 design system');
   ok(/--dim:#587678/.test(css),'light --dim raised to AA');
   ok((css.match(/#fff/g)||[]).length<20,'white literals mostly retired');
 
-  /* theme = pure token swap */
-  const lightPatches=(css.match(/\[data-theme="light"\]/g)||[]).length;
+  /* theme = pure token swap — count only descendant/component patches, not token blocks
+     (v1.18 added [data-theme="light"][data-accent=…] blocks, which are token swaps too) */
+  const lightPatches=(css.match(/\[data-theme="light"\]\s+[^\{]*\{/g)||[]).length;
   ok(lightPatches<=8,'light theme is a token swap, not a patch layer ('+lightPatches+' rules, was 28)');
   const tc=G("document.documentElement.getAttribute('data-theme')");
   G("document.documentElement.setAttribute('data-theme','light')");
@@ -458,7 +459,7 @@ console.log('\n21) v1.6 design system');
   ok(document.querySelector('meta[name="theme-color"]').content==='#072429','theme-color matches --bg');
   const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
   ok(/Vazirmatn:wght@100\.\.900/.test(sw)&&/Vazirmatn:wght@100\.\.900/.test(html),'variable font requested in one URL');
-  ok(/hesabketab-v21/.test(sw),'service-worker cache bumped to v15');
+  ok(/hesabketab-v22/.test(sw),'service-worker cache bumped to v15');
   ok(/contain:paint/.test(css),'long lists skip offscreen work');
   ok(!/chip-save|chipSave|flashSaved/.test(html),'top-bar auto-save chip removed');
   ok(/@media \(max-width:640px\)\{[\s\S]*?\.modal-box\{width:100%/.test(css),'dialogs become bottom sheets on phones');
@@ -510,7 +511,7 @@ console.log('\n── 22) v1.7 rail, card menus, knob, notifications ──');
   /* hygiene carried forward */
   ok(!/transition:left/.test(css),'still no left-anchored transitions');
   ok(!/chip-save|chipSave|liveClock/.test(html),'the removed chips stay removed');
-  ok(G("APP_VERSION")==='v1.17.1','version bumped to v1.7.0');
+  ok(G("APP_VERSION")==='v1.18.0','version bumped to v1.7.0');
 }
 
 console.log('\n── 23) v1.8 bottom navigation ──');
@@ -582,7 +583,7 @@ console.log('\n── 24) v1.9 floating glass dock ──');
   /* the pill indicator still lives inside the clipped dock */
   ok(/\.ind\{[^}]*top:5px/.test(blk)&&/border-radius:var\(--r-pill\)/.test(blk),'the active pill sits inside the rounded dock');
   /* version */
-  ok(G("APP_VERSION")==='v1.17.1','version bumped to v1.9.0');
+  ok(G("APP_VERSION")==='v1.18.0','version bumped to v1.9.0');
 }
 
 console.log('\n── 25) v1.10 four slots + More ──');
@@ -630,7 +631,7 @@ console.log('\n── 25) v1.10 four slots + More ──');
   document.body.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   document.querySelector('.tab[data-tab="tx"]').dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));
   ok(document.getElementById('moreLbl').textContent==='بیشتر'&&document.getElementById('moreIc').getAttribute('href')==='#i-more'&&!moreBtn.classList.contains('on'),'a primary tab restores the plain More slot');
-  ok(G("APP_VERSION")==='v1.17.1','version bumped to v1.14.0');
+  ok(G("APP_VERSION")==='v1.18.0','version bumped to v1.14.0');
 }
 
 console.log('\n── 26) v1.12 contrast + direction-correct CSS ──');
@@ -717,11 +718,55 @@ console.log('\n── 32) v1.17 soft page hand-off ──');
   ok(/@keyframes vtIn\{from\{opacity:0;transform:translateY\(6px\)\}\}/.test(css),'the incoming page rises 6px as it fades in');
   ok(/::view-transition-new\(pane\)\{animation:vtIn var\(--d-4\) var\(--ease-out\)\}/.test(css),'the hand-off eases out over 380ms');
   ok(/\.pane\.active\{display:block;animation:paneIn \.34s var\(--ease-out\) both\}/.test(css),'browsers without view transitions get a soft fade-up');
-  ok(G('APP_VERSION')==='v1.17.1','version bumped to v1.17.1');
+  ok(G('APP_VERSION')==='v1.18.0','version bumped to v1.17.1');
   ok(/\.tabs\{view-transition-name:hnav\}/.test(css),'the menu gets its own view-transition group');
   ok(/::view-transition-group\(hnav\),::view-transition-old\(hnav\),::view-transition-new\(hnav\)\{animation:none\}/.test(css),'the menu is frozen — it stays put instead of fading out and back');
   ok(/_vt\.finished\.then\(glide,glide\)/.test(js),'the underline glides after the dissolve, not during it');
   ok(!/moveInd\(_onMore\?moreBtn:_tb\);renderAll\(\)/.test(js),'the underline no longer jumps inside the snapshot');
+}
+{
+  console.log('\n── 33) v1.18 wallet cards + accent palettes ──');
+  const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+  const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  ok(/\.acard\.is-wallet/.test(css),'wallet card skin exists');
+  ok(/function accSkin\(/.test(js)&&/const maskCard=/.test(js)&&/const mixHex=/.test(js)&&/const toFaDigits=/.test(js),'card helpers exist');
+  ok(/ACC_TYPE_FA/.test(js),'account type labels exist');
+  ok(!document.querySelector('#accGrid .acard.is-wallet'),'no wallet cards before seeding');
+  G('state.accounts.push({id:"w1",name:"بانک ملت",type:"card",icon:"💳",color:"#e9b44c",initial:1000000,cardNo:"6037991122334455"});state.accounts.push({id:"w2",name:"نقدی",type:"cash",icon:"💵",color:"#38d5bd",initial:-50000});persist();renderAccounts();');
+  const cards=document.querySelectorAll('#accGrid .acard.is-wallet');
+  ok(cards.length===2,'two wallet cards rendered');
+  ok(!!cards[0].querySelector('.acard-chip')&&!!cards[0].querySelector('.acard-wave'),'chip + contactless glyphs present');
+  const no=cards[0].querySelector('.acard-no');
+  ok(!!no&&!no.textContent.includes('6037')&&no.textContent.includes('۵۵'),'card number masked in Persian digits ('+no.textContent+')');
+  ok(/linear-gradient/.test(cards[0].getAttribute('style')),'card paints a saturated gradient from its colour');
+  ok(cards[1].querySelector('.acard-bal').textContent.includes('منفی'),'negative balance shows a pill');
+  ok(document.documentElement.getAttribute('data-accent')==='firuze','default accent is firuze');
+  click(document.getElementById('accentToggle'));
+  ok(document.documentElement.getAttribute('data-accent')==='lajevard','click cycles to lajevard');
+  ok(window.localStorage.getItem('hk-accent')==='lajevard','accent persisted');
+  click(document.getElementById('accentToggle'));
+  ok(document.documentElement.getAttribute('data-accent')==='anar','cycles on to anar');
+  click(document.getElementById('accentToggle'));
+  ok(document.documentElement.getAttribute('data-accent')==='zafaran','cycles on to zafaran');
+  click(document.getElementById('accentToggle'));
+  ok(document.documentElement.getAttribute('data-accent')==='firuze','wraps back to firuze');
+  ok(/\[data-accent="lajevard"\]\{[^}]*--turq:#7bb0ff/.test(css),'lajevard swaps only token values');
+  ok(/\[data-theme="dark"\]\[data-accent="anar"\]\{[^}]*--surface-2:/.test(css),'each accent re-tints dark surfaces');
+  ok(!/\[data-accent[^\]]*\]\s*\./.test(css),'accent layer adds no component rules');
+  /* نگهبان AA: جوهرِ کارت باید روی هر دو سرِ گرادیان ≥4.5 بماند (محاسبهٔ مستقل در تست) */
+  const rgbOf=s=>s.match(/rgb\((\d+),(\d+),(\d+)\)/).slice(1,4).map(Number);
+  const rl=c=>{const s=c.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*s[0]+.7152*s[1]+.0722*s[2];};
+  const cr=(a,b)=>{const x=rl(a),y=rl(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+  let worst=99,worstAt='';
+  for(const c of G('ACC_COLORS.join(",")').split(',')){
+    const sk=JSON.parse(G(`JSON.stringify(accSkin("${c}"))`));
+    const ink=rgbOf(sk.fg);
+    for(const end of['hi','lo']){const r=cr(ink,rgbOf(sk[end]));if(r<worst){worst=r;worstAt=c+' '+end;}}
+  }
+  ok(worst>=4.5,'wallet ink keeps AA (>=4.5) on every gradient end (worst '+worst.toFixed(2)+' at '+worstAt+')');
+  G("document.documentElement.setAttribute('data-accent','firuze');localStorage.setItem('hk-accent','firuze');");
+  G('renderAll()');
+  ok(true,'renderAll clean with wallet cards');
 }
 console.log('\n'+(failures?`❌ ${failures} FAILURES`:'✅ ALL TESTS PASSED'));
 window.close();
